@@ -1,0 +1,97 @@
+@startuml UML
+hide circle
+
+
+
+enum Color {
+    WHITE, BLACK, NOTHING
+}
+struct Coordinate {
+    + row : int
+    + col : int
+}
+
+class Square {
+    - coordinate : Coordinate
+    - color : Color
+    - chess : Chess*
+    - td : TextDisplay*
+    - gd : GraphDisplay*
+    - notifyDisplayer()
+    + setChess(Chess*)
+    + removeChess()
+}
+Square ..> Color
+Square ..> Coordinate
+Square ..> Chess
+
+abstract class Chess {
+    - color : Color
+    + virtual bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const = 0
+    + virtual bool isCheckmate(const Board &theBoard, Coordinate posi) const = 0
+}
+Chess ..> Color
+
+class Pawn {
+
+}
+Pawn --|> Chess
+
+class Rook {
+
+}
+Rook --|> Chess
+
+class Knight {
+
+}
+Knight --|> Chess
+
+class Bishop {
+
+}
+Bishop --|> Chess
+
+class Queen {
+
+}
+Queen --|> Chess
+
+class King {
+
+}
+King --|> Chess
+
+
+class Board {
+    - grid : std::vector<std::vector<Square>>
+    - td : TextDisplay* (use smart_ptr)
+    - gd : GraphDisplay*
+
+
+    + void initSquare() (just init square, no chess)
+
+    + void placeChess(Coordinate, char)
+    + void initChessesWithDefaultArrange()
+    + void moveChess(Coordinate begin, Coordinate end)
+    + void endGame(Color whichColorWon)
+}
+
+class TextDisplay {
+    - charGrid : std::vector<std::vector<char>>
+    
+    + void notify(Board&)
+
+    + void printBoard()
+}
+
+
+
+
+abstract class Bot {
+    - theBoard : Board*
+}
+Bot --> Board
+
+
+@enduml
