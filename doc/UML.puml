@@ -7,16 +7,16 @@ enum Color {
     WHITE, BLACK, NOTHING
 }
 struct Coordinate {
-    + row : int
-    + col : int
+    + int row
+    + int col
 }
 
 class Square {
-    - coordinate : Coordinate
-    - color : Color
-    - chess : Chess*
-    - td : TextDisplay*
-    - gd : GraphDisplay*
+    - Coordinate coordinate
+    - Color color
+    - Chess* chess
+    - TextDisplay* td
+    - GraphDisplay* gd
     - notifyDisplayer()
     + setChess(Chess*)
     + removeChess()
@@ -25,73 +25,119 @@ Square ..> Color
 Square ..> Coordinate
 Square ..> Chess
 
+
+
+enum ChessType {
+    Pawn, Knight, Bishop, Rook, Queen, King
+}
+
 abstract class Chess {
-    - color : Color
+    - Color color
+    - ChessType type
     + virtual bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const = 0
     + virtual bool isCheckmate(const Board &theBoard, Coordinate posi) const = 0
 }
 Chess ..> Color
+Chess ..> ChessType
 
 class Pawn {
-
+    - bool isMoved
+    - bool canBeEnPassant
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
+    + void update()
 }
 Pawn --|> Chess
 
 class Rook {
-
+    - bool isMoved
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Rook --|> Chess
 
 class Knight {
-
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Knight --|> Chess
 
 class Bishop {
-
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Bishop --|> Chess
 
 class Queen {
-
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Queen --|> Chess
 
 class King {
-
+    - bool isMoved
+    + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
+    + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 King --|> Chess
 
 
 class Board {
-    - grid : std::vector<std::vector<Square>>
-    - td : TextDisplay* (use smart_ptr)
-    - gd : GraphDisplay*
-
-
+    - std::vector<std::vector<Square>> grid
+    - TextDisplay* (use smart_ptr) td
+    - GraphDisplay* gd
+    - Color currentPlayer
+    - void switchPlayer()
+    - void checkDraw()
+    - void updateChess()
     + void initSquare() (just init square, no chess)
-
     + void placeChess(Coordinate, char)
+    + void removeChess(Coordinate)
     + void initChessesWithDefaultArrange()
+    + bool isValidSetup()
     + void moveChess(Coordinate begin, Coordinate end)
-    + void endGame(Color whichColorWon)
+    + void endGame(Color whoWin) const
+
 }
 
 class TextDisplay {
-    - charGrid : std::vector<std::vector<char>>
+    - std::vector<std::vector<char>> charGrid
     
-    + void notify(Board&)
+    + void notified(Board&)
 
     + void printBoard()
 }
 
-
+class GraphDisplay {
+    - const size_t WINDOW_SIZE
+    - size_t sizeOfGrid
+    - size_t oneSquareSize
+    - size_t edgeSize
+    + void notified(Board&)
+}
 
 
 abstract class Bot {
-    - theBoard : Board*
+    - Board* theBoard
+    - Color color
+    + virtual void move() const = 0
 }
 Bot --> Board
+Bot ..> Color
 
+class BotLevel1 {
+
+}
+BotLevel1 --|> Bot
+
+class BotLevel2 {
+
+}
+BotLevel2 --|> Bot
+
+class BotLevel3 {
+
+}
+BotLevel3 --|> Bot
 
 @enduml
