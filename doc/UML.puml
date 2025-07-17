@@ -18,8 +18,7 @@ class Square {
     - TextDisplay* td
     - GraphDisplay* gd
     - notifyDisplayer()
-    + setChess(Chess*)
-    + removeChess()
+    + setChess(Chess*)    + removeChess()
 }
 Square ..> Color
 Square ..> Coordinate
