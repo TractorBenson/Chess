@@ -92,7 +92,8 @@ class Board {
     - unique_ptr<TextDisplay> td
     - unique_ptr<GraphDisplay> gd
     - Color currentPlayer
-    - Square *lastMovedSquare
+    - Square *lastWhiteMovedSquare
+    - Square *lastBlackMovedSquare
     - void switchPlayer()
     - bool checkDraw() const
     - void updateChess()
@@ -144,5 +145,10 @@ class BotLevel3 {
 
 }
 BotLevel3 --|> Bot
+
+class BotLevel4 {
+
+}
+BotLevel4 --|> Bot
 
 @enduml
