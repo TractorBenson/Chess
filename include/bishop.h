@@ -1,8 +1,10 @@
 #ifndef BISHOP_H
 #define BISHOP_H
 
-import <chess.h>;
+#include "chess.h"
 
 class Bishop : public Chess {
     
-}
+};
+
+#endif

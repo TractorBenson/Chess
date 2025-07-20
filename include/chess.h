@@ -2,10 +2,10 @@
 #define CHESS_H
 // Just ensure the class is defined only once
 
-import <cstddef>;
-import <color.h>;
-import <chess.h>;
-import <coordinate.h>;
+#include <cstddef>;
+#include "color.h"
+#include "chess.h"
+#include "coordinate.h"
 
 class Chess {
     Color color;
