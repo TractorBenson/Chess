@@ -5,7 +5,6 @@
 struct Coordinate {
     int row;
     int col;
-    friend class chess;
 };
 
 #endif
