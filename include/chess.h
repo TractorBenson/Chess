@@ -8,23 +8,20 @@
 #include "chesstype.h"
 #include "coordinate.h"
 #include "board.h"
+#include "square.h"
 // The includes
 
 class Chess {
     Color color;
     ChessType type;
-
+    Square *theSquare;
     public:
         virtual bool isValidMove(const Board &theBoard, Coordinate begin, 
                                  Coordinate end) const = 0;
             // Check if this is a valid move
 
-        virtual bool isCheck (const Board &theBoard, Coordinate posi) 
-                        const = 0;
-            // Check if the chess can check opponent's king
-        
-        virtual bool isCheckmate (const Board &theBoard, Coordinate posi) 
-                        const = 0;
+        virtual vector<Coordinate> validMoves (const Board &theBoard) const = 0;
+            // Give all the valid move options
 };
 
 #endif

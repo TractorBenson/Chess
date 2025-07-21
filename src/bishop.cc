@@ -6,24 +6,44 @@
 
 bool Bishop::isValidMove(const Board &theBoard, Coordinate begin, 
                          Coordinate end) {
+    if (begin.col < 0 || begin.col >= theBoard.getSideLength || 
+        begin.row < 0 || begin.row >= theBoard.getSideLength || 
+        end.col < 0 || end.col >= theBoard.getSideLength ||
+        end.row < 0 || end.row >= theBoard.getSideLength) {
+        // If it is out of bound, return false
+        return false
+    }
     int diff_x_coordinate = end.col - begin.col;
+    // The distance of x-coordinate from begin's position to end's position
+
     int diff_y_coordinate = end.row - begin.row;
+    // The distance of y-coordinate from begin's position to end's position
+
+    int &tmp_grid = theBoard.getGrid(); // Get the grid reference
     if (diff_x_coordinate != diff_y_coordinate & 
         diff_x_coordinate != diff_y_coordinate * -1) {
+        // If the distance is not diagonal, return false (not a valid move)
         return false;
     }
     else {
         int steps_to_check_obstacle = diff_x_coordinate;
-        if (diff_x_coordinate < 0) {
+        // The steps to move from the begin coordinate to end coordinate
+
+        if (steps_to_check_obstacle < 0) {
+            // Make this number postive
             steps_to_check_obstacle *= -1;
         }
         Coordinate one_step{diff_x_coordinate / steps_to_check_obstacle, 
                               diff_y_coordinate / steps_to_check_obstacle};
+        // The direction to move from the current coordinate one step closer 
+        //   to the end coordinate.
+
         Coordinate current_check_step{begin};
+        current_check_step.col += one_step.col;
+        current_check_step.row += one_step.row;
+        // Initialize the start position for checking
         for (int i = 1; i < steps_to_check_obstacle - 1; i++) {
-            if (theBoard) {
-                
-            }
+            if (tmp_grid[current_check_step.row][current_check_step.col])
         }
     }
 }
