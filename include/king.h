@@ -1,9 +1,9 @@
-#ifndef BISHOP_H
-#define BISHOP_H
+#ifndef KING_H
+#define KING_H
 
 #include "chess.h"
 
-class Bishop : public Chess {
+class King : public Chess {
     bool isValidMove(const Board &theBoard, Coordinate begin, 
                                  Coordinate end) const override;
         // The override declaration
