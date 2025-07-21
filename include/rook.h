@@ -4,6 +4,7 @@
 #include "chess.h"
 
 class Rook : public Chess {
+    bool isMoved;
     public:
         bool isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const override;
