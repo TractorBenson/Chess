@@ -16,6 +16,9 @@ class Chess {
     ChessType type;
     Square *theSquare;
     public:
+        Color getColor() const;
+        ChessType getType() const;
+        Square *getSquare() const;
         virtual bool isValidMove(const Board &theBoard, Coordinate begin, 
                                  Coordinate end) const = 0;
             // Check if this is a valid move
