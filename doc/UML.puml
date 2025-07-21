@@ -19,9 +19,8 @@ enum ChessType {
 class Square {
     - Coordinate coordinate
     - Color color
-    - unique_ptr<Chess> chess
-    - TextDisplay *td
-    - GraphDisplay *gd
+    - Chess *chess
+    - vector<Observer*>
     - notifyDisplayer() 
     + setChess(unique_ptr<Chess>)
     + removeChess()
@@ -34,69 +33,50 @@ Square *-- "0...1" Chess : chess
 abstract class Chess {
     - Color color
     - ChessType type
-    + virtual bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const = 0
-    + vietual bool isCheck(const Board &theBoard), Coordinate posi) const = 0
-    + virtual bool isCheckmate(const Board &theBoard, Coordinate posi) const = 0
+    - Square *theSquare
+    + virtual bool isValidMove(const Board &theBoard) = 0
+    + virtual vector<Coordinate> validMoves(const Board &theBoard) const = 0
 }
 
 class Pawn {
     - bool isMoved
     - bool canBeEnPassant
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
     + void update()
 }
 Pawn --|> Chess
 
 class Rook {
     - bool isMoved
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Rook --|> Chess
 
 class Knight {
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Knight --|> Chess
 
 class Bishop {
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Bishop --|> Chess
 
 class Queen {
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
 }
 Queen --|> Chess
 
 class King {
     - bool isMoved
-    ' + bool isValidMove(const Board &theBoard, Coordinate begin, Coordinate end) const override
-    ' + bool isCheck(const Board &theBoard, Coordinate posi) const override
-    ' + bool isCheckmate(const Board &theBoard, Coordinate posi) const override
+    + bool isChecked(const Board &theBoard)
+    + bool isCheckmated(const Board &theBoard)
 }
 King --|> Chess
 
 
 class Board {
     - vector<vector<Square>> grid
-    - unique_ptr<TextDisplay> td
-    - unique_ptr<GraphDisplay> gd
-    - Color currentPlayer
-    - Square *lastWhiteMovedSquare
-    - Square *lastBlackMovedSquare
-    - void switchPlayer()
+    - vector<unique_ptr<Chess>> blackChesses;
+    - vector<unique_ptr<Chess>> whiteChesses;
+    - vector<unique_ptr<Observer>>
     - bool checkDraw() const
-    - void updateChess()
+    - void updateChess(Color color)
     + void initSquares()
     + void placeChess(Coordinate, char, Color)
     + void removeChess(Coordinate)
@@ -111,18 +91,21 @@ Board *-- TextDisplay : td
 Board *-- GraphDisplay : gd
 
 
+class Observer {
+    + virtual void notify(Square&) = 0
+}
+
 class TextDisplay {
     - vector<vector<char>> charGrid
-    + void notified(Square&)
-    + void printBoard()
+    + ostream printBoard(ostream os)
 }
+TextDisplay --|> Observer
 
 class GraphDisplay {
     - const size_t WINDOW_SIZE
     - void drawSquare(Square&)
-    + void notified(Square&)
 }
-
+GraphDisplay --|> Observer
 
 abstract class Bot {
     - Board* theBoard
