@@ -21,7 +21,7 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
                               diff_y_coordinate / steps_to_check_obstacle};
         Coordinate current_check_step{begin};
         for (int i = 1; i < steps_to_check_obstacle - 1; i++) {
-            
+            if (theBoard)
         }
     }
 }
