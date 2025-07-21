@@ -3,6 +3,7 @@
 #include "chess.h"
 #include "color.h"
 #include <memory>
+#include <vector>
 #include "coordinate.h"
 #include "observer.h"
 
@@ -16,15 +17,16 @@ class Square {
 
     public:
     // Constructor. User has to call setChess to place a chess on Square
-    Square(Coordinate coordinate, Color color, 
-    TextDisplay *td, GraphDisplay *gd);
+    Square(Coordinate coordinate, Color color);
+
+    void attachObserver(unique_ptr<Observer> newObs);
     // Notify text and graph displayers of the square's current state
     void notifyDisplayer();
     // return the pointer to the chess on current board. 
     Chess* getChess();
     Color getColor();
     // Place a paticular chess on the current square
-    void setChess(unique_ptr<Chess>);
+    void setChess(unique_ptr<Chess> newChess);
     // Remove the chess, if exists, from the current square
     void removeChess();
 };

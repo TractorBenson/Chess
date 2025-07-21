@@ -4,9 +4,12 @@
 using namespace std;
 
 // Constructor of a Square, used when initiailizing a grid
-Square::Square(Coordinate coordinate, Color color = Color::NOTHING, 
-    TextDisplay *td, GraphDisplay *gd) : 
-    coordinate{coordinate}, color{color}, td{td}, gd{gd} {}
+Square::Square(Coordinate coordinate, Color color = Color::NOTHING) : 
+    coordinate{coordinate}, color{color} {}
+
+void Square::attachObserver(unique_ptr<Observer> newObs) {
+    obs.emplace_back(newObs.get());
+}
 
 // notifies both text and graph displayer
 // set the td and gd (they are unique) when initializing a grid
@@ -31,9 +34,9 @@ Color Square::getColor() {
 
 // Place a chess newChess on the current Square. If Current
 //   Square already has an existing chess, output message and do nothing
-void Square::setChess(Chess* newChess) {
+void Square::setChess(unique_ptr<Chess> newChess) {
     if (color == Color::NOTHING) {
-        chess = newChess;
+        chess = newChess.get();
     } else {
         cout << "Invalid chess placement! 
         A chess already exists in the square!" << endl;

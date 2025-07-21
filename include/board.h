@@ -20,13 +20,12 @@ class Board {
     // Two vectors storing all white and black chesses
     vector<unique_ptr<Chess>> whiteChesses;
     vector<unique_ptr<Chess>> blackChesses;
-    // Color indicating whose turn to play
-    Color currentPlayer = Color::WHITE;
-    // Keep track to both player's last move
+
+    const int sideLength = 8;
 
     public:
         vector<vector<Square>>& getGrid() const;
-        void switchPlayer(); // switch player's turn to play
+        int getSideLength() const;
         bool checkDraw() const;
         void updateChess();
         void initSquares(); // initialize the board before game starts
@@ -46,8 +45,8 @@ class Board {
         bool isCheck() const;
         // Determine if a checkmate exist in current step
         bool isCheckmate() const;
-        friend ostream &operator<<(ostream &out, const Grid &g);
+        friend ostream &operator<<(ostream &out, const Board &board);
 };
 
-ostream &operator<<(ostream &out, const Grid &g);
+ostream &operator<<(ostream &out, const Board &board);
 #endif

@@ -2,12 +2,7 @@
 
 using namespace std;
 
-    // The grid consists of mutiple squares
-    vector<vector<Square>> grid;
-
     // pointers to the textdisplayer and graphic displayer
-    unique_ptr<TextDisplay> td;
-    unique_ptr<GraphDisplay> gd;
 
     // Color indicating whose turn to play, this should be done in main fuction
     // Color currentPlayer;
