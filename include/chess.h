@@ -24,7 +24,7 @@ class Chess {
             // Check if the chess can check opponent's king
         
         virtual bool isCheckmate (const Board &theBoard, Coordinate posi) 
-                        const  = 0;
+                        const = 0;
 };
 
 #endif
