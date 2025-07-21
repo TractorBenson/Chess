@@ -110,7 +110,7 @@ GraphDisplay --|> Observer
 abstract class Bot {
     - Board* theBoard
     - Color color
-    + virtual void move() const = 0
+    + virtual vector<Coordinate> move() const = 0
 }
 Bot --> Board : theBoard
 

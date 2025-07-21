@@ -2,7 +2,7 @@
 #define BOT_H
 // ensure only define once
 
-#include color.h
+#include "enum/color.h"
 
 class Board; // forward declaration
 
@@ -18,8 +18,8 @@ public:
     Bot(Board *theBoard, Color color);
 
     // main.cc will call this function to tell this Bot to move one step,
-    // all operation will be done by Bot, so just one calling
-    virtual void move() = 0;
+    // bot return a vector with length 2, first is initial posi, second is result posi
+    virtual vector<Coordinate> move() = 0;
 }
 
 
