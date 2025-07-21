@@ -2,7 +2,7 @@
 #define COORDINATE_H
 // Just ensure the class is defined only once
 
-class Coordinate {
+struct Coordinate {
     int row;
     int col;
     friend class chess;
