@@ -1,0 +1,6 @@
+1. Give default values to all Chess objects' fields
+2. Add mutators to All fields of Chess objects' fields
+3. Add isMoved() and update() virtual methods that does nothing in Chess class.
+    actually implement isMoved() in King, Rook, and pawn, update() is implemented in Pawn only
+
+

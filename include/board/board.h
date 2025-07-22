@@ -2,6 +2,7 @@
 #define BOARD_H
 #include "chess/chess.h"
 #include "square/square.h"
+#include "enum/chesstype.h"
 #include "enum/color.h"
 #include "observer/observer.h"
 #include <iostream>
@@ -22,13 +23,19 @@ class Board {
     vector<unique_ptr<Chess>> whiteChesses;
     vector<unique_ptr<Chess>> blackChesses;
 
+    // Used in checkDraw, isValidSetup.
+    King* whiteKing;
+    King* blackKing;
+
     const size_t sideLength = 8;
 
+    
     public:
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
         const vector<unique_ptr<Chess>>& getWhiteChesses() const;
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
+        int numOfChesses(ChessType type, Color color) const;
 
         bool checkDraw(Color currentPlayer) const;
         void updateChess(Color CurrentPlayer);
@@ -46,6 +53,10 @@ class Board {
         // Move the chess on location begin to end, 
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
+        // Try to move a chess, used to check if the move causes a "self-check"
+        void testMove(Coordinate begin, Coordinate end);
+        // Redo the last movement of current player
+        void redoLastStep();
         // Determine if a check exist in current step
         bool isCheck() const;
         // Determine if a checkmate exist in current step
