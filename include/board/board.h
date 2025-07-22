@@ -53,6 +53,10 @@ class Board {
         // Move the chess on location begin to end, 
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
+        // Try to move a chess, used to check if the move causes a "self-check"
+        void testMove(Coordinate begin, Coordinate end);
+        // Redo the last movement of current player
+        void redoLastStep();
         // Determine if a check exist in current step
         bool isCheck() const;
         // Determine if a checkmate exist in current step
