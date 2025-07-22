@@ -1,5 +1,5 @@
-#include "../../include/board/board.h"
-#include "../../include/chess/pawn.h"
+#include "include/board/board.h"
+#include "include/chess/pawn.h"
 
 using namespace std;
 
@@ -47,12 +47,18 @@ using namespace std;
     //  This is done at the beginning of every turn of currentPlayer
     void Board::updateChess(Color currentPlayer) {
         if (currentPlayer == Color::WHITE) {
+            // loop through all white chesses
             for (auto& chess : whiteChesses) {
-               if() 
+               if(chess->getType() == ChessType::Pawn) {
+                    chess->update();
+               }
             }
         } else {
+            // loop through all black chesses
             for (auto& chess : blackChesses) {
-
+                if(chess->getType() == ChessType::Pawn) {
+                    chess->update();
+                }
             }
         }
     }

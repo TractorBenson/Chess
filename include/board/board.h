@@ -1,9 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
-#include "../chess/chess.h"
-#include "square.h"
-#include "color.h"
-#include "observer.h"
+#include "include/chess/chess.h"
+#include "include/chess/square.h"
+#include "include/enum/color.h"
+#include "include/observer/observer.h"
 #include <iostream>
 #include <cstddef>
 #include <vector>
@@ -14,7 +14,7 @@ using namespace std;
 class Board {
     // The grid consists of mutiple squares
     vector<vector<Square>> grid;
-
+    Color color = Color::
     // Pointing to the textdisplayer and graphic displayer
     vector<unique_ptr<Observer>> obs;
 
