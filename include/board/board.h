@@ -23,6 +23,7 @@ class Board {
     vector<unique_ptr<Chess>> whiteChesses;
     vector<unique_ptr<Chess>> blackChesses;
 
+    // Used in checkDraw, isValidSetup.
     King* whiteKing;
     King* blackKing;
 

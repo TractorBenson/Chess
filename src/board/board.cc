@@ -53,11 +53,12 @@ bool Board::checkDraw(Color currentPlayer) const {
 //   This is done at the beginning of every game turn of currentPlayer
 void Board::updateChess(Color currentPlayer) {
     if (currentPlayer == Color::WHITE) {
-        // loop through all white chesses
+        // loop through all white chesses and call update(),
+        // Note that update() is only implemented on Pawns
         for (auto& chess : whiteChesses) {
-            if(chess->getType() == ChessType::Pawn) {
-                chess->update();
-            }
+        //  if(chess->getType() == ChessType::Pawn) {
+            chess->update();
+            //}
         }
     } else {
         // loop through all black chesses
@@ -203,7 +204,11 @@ bool Board::isValidSetup() {
     return true;
 }
 // Move the chess from begin coordinate to end coordinate
-bool Board::moveChess(Coordinate begin, Coordinate end);
+bool Board::moveChess(Coordinate begin, Coordinate end) {
+    if (grid[begin.row][begin.col].getChess()->getColor() == Color::NOTHING) [
+        cout << "There's no "
+    ]
+}
 // Determine if a check exist in current step
 bool Bpard::isCheck() const;
 // Determine if a checkmate exist in current step

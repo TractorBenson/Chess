@@ -1,6 +1,6 @@
-1. Write individual ctors for each chess subclass
-2. Has to change the chess contructor, square{square} is fine. Do not create a new square here
-3. King has isMoved field
-4. unique ctor for pawn
-5. add default values for chess classes
+1. Give default values to all Chess objects' fields
+2. Add mutators to All fields of Chess objects' fields
+3. Add isMoved() and update() virtual methods that does nothing in Chess class.
+    actually implement isMoved() in King, Rook, and pawn, update() is implemented in Pawn only
+
 
