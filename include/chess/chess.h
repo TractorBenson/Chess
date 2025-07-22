@@ -2,8 +2,8 @@
 #define CHESS_H
 // Just ensure the class is defined only once
 
-#include <cstddef>;
-#include "../enum/color.h"
+#include <cstddef>
+#include "color.h"
 #include "chess.h"
 #include "../enum/chesstype.h"
 #include "../enum/chesstype.h"
@@ -15,6 +15,12 @@ class Chess {
     ChessType type;
     Square *theSquare;
     public:
+        Color getColor() const; // Get the color
+
+        ChessType getType() const; // Get the type
+
+        Square *getSquare() const; // Get its Square
+
         virtual bool isValidMove(const Board &theBoard, Coordinate begin, 
                                  Coordinate end) const = 0;
             // Check if this is a valid move
