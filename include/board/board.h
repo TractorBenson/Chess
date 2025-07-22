@@ -2,6 +2,7 @@
 #define BOARD_H
 #include "chess/chess.h"
 #include "square/square.h"
+#include "enum/chesstype.h"
 #include "enum/color.h"
 #include "observer/observer.h"
 #include <iostream>
@@ -22,13 +23,18 @@ class Board {
     vector<unique_ptr<Chess>> whiteChesses;
     vector<unique_ptr<Chess>> blackChesses;
 
+    King* whiteKing;
+    King* blackKing;
+
     const size_t sideLength = 8;
 
+    
     public:
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
         const vector<unique_ptr<Chess>>& getWhiteChesses() const;
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
+        int numOfChesses(ChessType type, Color color) const;
 
         bool checkDraw(Color currentPlayer) const;
         void updateChess(Color CurrentPlayer);

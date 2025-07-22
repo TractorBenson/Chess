@@ -23,11 +23,13 @@ class Square {
     void attachObserver(unique_ptr<Observer> newObs);
     // Notify text and graph displayers of the square's current state
     void notifyDisplayer();
+
     // return the pointer to the chess on current board. 
     Chess* getChess();
     // Returns the coordinate of current square
     Coordinate getCoordinate() const;
     Color getColor();
+    
     // Place a paticular chess on the current square
     void setChess(unique_ptr<Chess> newChess);
     // Remove the chess, if exists, from the current square
