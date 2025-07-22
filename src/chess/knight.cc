@@ -3,6 +3,12 @@
 #include "board/board.h"
 #include "chess/king.h"
 
+using namespace std;
+
+Knight::Knight(Color color, Square *theSquare): 
+    Chess{color, ChessType::Knight, theSquare} {}
+
+
 bool Knight::isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 

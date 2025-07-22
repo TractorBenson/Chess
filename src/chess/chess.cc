@@ -6,6 +6,10 @@
 #include "board.h"
 #include "square.h"
 
+using namespace std;
+
+Chess::Chess(Color color, ChessType type, Square *theSquare): color{color}, 
+                type{type}, theSquare{theSquare} {}
 
 Color Chess::getColor() const {
     return color;

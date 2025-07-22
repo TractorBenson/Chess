@@ -21,7 +21,8 @@ class Chess {
         Coordinate getCoordinate() const;
     public:
 
-        Chess(Chess &&other): color{color}, type{type},  {}
+        Chess() = default;
+        Chess(Color color, ChessType type, Square *theSquare);
         
         Color getColor() const; // Get the color
 

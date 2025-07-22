@@ -7,6 +7,11 @@
 
 using namespace std;
 
+
+Bishop::Bishop(Color color, Square *theSquare):
+    Chess{color, ChessType::Bishop, theSquare} {}
+
+
 bool Bishop::isValidMove(Board &theBoard, Coordinate begin, 
                          Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 

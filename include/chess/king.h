@@ -1,11 +1,17 @@
 #ifndef KING_H
 #define KING_H
 
+#include <algorithm>
 #include "chess/chess.h"
+#include "chess/king.h"
+#include "board/board.h"
+
+using namespace std;
 
 class King : public Chess {
     bool isMoved;
     public:
+        King(Color color, Square *theSquare, bool isMoved);
         bool isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const override;
             // The override declaration

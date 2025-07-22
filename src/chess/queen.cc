@@ -3,6 +3,11 @@
 #include "board/board.h"
 #include "chess/king.h"
 
+using namespace std;
+
+Queen::Queen(Color color, Square *theSqare): 
+    Chess{color, ChessType::Queen, theSqare} {}
+
 bool Queen::isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 

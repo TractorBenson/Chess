@@ -3,6 +3,12 @@
 #include "board/board.h"
 #include "chess/king.h"
 
+using namespace std;
+
+Rook::Rook(Color color, Square *theSquare, bool isMoved): 
+    Chess{color, ChessType::Rook, theSquare}, isMoved{isMoved} {}
+
+
 bool Rook::isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
