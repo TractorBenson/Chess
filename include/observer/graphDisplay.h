@@ -9,8 +9,8 @@
 
 class GraphDisplay : public Observer{
     // store chars to display the board
-    const size_t WINDOW_SIZE;
-    const int BACKGROUND_COLOR;
+    const size_t WINDOW_SIZE = 500; // set screen size to be 500. can be adjusted to be other values.
+    const int BACKGROUND_COLOR = 3; // set default background color to be green
 
     std::unique_ptr<Xwindow> xw;
     size_t gridLength; // size of grid, in number of cell
@@ -23,7 +23,7 @@ class GraphDisplay : public Observer{
     void drawStringByIndex(size_t row, size_t col, std::string str);
 
 public:
-    // ctor
+    // ctor, n is number of cell in the grid
     GraphDisplay(size_t n = 8);
     // dtor
     ~GraphDisplay();
