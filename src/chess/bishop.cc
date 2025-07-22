@@ -5,6 +5,8 @@
 #include "board/board.h"
 #include "chess/king.h"
 
+using namespace std;
+
 bool Bishop::isValidMove(const Board &theBoard, Coordinate begin, 
                          Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
@@ -60,41 +62,10 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
         vector<unique_ptr<Chess>> mock_black_chesses;
         // This is mock vector of black chesses
 
+        if (color == Color::White) tmp_king = theboard.getWhiteKing();
+        else tmp_king = theboard.getBlackKing();
+        // Get the pointer to the king
 
-        if (color == Color::BLACK) {
-            // If it is black
-            for (int i = 0; i < tmp_black_chesses.size(); i++) {
-                // For loop to get the king chess and check the 
-                //   destination is not enemy, so that it can go there.
-                if (tmp_black_chesses[i]->getSquare()->getCoordinate() == 
-                    end) {
-                        // If the destination is the friend chess, return false
-                    return false;
-                }
-                mock_black_chesses
-                if (tmp_black_chesses[i]->getType() == ChessType::King) {
-                    // If it finds the king, assign the king pointer
-                    tmp_king = tmp_black_chesses[i].get();
-                }
-            }
-            for (int i = 0; i < tmp_white_chesses.size(); i++) {
-                // Add all the 
-            }
-        } else {
-            for (int i = 0; i < tmp_white_chesses.size(); i++) {
-                // For loop to get the king chess and check the 
-                //   destination is not enemy, so that it can go there.
-                if (tmp_white_chesses[i]->getSquare()->getCoordinate() == 
-                    end) {
-                        // If the destination is the friend chess, return false
-                    return false;
-                }
-                if (tmp_white_chesses[i]->getType() == ChessType::King) {
-                    // If it finds the king, assign the king pointer
-                    tmp_king = tmp_white_chesses[i].get();
-                }
-            }
-        }
 
         if (!(tmp_king_king_type->isChecked())) {
             // If it doesn't make the original king be under attacked
@@ -102,6 +73,15 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
             
 
             return true;
+        } else {
+
         }
     }
+
+void Bishop::update() {}
+
+void Bishop::updateMoved {}
+
 }
+
+

@@ -22,6 +22,10 @@ class King : public Chess {
                            const vector<unique_ptr<Chess>> &whiteChesses, 
                            const vector<unique_ptr<Chess>> &blackChesses) const;
             // The override declaration
+        
+        void update() override;
+
+        void updateMoved() override;
 };
 
 #endif

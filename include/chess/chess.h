@@ -11,6 +11,7 @@
 #include "square/square.h"
 // The includes
 
+using namespace std;
 class Chess {
     Color color;
     ChessType type;
@@ -19,6 +20,8 @@ class Chess {
         Chess(Color color, ChessType type, Square *theSquare): color{color}, 
                 type{type}, theSquare{new Square{*theSquare}} {}
             // Default ctor
+
+        Chess(Chess &&other): color{color}, type{type},  {}
         
         Color getColor() const; // Get the color
 
@@ -32,6 +35,10 @@ class Chess {
 
         virtual vector<Coordinate> validMoves (const Board &theBoard) const = 0;
             // Give all the valid move options
+        
+        virtual void updateMoved() = 0; // Make the isMoved true
+
+        virtual void update() = 0; // Make canBeEnPassant false
 };
 
 #endif

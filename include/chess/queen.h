@@ -11,6 +11,10 @@ class Queen : public Chess {
         
         vector<Coordinate> validMoves (const Board &theBoard) const override;
             // Give all the valid move options
+        
+        void update() override;
+
+        void updateMoved() override;
 };
 
 #endif
