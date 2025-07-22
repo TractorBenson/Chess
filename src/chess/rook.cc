@@ -55,7 +55,7 @@ bool Rook::isValidMove(const Board &theBoard, Coordinate begin,
 
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked()) {
+    if (tmp_king->isChecked() != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
@@ -72,27 +72,29 @@ vector<Coordinate> Rook::validMoves (const Board &theBoard) const {
     vector<vector<int>> directions = {
         {-1,  0}, 
         { 1,  0}, 
-        { 0, -1};
-        { 0,  1};
+        { 0, -1},
+        { 0,  1}
     }; // The direction vector
     Coordinate original_posi = this->getCoordinate();
-    // The original position
+    // The mock position
 
     for (int i = 0; i < directions.size(); i++) {
         // Go four ways, and find out all the valid moves
-        Coordinate current_posi = original_posi;
-        current_posi.row += directions[i][0];
-        current_posi.col += directions[i][1];
+        Coordinate mock_posi = original_posi;
+        mock_posi.row += directions[i][0];
+        mock_posi.col += directions[i][1];
         // Go one step first
-        while (this->isValidMove(theBoard, original_posi, 
-                                 current_posi)) {
-            // While this the current position is valid, add it to valid moves
-            result_moves.emplace_back(current_posi);
+        
+        for (int j = 0; j < theBoard.getSideLength; j++) {
+            if (this->isValidMove(theBoard, original_posi, 
+                                  mock_posi)) {
+                // While this mock position is a valid move, 
+                result_moves.emplace_back(mock_posi);
+            }
 
-
-            // Go one step further
-            current_posi.row += directions[i][0];
-            current_posi.col += directions[i][1];
+            // Move the mock position one step further
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
         }
     }
     // Give back the answer

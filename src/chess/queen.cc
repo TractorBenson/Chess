@@ -70,7 +70,7 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
 
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked()) {
+    if (tmp_king->isChecked() != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
@@ -83,7 +83,44 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
 }
 
 vector<Coordinate> Queen::validMoves (const Board &theBoard) const {
+    vector<Coordinate> result_moves; // The results
+    vector<vector<int>> directions = {
+        {-1,  1},
+        {-1, -1},
+        { 1, -1},
+        { 1,  1},
+        {-1,  0}, 
+        { 1,  0}, 
+        { 0, -1},
+        { 0,  1}
+    }; // All the valid directions
+    Coordinate original_posi = this->getCoordinate();
+    // The original position
 
+    for (int i = 0; i < directions.size(); i++) {
+        // Loop all the valid direction to find all the valid moves
+
+        Coordinate mock_posi = original_posi;
+        // The mock position
+
+        mock_posi.row += directions[i][0];
+        mock_posi.col += directions[i][1];
+        // Make the mock position move one step
+
+        for (int j = 0; j < theBoard.getSideLength; j++) {
+            if (this->isValidMove(theBoard, original_posi, 
+                                  mock_posi)) {
+                // While this mock position is a valid move, 
+                result_moves.emplace_back(mock_posi);
+            }
+
+            // Move the mock position one step further
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
+        }
+    }
+    // Give back the result
+    return result_moves;
 }
 
 void Queen::update() {}

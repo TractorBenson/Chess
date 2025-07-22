@@ -35,7 +35,7 @@ bool Knight::isValidMove(const Board &theBoard, Coordinate begin,
     
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked()) {
+    if (tmp_king->isChecked() != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
@@ -48,7 +48,7 @@ bool Knight::isValidMove(const Board &theBoard, Coordinate begin,
 }
 
 vector<Coordinate> Knight::validMoves (const Board &theBoard) const {
-    vector<Coordinate> result_vector; // The results
+    vector<Coordinate> result_moves; // The results
     vector<vector<int>> directions = {
         {  2,  1 },
         {  1,  2 },
@@ -73,14 +73,20 @@ vector<Coordinate> Knight::validMoves (const Board &theBoard) const {
         current_posi.row += directions[i][0];
         current_posi.col += directions[i][1];
 
-        if (this->isValidMove(theBoard, original_posi, 
-                                 current_posi)) {
-            // If the position is valid, record it
-            result_vector.emplace_back(current_posi);
+        for (int j = 0; j < theBoard.getSideLength; j++) {
+            if (this->isValidMove(theBoard, original_posi, 
+                                  mock_posi)) {
+                // While this mock position is a valid move, 
+                result_moves.emplace_back(mock_posi);
+            }
+
+            // Move the mock position one step further
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
         }
     }
     // Give back the result
-    return result_vector;
+    return result_moves;
 }
 
 void Knight::update() {}

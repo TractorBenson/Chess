@@ -61,7 +61,7 @@ bool Bishop::isValidMove(Board &theBoard, Coordinate begin,
 
         // Mock the board first
         theBoard.moveAnyway(begin, end);
-        if (tmp_king->isChecked()) {
+        if (tmp_king->isChecked() != 0) {
             theBoard.backOneStep();
             // If the king is checked after this move, is invalid, 
             //   return false and remember to undo this move
@@ -90,23 +90,25 @@ vector<Coordinate> validMoves (const Board &theBoard) const {
     for (int i = 0; i < directions.size(); i++) {
         // Go to those four direction valid to find out all the valid moves
 
-        Coordinate current_posi = this->getCoordinate();
+        Coordinate mock_posi = original_posi
         // The mock position
 
 
         // Let the position go one step first
-        current_posi.row += directions[i][0];
-        current_posi.col += directions[i][1];
+        mock_posi.row += directions[i][0];
+        mock_posi.col += directions[i][1];
 
 
-        while (this->isValidMove(theBoard, original_posi, 
-                                 current_posi)) {
-            // While the current position is valid, record it
-            result_moves.emplace_back(current_posi);
+        for (int j = 0; j < theBoard.getSideLength; j++) {
+            if (this->isValidMove(theBoard, original_posi, 
+                                  mock_posi)) {
+                // While this mock position is a valid move, 
+                result_moves.emplace_back(mock_posi);
+            }
 
-            // Move this position one step further
-            current_posi.row += directions[i][0];
-            current_posi.col += directions[i][1];
+            // Move the mock position one step further
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
         }
     }
 
