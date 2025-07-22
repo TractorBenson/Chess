@@ -9,6 +9,7 @@
 #include "struct/coordinate.h"
 #include "board/board.h"
 #include "square/square.h"
+#include "struct/coordinate.h"
 // The includes
 
 using namespace std;
@@ -16,10 +17,9 @@ class Chess {
     Color color;
     ChessType type;
     Square *theSquare;
+    protected:
+        Coordinate getCoordinate() const;
     public:
-        Chess(Color color, ChessType type, Square *theSquare): color{color}, 
-                type{type}, theSquare{new Square{*theSquare}} {}
-            // Default ctor
 
         Chess(Chess &&other): color{color}, type{type},  {}
         
@@ -29,7 +29,7 @@ class Chess {
 
         Square *getSquare() const; // Get its Square
 
-        virtual bool isValidMove(const Board &theBoard, Coordinate begin, 
+        virtual bool isValidMove(Board &theBoard, Coordinate begin, 
                                  Coordinate end) const = 0;
             // Check if this is a valid move
 

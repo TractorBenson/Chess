@@ -19,3 +19,6 @@ Square *Chess::getSquare() const {
     return theSquare;
 }
 
+Coordinate Chess::getCoordinate() const {
+    return this->getSquare()->getCoordinate();
+}
