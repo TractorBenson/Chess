@@ -1,7 +1,7 @@
 #ifndef KNIGHT_H
 #define KNIGHT_H
 
-#include "chess.h"
+#include "chess/chess.h"
 
 class Knight : public Chess {
     public:

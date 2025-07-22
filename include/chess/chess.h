@@ -3,18 +3,23 @@
 // Just ensure the class is defined only once
 
 #include <cstddef>
-#include "color.h"
-#include "chess.h"
-#include "../enum/chesstype.h"
-#include "../enum/chesstype.h"
-#include "board.h"
-#include "square.h"
+#include "enum/color.h"
+#include "chess/chess.h"
+#include "enum/chesstype.h"
+#include "struct/coordinate.h"
+#include "board/board.h"
+#include "square/square.h"
+// The includes
 
 class Chess {
     Color color;
     ChessType type;
     Square *theSquare;
     public:
+        Chess(Color color, ChessType type, Square *theSquare): color{color}, 
+                type{type}, theSquare{new Square{*theSquare}} {}
+            // Default ctor
+        
         Color getColor() const; // Get the color
 
         ChessType getType() const; // Get the type
