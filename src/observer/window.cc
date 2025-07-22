@@ -28,19 +28,36 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   XFlush(d);
   XFlush(d);
 
+  //////////////////////////////////////////////////
+  // below are adjusted in project
+
+  struct RGB {
+    string name;
+    int r,g,b;
+  };
+  
   // Set up colours.
   XColor xcolour;
   Colormap cmap;
-  char color_vals[5][10]={"white", "black", "red", "green", "blue"};
+  RGB color_vals[3] = {
+    {"Black", 0,0,0},
+    {"White", 255,255,255},
+    {"ChessWhite", 235,236,208},
+    {"ChessGreen", 115,149,82},
+  }
 
   cmap=DefaultColormap(d,DefaultScreen(d));
-  for(int i=0; i < 5; ++i) {
-      XParseColor(d,cmap,color_vals[i],&xcolour);
+  for(int i=0; i < 4; ++i) {
+      xcolor.red = color_vals[i].r * 257;
+      xcolor.green = color_vals[i].g * 257; 
+      xcolor.blue = color_vals[i].b * 257;
+      xcolor.flag = DoRed | DoGreen | DoBlue;
       XAllocColor(d,cmap,&xcolour);
       colours[i]=xcolour.pixel;
   }
+  ////////////////////////////////////////////////////
 
-  XSetForeground(d,gc,colours[Black]);
+  XSetForeground(d,gc,colours[black]);
 
   // Make window non-resizeable.
   XSizeHints hints;
