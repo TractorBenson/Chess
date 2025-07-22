@@ -1,11 +1,11 @@
 #ifndef SQUARE_H
 #define SQUARE_H
-#include "include/chess/chess.h"
-#include "include/chess/color.h"
-#include "include/struct/coordinate.h"
+#include "chess/chess.h"
+#include "chess/color.h"
+#include "struct/coordinate.h"
+#include "observer/observer.h"
 #include <memory>
 #include <vector>
-#include "observer.h"
 
 using namespace std;
 

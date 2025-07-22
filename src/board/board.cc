@@ -1,5 +1,5 @@
-#include "include/board/board.h"
-#include "include/chess/pawn.h"
+#include "board/board.h"
+#include "chess/pawn.h"
 
 using namespace std;
 

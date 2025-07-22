@@ -1,9 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
-#include "include/chess/chess.h"
-#include "include/chess/square.h"
-#include "include/enum/color.h"
-#include "include/observer/observer.h"
+#include "chess/chess.h"
+#include "square/square.h"
+#include "enum/color.h"
+#include "observer/observer.h"
 #include <iostream>
 #include <cstddef>
 #include <vector>
