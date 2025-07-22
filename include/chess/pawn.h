@@ -1,7 +1,7 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "chess.h"
+#include "chess/chess.h"
 
 class Pawn : public Chess {
     bool isMoved;
@@ -14,7 +14,10 @@ class Pawn : public Chess {
         vector<Coordinate> validMoves (const Board &theBoard) const override;
             // Give all the valid move options
 
-        void update();
+        void update(); // Make canBeEnPassant false
+
+        void setEnPassant(); // Set canBeEnPassant to true
+        
 };
 
 #endif

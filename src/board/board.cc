@@ -1,24 +1,25 @@
-#include "../include/board.h"
+#include "board/board.h"
+#include "chess/pawn.h"
 
 using namespace std;
 
-    // pointers to the textdisplayer and graphic displayer
-
-    // Color indicating whose turn to play, this should be done in main fuction
-    // Color currentPlayer;
-
-    void Board::switchPlayer(){ // switch player's turn to play
-        if (currentPlayer == Color::BLACK) {
-            currentPlayer == Color::WHITE;
-        } else {
-            currentPlayer == Color::BLACK;
-        }
+    const vector<vector<Square>>& Board::getGrid() const {
+        return grid;
+    }
+    size_t Board::getSideLength() const {
+        return sideLength;
+    }
+    const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
+        return whiteChesses;
+    }
+    const vector<unique_ptr<Chess>>& Board::getBlackChesses() const {
+        return blackChesses;
     }
 
     // checkDraw() returns true if any player ever has no legal 
     //   moves available, but is not in check. Otherwise, return false.
     // This function is used at the beginning of a new turn.
-    bool Board::checkDraw() const {
+    bool Board::checkDraw(Color currentPlayer) const {
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 // current square has to have a chess on it
@@ -40,11 +41,30 @@ using namespace std;
                     }
                 }
             }
+            return false;
         }
-        return false;
+    // Set all pawn's canBeImpasant field to be flase.
+    //  This is done at the beginning of every turn of currentPlayer
+    void Board::updateChess(Color currentPlayer) {
+        if (currentPlayer == Color::WHITE) {
+            // loop through all white chesses
+            for (auto& chess : whiteChesses) {
+               if(chess->getType() == ChessType::Pawn) {
+                    chess->update();
+               }
+            }
+        } else {
+            // loop through all black chesses
+            for (auto& chess : blackChesses) {
+                if(chess->getType() == ChessType::Pawn) {
+                    chess->update();
+                }
+            }
+        }
     }
-    // check if all pawn can be impasant
-    void updateChess(Color currentPlayer);
+
+    Board*
+
     void initSquares(); // initialize the board before game starts
 
     // Place a chess of certain type on loc with certain color
