@@ -17,7 +17,7 @@ class Chess {
     Square *theSquare;
     public:
         Chess(Color color, ChessType type, Square *theSquare): color{color}, 
-                type{type}, theSquare{new Square{theSquare}} {}
+                type{type}, theSquare{new Square{*theSquare}} {}
             // Default ctor
         
         Color getColor() const; // Get the color
