@@ -3,6 +3,7 @@
 #include "bishop.h"
 #include "chess.h"
 #include "board.h"
+#include "king.h"
 
 bool Bishop::isValidMove(const Board &theBoard, Coordinate begin, 
                          Coordinate end) const {
@@ -46,7 +47,37 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
                 return false;
             }
         }
-        Chess *tmp_king = nullptr;
-        if (!theBoard[end.row][end.row])
+        Chess *tmp_king = nullptr; // The pointer points to the king
+        Color color = this->getColor(); // The color of the current player
+        vector<unique_ptr<Chess>> &tmp_white_chesses = getWhiteChesses();
+        vector<unique_ptr<Chess>> &tmp_black_chesses = getBlackChesses();
+
+        Board mock_board;
+
+        vector<unique_ptr<Chess>> mock_white_chesses;
+        vector<unique_ptr<Chess>> mock_black_chesses;
+
+
+        if (color == Color::BLACK) {
+            // If it is black
+            for (int i = 0; i < tmp_black_chesses.size(); i++) {
+                if (tmp_black_chesses[i]->getType() == ChessType::King) {
+                    tmp_king = tmp_black_chesses[i].get();
+                }
+            }
+        } else {
+            for (int i = 0; i < tmp_white_chesses.size(); i++) {
+                if (tmp_black_chesses[i]->getType() == ChessType::King) {
+                    tmp_king = tmp_black_chesses[i].get();
+                }
+            }
+        }
+
+        if (!(tmp_king_king_type->isChecked())) {
+            // If it doesn't make the original king be under attacked
+
+            
+            return true;
+        }
     }
 }
