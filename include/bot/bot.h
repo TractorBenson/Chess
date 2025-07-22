@@ -2,7 +2,8 @@
 #define BOT_H
 // ensure only define once
 
-#include color.h
+#include <string>
+#include "enum/color.h"
 
 class Board; // forward declaration
 
@@ -18,8 +19,8 @@ public:
     Bot(Board *theBoard, Color color);
 
     // main.cc will call this function to tell this Bot to move one step,
-    // all operation will be done by Bot, so just one calling
-    virtual void move() = 0;
+    // bot return string, format is the same as human player
+    virtual std::string move() = 0;
 }
 
 
