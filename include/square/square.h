@@ -1,7 +1,7 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 #include "chess/chess.h"
-#include "chess/color.h"
+#include "enum/color.h"
 #include "struct/coordinate.h"
 #include "observer/observer.h"
 #include <memory>
@@ -24,10 +24,10 @@ class Square {
     // Notify text and graph displayers of the square's current state
     void notifyDisplayer();
     // return the pointer to the chess on current board. 
-    Chess* getChess();
+    Chess* getChess() const;
     // Returns the coordinate of current square
     Coordinate getCoordinate() const;
-    Color getColor();
+    Color getColor() const;
     // Place a paticular chess on the current square
     void setChess(unique_ptr<Chess> newChess);
     // Remove the chess, if exists, from the current square
