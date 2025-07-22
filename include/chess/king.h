@@ -1,7 +1,7 @@
 #ifndef KING_H
 #define KING_H
 
-#include "chess.h"
+#include "chess/chess.h"
 
 class King : public Chess {
     bool isMoved;

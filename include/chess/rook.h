@@ -1,7 +1,7 @@
 #ifndef ROOK_H
 #define ROOK_H
 
-#include "chess.h"
+#include "chess/chess.h"
 
 class Rook : public Chess {
     bool isMoved;

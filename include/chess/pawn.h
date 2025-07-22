@@ -1,7 +1,7 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "chess.h"
+#include "chess/chess.h"
 
 class Pawn : public Chess {
     bool isMoved;
