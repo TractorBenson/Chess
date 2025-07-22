@@ -19,14 +19,14 @@ class Square {
     // Constructor. User has to call setChess to place a chess on Square
     Square(Coordinate coordinate, Color color);
 
-
+    Square(const Square& newSquare);
     void attachObserver(unique_ptr<Observer> newObs);
     // Notify text and graph displayers of the square's current state
     void notifyDisplayer();
     // return the pointer to the chess on current board. 
     Chess* getChess();
     // Returns the coordinate of current square
-    Coordinate getCordinate() const;
+    Coordinate getCoordinate() const;
     Color getColor();
     // Place a paticular chess on the current square
     void setChess(unique_ptr<Chess> newChess);

@@ -7,6 +7,13 @@ using namespace std;
 Square::Square(Coordinate coordinate, Color color = Color::NOTHING) : 
     coordinate{coordinate}, color{color} {}
 
+Square::Square(const Square& newSquare){
+    coordinate = newSquare.coordinate;
+    color = newSquare.color;
+    chess = nullptr;
+    obs = nullptr;
+}
+
 // Remember to attach observer after initilizing a new Square
 void Square::attachObserver(unique_ptr<Observer> newObs) {
     obs.emplace_back(newObs.get());
@@ -21,7 +28,7 @@ void Square::notifyDisplayer() {
 }
 
 // Returns the coordinate of current square
-Coordinate Square::getCordinate() const {
+Coordinate Square::getCoordinate() const {
     return coordinate;
 }
 

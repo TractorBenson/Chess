@@ -63,10 +63,10 @@ using namespace std;
         }
     }
 
-    Board*
 
-    void initSquares(); // initialize the board before game starts
+    void initSquares(){ // initialize the board before game starts
 
+    }
     // Place a chess of certain type on loc with certain color
     void placeChess(Coordinate loc, char type, Color color);
 
