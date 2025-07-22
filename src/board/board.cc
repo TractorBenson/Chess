@@ -21,31 +21,24 @@ const vector<unique_ptr<Chess>>& Board::getBlackChesses() const {
     return blackChesses;
 }
 
+
 // checkDraw() returns true if any player ever has no legal 
 //   moves available, but is not in check. Otherwise, return false.
 // This function is used at the beginning of a new turn.
 bool Board::checkDraw(Color currentPlayer) const {
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            // current square has to have a chess on it
-            
-                // Check player in turn only
-                if (grid[i][j].getChess()->getColor() == currentPlayer) {
-                    // Check through all squares again
-                    for (int begin = 0; begin < 8; ++begin) {
-                        for (int end = 0; end < 8; ++end) {
-                            // current square has to have a valid chess
-                            if (grid[i][j].getChess()) {
-                                if (grid[i][j].chess->
-                                    isValidMove(*this, begin, end)) {
-                                        return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    vector<unique_ptr<Chess>>& chesses;
+
+    if (currentPlayer == Color::BLACK) {
+        chesses = blackChesses;
+    } else {
+        chesses = whiteChesses;
+    }
+    for (auto& chess : chesses){
+        // Check through all squares again
+        if (chess->validMoves().size() != 0) {
+
         }
+    }
         return false;
     }
 
@@ -205,12 +198,26 @@ bool Board::isValidSetup() {
 }
 // Move the chess from begin coordinate to end coordinate
 bool Board::moveChess(Coordinate begin, Coordinate end) {
-    if (grid[begin.row][begin.col].getChess()->getColor() == Color::NOTHING) [
-        cout << "There's no "
-    ]
+    Square &sq = grid[begin.row][begin.col];
+    if (sq.getChess()->getColor() == Color::NOTHING) {
+        cout << "Invalid move! There's no chess on the grid you specified" << endl;
+    } else {
+        sq.
+    }
 }
+// Used to check if the move will make my 
+void Board::testMove(Coordinate begin, Coordinate end) {
+
+}
+
+void Board::redoLastStep() {
+
+}
+
 // Determine if a check exist in current step
-bool Bpard::isCheck() const;
+bool Bpard::isCheck() const {
+
+}
 // Determine if a checkmate exist in current step
 bool Board::isCheckmate() const {
     
