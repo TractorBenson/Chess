@@ -12,7 +12,7 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
         end.col < 0 || end.col >= theBoard.getSideLength() ||
         end.row < 0 || end.row >= theBoard.getSideLength()) {
         // If it is out of bound, return false
-        return false
+        return false;
     }
     int diff_x_coordinate = end.col - begin.col;
     // The distance of x-coordinate from begin's position to end's position
@@ -61,6 +61,7 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
         if (color == Color::BLACK) {
             // If it is black
             for (int i = 0; i < tmp_black_chesses.size(); i++) {
+                if ()
                 if (tmp_black_chesses[i]->getType() == ChessType::King) {
                     tmp_king = tmp_black_chesses[i].get();
                 }
@@ -76,7 +77,7 @@ bool Bishop::isValidMove(const Board &theBoard, Coordinate begin,
         if (!(tmp_king_king_type->isChecked())) {
             // If it doesn't make the original king be under attacked
 
-            
+
             return true;
         }
     }

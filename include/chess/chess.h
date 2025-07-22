@@ -2,7 +2,7 @@
 #define CHESS_H
 // Just ensure the class is defined only once
 
-#include <cstddef>;
+#include <cstddef>
 #include "color.h"
 #include "chess.h"
 #include "chesstype.h"
@@ -21,7 +21,7 @@ class Chess {
         ChessType getType() const; // Get the type
 
         Square *getSquare() const; // Get its Square
-        
+
         virtual bool isValidMove(const Board &theBoard, Coordinate begin, 
                                  Coordinate end) const = 0;
             // Check if this is a valid move
