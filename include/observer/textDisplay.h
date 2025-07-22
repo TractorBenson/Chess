@@ -2,10 +2,13 @@
 #define TEXTDISPLAY_H
 // ensure only define once
 
+#include <iostream>
+#include <vector>
 #include "observer/observer.h"
 #include "enum/chesstype.h"
 #include "enum/color.h"
 #include "struct/coordinate.h"
+#include "chess/chess.h"
 
 class TextDisplay : public Observer{
     // store chars to display the board

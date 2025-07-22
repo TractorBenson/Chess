@@ -3,7 +3,7 @@
 // ctor
 TextDisplay::TextDisplay(size_t size): size{size} {
     // init the outer vector contain $size inner vector (inner vector is empty)
-    charGrid.resize(size)
+    charGrid.resize(size);
 
     // init all char in the vector to be ' '
     for (size_t i = 0; i < size; ++i) {

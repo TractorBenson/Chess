@@ -34,7 +34,7 @@ abstract class Chess {
     - Color color
     - ChessType type
     - Square *theSquare
-    + virtual bool isValidMove(const Board &theBoard) = 0
+    + virtual bool isValidMove(const vector<vector<Square>>& grid, const vector<unique_ptr<Chess>>& white, const vector<unique_ptr<Chess>>& black) = 0
     + virtual vector<Coordinate> validMoves(const Board &theBoard) const = 0
 }
 

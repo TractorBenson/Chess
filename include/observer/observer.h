@@ -5,7 +5,7 @@
 class Square; // forward declaration
 
 class Observer {
-    virtual void notify(Square&) = 0
-}
+    virtual void notify(Square&) = 0;
+};
 
 #endif
