@@ -3,13 +3,12 @@
 // Just ensure the class is defined only once
 
 #include <cstddef>;
-#include "color.h"
+#include "../enum/color.h"
 #include "chess.h"
-#include "chesstype.h"
-#include "coordinate.h"
+#include "../enum/chesstype.h"
+#include "../enum/chesstype.h"
 #include "board.h"
 #include "square.h"
-// The includes
 
 class Chess {
     Color color;

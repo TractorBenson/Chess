@@ -1,10 +1,11 @@
 #ifndef BOARD_H
 #define BOARD_H
-#include "chess.h"
+#include "../chess/chess.h"
 #include "square.h"
 #include "color.h"
 #include "observer.h"
 #include <iostream>
+#include <cstddef>
 #include <vector>
 #include <memory>
 
@@ -21,13 +22,16 @@ class Board {
     vector<unique_ptr<Chess>> whiteChesses;
     vector<unique_ptr<Chess>> blackChesses;
 
-    const int sideLength = 8;
+    const size_t sideLength = 8;
 
     public:
-        vector<vector<Square>>& getGrid() const;
-        int getSideLength() const;
-        bool checkDraw() const;
-        void updateChess();
+        const vector<vector<Square>>& getGrid() const;
+        size_t getSideLength() const;
+        const vector<unique_ptr<Chess>>& getWhiteChesses() const;
+        const vector<unique_ptr<Chess>>& getBlackChesses() const;
+
+        bool checkDraw(Color currentPlayer) const;
+        void updateChess(Color CurrentPlayer);
         void initSquares(); // initialize the board before game starts
 
         // Place a chess of certain type on loc with certain color
@@ -39,7 +43,8 @@ class Board {
         void initChessesWithDefaultArrange();
         // Checks if there are two kings, each in different colors
         bool isValidSetup();
-        // Move the chess on location begin to end
+        // Move the chess on location begin to end, 
+        //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
         // Determine if a check exist in current step
         bool isCheck() const;
@@ -49,4 +54,5 @@ class Board {
 };
 
 ostream &operator<<(ostream &out, const Board &board);
+
 #endif

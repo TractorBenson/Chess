@@ -1,4 +1,4 @@
-#include "../include/square.h"
+#include "../../include/square/square.h"
 #include <iostream>
 
 using namespace std;
@@ -7,16 +7,22 @@ using namespace std;
 Square::Square(Coordinate coordinate, Color color = Color::NOTHING) : 
     coordinate{coordinate}, color{color} {}
 
+// Remember to attach observer after initilizing a new Square
 void Square::attachObserver(unique_ptr<Observer> newObs) {
     obs.emplace_back(newObs.get());
 }
 
-// notifies both text and graph displayer
-// set the td and gd (they are unique) when initializing a grid
+// notifies both text and graph displayer. This method
+//   should be called when initializing a square and updating chess
 void Square::notifyDisplayer() {
     for (auto displayer : obs) {
         displayer->notify();
     }
+}
+
+// Returns the coordinate of current square
+Coordinate Square::getCordinate() const {
+    return coordinate;
 }
 
 // return the pointer to the chess on current board. 
@@ -38,8 +44,8 @@ void Square::setChess(unique_ptr<Chess> newChess) {
     if (color == Color::NOTHING) {
         chess = newChess.get();
     } else {
-        cout << "Invalid chess placement! 
-        A chess already exists in the square!" << endl;
+        cout << "Invalid chess placement! " << 
+        "A chess already exists in the square!" << endl;
     }
 }
 
