@@ -13,10 +13,10 @@ class King : public Chess {
     public:
         King(Color color, Square *theSquare, bool isMoved);
         bool isValidMove(Board &theBoard, Coordinate begin, 
-                         Coordinate end) const override;
+                         Coordinate end) override;
             // The override declaration
         
-        vector<Coordinate> validMoves (const Board &theBoard) const override;
+        vector<Coordinate> validMoves (Board &theBoard) override;
             // Give all the valid move options
 
         int isChecked (const vector<vector<Square>> &grid, 

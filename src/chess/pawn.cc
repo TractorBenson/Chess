@@ -16,7 +16,7 @@ bool Pawn::checkCanBeEnPassant() const {
 }
 
 bool Pawn::isValidMove(Board &theBoard, Coordinate begin, 
-                       Coordinate end) const {
+                       Coordinate end) {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
         begin.row < 0 || begin.row >= theBoard.getSideLength() || 
         end.col < 0 || end.col >= theBoard.getSideLength() ||
@@ -71,10 +71,10 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         if (abs(diff_y_coordinate) == 2)
         {
             // If it has already been moved
-            if (isMoved == true) return false;
             Chess *tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
-                                           abs(diff_y_coordinate))]
+                                                    abs(diff_y_coordinate))]
                                        [begin.col].getChess();
+            if (isMoved == true) return false;
             else if (tmp_chess != nullptr) return false;
             // Else if there is an obstacle on the way, give back false
         }
@@ -120,14 +120,48 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     return true;
 }
 
-vector<Coordinate> Pawn::validMoves (const Board &theBoard) const {
-    vector<Coordinate> result_moves;
-    return
+vector<Coordinate> Pawn::validMoves (Board &theBoard) {
+    vector<Coordinate> result_moves; // The results
+    vector<vector<int>> directions = {
+        {1, 0}, 
+        {2, 0}, 
+        {1, 1}, 
+        {1, -1}
+    }; // All the valid directions
+
+    // Get the original position
+    Coordinate original_posi = this->getCoordinate();
+
+
+    for (int i = 0; i < directions.size(); i++) {
+        // Loop all the valid directions to get all the valid 
+        //   moves.
+
+        // Get the mock position
+        Coordinate mock_posi = original_posi;
+        
+        if (this->getColor() == Color::BLACK) {
+            // If the color is black, the position will go down
+            mock_posi.row -= directions[i][0];
+            mock_posi.col -= directions[i][1];
+        } else {
+            // If the color is white, the position will go up
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
+        }
+        if (this->isValidMove(theBoard, original_posi, 
+                              mock_posi)) {
+            // If the mock position is valid, record it
+            result_moves.emplace_back(mock_posi);
+        }
+    }
+    // Give back the result
+    return result_moves;
 }
 
 void Pawn::setEnPassant() { canBeEnPassant = true; }
 
-void Pawn::update() { canBeEnPassant = false };
+void Pawn::update() { canBeEnPassant = false; }
 
 void Pawn::updateMoved() { isMoved = true; }
 
