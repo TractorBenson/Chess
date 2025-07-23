@@ -31,15 +31,17 @@ class Chess {
         Square *getSquare() const; // Get its Square
 
         virtual bool isValidMove(Board &theBoard, Coordinate begin, 
-                                 Coordinate end) const = 0;
+                                 Coordinate end) = 0;
             // Check if this is a valid move
 
-        virtual vector<Coordinate> validMoves (const Board &theBoard) const = 0;
+        virtual vector<Coordinate> validMoves (Board &theBoard) = 0;
             // Give all the valid move options
         
         virtual void updateMoved() = 0; // Make the isMoved true
 
         virtual void update() = 0; // Make canBeEnPassant false
+
+        virtual bool checkCanBeEnPassant() const;
 };
 
 #endif

@@ -11,9 +11,12 @@ Pawn::Pawn(Color color, Square *theSquare, bool isMoved,
                                  isMoved{isMoved}, 
                                  canBeEnPassant{canBeEnPassant} {}
 
+bool Pawn::checkCanBeEnPassant() const {
+    return canBeEnPassant;
+}
 
-bool Pawn::isValidMove(const Board &theBoard, Coordinate begin, 
-                    Coordinate end) const {
+bool Pawn::isValidMove(Board &theBoard, Coordinate begin, 
+                       Coordinate end) {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
         begin.row < 0 || begin.row >= theBoard.getSideLength() || 
         end.col < 0 || end.col >= theBoard.getSideLength() ||
@@ -30,38 +33,135 @@ bool Pawn::isValidMove(const Board &theBoard, Coordinate begin,
     int diff_y_coordinate = end.row - begin.row;
     // The distance of y-coordinate from begin's position to end's position
 
-    vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
 
-    Chess *tmp_king = nullptr; // The pointer points to the king
+    King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
-    if (color == Color::White) tmp_king = theBoard->getWhiteKing();
-    else tmp_king = theBoard->getBlackKing();
+    if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
+    else tmp_king = theBoard.getBlackKing();
     // Get the king pointer of the friend color
 
     if ((color == Color::BLACK && diff_y_coordinate >= 0) ||
-        (color == Color::WHITE && diff_x_coordinate <= 0)) {
+        (color == Color::WHITE && diff_y_coordinate <= 0)) {
             // If the pawn is not moving forward, return false
         return false;
     }
 
-    if (isMoved == true && diff_y_coordinate > 1) {
-        // If the pawn has moved, but it moves vertically over 1 step, 
-        //   return false.
+    if (abs(diff_y_coordinate) > 2) {
+        // If the pawn's vertical movement is greater than 2, give back false
         return false;
     }
 
+    // Check if the x coordinate is over 1 steps
+    if (abs(diff_x_coordinate) > 1) return false;
 
+
+    // Check if the pawn goes vertically, there is no obstacles on the way and 
+    //   at the destination.
+    if (diff_x_coordinate == 0) {
+
+        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        // If it has a chess at the destination, give back false
+        if (tmp_chess != nullptr) {
+            return false;
+        }
+
+        // If it goes two steps
+        if (abs(diff_y_coordinate) == 2)
+        {
+            // If it has already been moved
+            Chess *tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
+                                                    abs(diff_y_coordinate))]
+                                       [begin.col].getChess();
+            if (isMoved == true) return false;
+            else if (tmp_chess != nullptr) return false;
+            // Else if there is an obstacle on the way, give back false
+        }
+    } else {
+        // Else, the x-coordinate movement must be 1
+        if (abs(diff_y_coordinate) == 2) {
+            // If the x-coordinate movement is 1 and y movement is 2, must be
+            //   invalid, give back false.
+            return false;
+        }
+        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        if (tmp_chess == nullptr) {
+            // If there is no chess there that can be eaten, check the 
+            //   En Passant situation.
+            if (color == Color::BLACK) {
+                // If the chess color is black, add row number by 1 to find 
+                //   the pawn beside it.
+                tmp_chess = tmp_grid[end.row + 1][end.row].getChess();
+            } else {
+                tmp_chess = tmp_grid[end.row - 1][end.row].getChess();
+            }
+            if (!(tmp_chess->getType() == ChessType::Pawn && 
+                  tmp_chess->checkCanBeEnPassant())) {
+                // If the chess is not the situation: A Pawn that can be 
+                //   En Passant, give false back.
+                return false;
+            }
+        }
+    }
+
+
+    // Mock the board first
+    theBoard.moveAnyway(begin, end);
+    if (tmp_king->isChecked() != 0) {
+        theBoard.backOneStep();
+        // If the king is checked after this move, is invalid, 
+        //   return false and remember to undo this move
+        return false;
+    }
+    // If this move will be valid, return true then, and don't
+    //   forget to make the board one step back.
+    theBoard.backOneStep();
+    return true;
 }
 
-vector<Coordinate> Pawn::validMoves (const Board &theBoard) const {
-    vector<Coordinate> result_moves;
-    return
+vector<Coordinate> Pawn::validMoves (Board &theBoard) {
+    vector<Coordinate> result_moves; // The results
+    vector<vector<int>> directions = {
+        {1, 0}, 
+        {2, 0}, 
+        {1, 1}, 
+        {1, -1}
+    }; // All the valid directions
+
+    // Get the original position
+    Coordinate original_posi = this->getCoordinate();
+
+
+    for (int i = 0; i < directions.size(); i++) {
+        // Loop all the valid directions to get all the valid 
+        //   moves.
+
+        // Get the mock position
+        Coordinate mock_posi = original_posi;
+        
+        if (this->getColor() == Color::BLACK) {
+            // If the color is black, the position will go down
+            mock_posi.row -= directions[i][0];
+            mock_posi.col -= directions[i][1];
+        } else {
+            // If the color is white, the position will go up
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
+        }
+        if (this->isValidMove(theBoard, original_posi, 
+                              mock_posi)) {
+            // If the mock position is valid, record it
+            result_moves.emplace_back(mock_posi);
+        }
+    }
+    // Give back the result
+    return result_moves;
 }
 
 void Pawn::setEnPassant() { canBeEnPassant = true; }
 
-void Pawn::update() { canBeEnPassant = false };
+void Pawn::update() { canBeEnPassant = false; }
 
 void Pawn::updateMoved() { isMoved = true; }
 
