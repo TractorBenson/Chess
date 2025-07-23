@@ -35,7 +35,7 @@ King* Board::getWhiteKing(){
 // checkDraw() returns true if any player ever has no legal 
 //   moves available, but is not in check. Otherwise, return false.
 // This function is used at the beginning of a new turn.
-bool Board::checkDraw(Color currentPlayer) {
+bool Board::noValidMoves(Color currentPlayer) {
     
     const vector<unique_ptr<Chess>> &chesses = (currentPlayer == 
         Color::BLACK) ? blackChesses : whiteChesses;
@@ -208,8 +208,8 @@ bool Board::isValidSetup() {
         return false;
     }
     // Two kings should not be in check
-    if ((*whiteKing).isChecked(grid, whiteChesses, blackChesses) || 
-        (*blackKing).isChecked(grid, whiteChesses, blackChesses)) {
+    if ((*whiteKing).isChecked(*this) || 
+        (*blackKing).isChecked(*this)) {
         cout << "Invalid Setup! At least one King is in check." << endl;
         return false;
     }

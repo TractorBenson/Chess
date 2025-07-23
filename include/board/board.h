@@ -42,7 +42,7 @@ class Board {
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
         int numOfChesses(ChessType type, Color checkColor) const;
 
-        bool checkDraw(Color currentPlayer);
+        bool noValidMoves(Color currentPlayer);
         void updateChess(Color CurrentPlayer);
         void initSquares(); // initialize the board before game starts
 
