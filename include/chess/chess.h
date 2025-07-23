@@ -31,7 +31,7 @@ class Chess {
 
         Square *getSquare() const; // Get its Square
 
-        void setSquare(Square const *sqr);
+        void setSquare(Square *sqr);
 
         virtual bool isValidMove(Board &theBoard, Coordinate begin, 
                                  Coordinate end) = 0;

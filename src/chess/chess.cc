@@ -27,7 +27,7 @@ Coordinate Chess::getCoordinate() const {
     return this->getSquare()->getCoordinate();
 }
 
-void Chess::setSquare(Square const *sqr) {
+void Chess::setSquare(Square *sqr) {
     theSquare = sqr;
     return;
 }
