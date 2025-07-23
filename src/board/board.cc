@@ -92,7 +92,7 @@ int Board::numOfChesses(ChessType type, Color color) const{
 // Place a chess of certain type on loc with certain color, used in setup mode
 //   or when initilizing a default board. Main function is responsible for 
 //   ensuring the location is valid to put a chess of certain color and type.
-void Board::placeChess(Coordinate loc, char type, Color color) {
+void Board::placeChess(Coordinate loc, char type) {
 
     std::unique_ptr<Chess> newChess;
     Square& sq = grid[loc.row][loc.col];
@@ -100,27 +100,51 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
     switch (type) {
     case 'K':
         newChess = std::make_unique<King>
-            (color, &sq, false);
+            (Color::WHITE, &sq, false);
+        break;
+     case 'k':
+        newChess = std::make_unique<King>
+            (Color::BLACK, &sq, false);
         break;
     case 'Q':
         newChess = std::make_unique
-            <Queen>(color, &sq);
+            <Queen>(Color::WHITE, &sq);
+        break;
+    case 'q':
+        newChess = std::make_unique
+            <Queen>(Color::BLACK, &sq);
         break;
     case 'B': 
         newChess = std::make_unique
-            <Bishop>(color, &sq);
+            <Bishop>(Color::WHITE, &sq);
+        break;
+    case 'b': 
+        newChess = std::make_unique
+            <Bishop>(Color::BLACK, &sq);
         break;
     case 'R':
         newChess = std::make_unique
-            <Rook>(color, &sq);
+            <Rook>(Color::WHITE, &sq);
+        break;
+    case 'r':
+        newChess = std::make_unique
+            <Rook>(Color::BLACK, &sq);
         break;
     case 'N':
         newChess = std::make_unique
-            <Knight>(color, &sq);
+            <Knight>(Color::WHITE, &sq);
+        break;
+    case 'n':
+        newChess = std::make_unique
+            <Knight>(Color::BLACK, &sq);
         break;
     case 'P': 
         newChess = std::make_unique
-            <Pawn>(color, &sq, false, false);
+            <Pawn>(Color::WHITE, &sq, false, false);
+        break;
+    case 'p': 
+        newChess = std::make_unique
+            <Pawn>(Color::BLACK, &sq, false, false);
         break;
     default:
         throw std::invalid_argument{"unknown chess type"};
@@ -128,15 +152,12 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
 
     // Add the newly added chess to the corresponding chess vector,
     //   if the chess is a King, update the King pointers, too.
-    if (color == Color::BLACK) {
-        if (newChess->getType() == ChessType::King) {
-            blackKing = static_cast<King*>(newChess.get());
-        }
+    if (type == 'k') {
+        blackKing = static_cast<King*>(newChess.get());
         blackChesses.emplace_back(std::move(newChess));
-    } else {
-        if (newChess->getType() == ChessType::King) {
-            whiteKing = static_cast<King*>(newChess.get());
-        }
+    }
+    if (type == 'K') {
+        whiteKing = static_cast<King*>(newChess.get());
         whiteChesses.emplace_back(std::move(newChess));
     }
     sq.setChess(newChess.get());
@@ -185,8 +206,39 @@ void Board::initChessesWithDefaultArrange() {
     grid.assign(sideLength, vector<Square>(sideLength));
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
+            Coordinate coord = Coordinate{row, col};
             grid[row][col].setCoordinate(row, col);
             grid[row][col].setColor(currentColor);
+
+            // place white chesses to their default position
+            if (row == 0 && (col == 0 || col == sideLength - 1)) {
+                placeChess(coord, 'R');
+            } else if (row == 0 && (col == 1 || col == sideLength - 2)) {
+                placeChess(coord, 'N');
+            } else if (row == 0 && (col == 2 || col == sideLength - 3)) {
+                placeChess(coord, 'B');
+            } else if (row == 0 && col == 3) {
+                placeChess(coord, 'Q');
+            } else if (row == 0 && col == 4) {
+                placeChess(coord, 'K');
+            }
+
+            // Place all black chesses to their default posistion
+            if (row == 7 && (col == 0 || col == sideLength - 1)) {
+                placeChess(coord, 'r');
+            }else if (row == 7 && (col == 1 || col == sideLength - 2)) {
+                placeChess(coord, 'n');
+            } else if (row == 7 && (col == 2 || col == sideLength - 3)) {
+                placeChess(coord, 'b');
+            } else if (row == 7 && col == 3) {
+                placeChess(coord, 'q');
+            } else if (row == 7 && col == 4) {
+                placeChess(coord, 'k');
+            } else if (row == 1) {
+                placeChess(coord, 'P');
+            } else if (row == 6) {
+                placeChess(coord, 'p');
+            }
             grid[row][col].attachObserver(obs);
             grid[row][col].notifyDisplayer();
             if (currentColor == Color::BLACK) {
