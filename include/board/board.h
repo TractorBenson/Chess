@@ -15,7 +15,7 @@ using namespace std;
 class Board {
     // The grid consists of mutiple squares
     vector<vector<Square>> grid;
-    Color color = Color::
+    Color color = Color::WHITE;
     // Pointing to the textdisplayer and graphic displayer
     vector<unique_ptr<Observer>> obs;
 
@@ -24,8 +24,8 @@ class Board {
     vector<unique_ptr<Chess>> blackChesses;
 
     // Used in checkDraw, isValidSetup.
-    King* whiteKing;
-    King* blackKing;
+    King* whiteKing = nullptr;
+    King* blackKing = nullptr;
 
     const size_t sideLength = 8;
 
@@ -33,6 +33,9 @@ class Board {
     public:
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
+        ChessType getChessType(Coordinate coord) const;
+        King* getWhiteKing();
+        King* getBlackKing();
         const vector<unique_ptr<Chess>>& getWhiteChesses() const;
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
         int numOfChesses(ChessType type, Color color) const;
@@ -50,6 +53,9 @@ class Board {
         void initChessesWithDefaultArrange();
         // Checks if there are two kings, each in different colors
         bool isValidSetup();
+        // checks if the chess is a pawn and can be promoted in current round
+        bool canPromote(Coordinate begin, Coordinate end);
+
         // Move the chess on location begin to end, 
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);

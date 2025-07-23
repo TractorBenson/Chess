@@ -32,6 +32,8 @@ class Square {
     
     // Place a paticular chess on the current square
     void setChess(unique_ptr<Chess> newChess);
+    void setCoordinate(int row, int col);
+    void setColor(Color newColor);
     // Remove the chess, if exists, from the current square
     void removeChess();
 };

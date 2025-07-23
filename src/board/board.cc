@@ -20,8 +20,17 @@ const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
 const vector<unique_ptr<Chess>>& Board::getBlackChesses() const {
     return blackChesses;
 }
+ChessType Board::getChessType(Coordinate coord) const{
+    return grid[coord.row][coord.col].getChess()->getType();
+}
 
+King* Board::getBlackKing(){
+    return blackKing;
+}
 
+King* Board::getWhiteKing(){
+    return whiteKing;
+}
 // checkDraw() returns true if any player ever has no legal 
 //   moves available, but is not in check. Otherwise, return false.
 // This function is used at the beginning of a new turn.
@@ -34,13 +43,14 @@ bool Board::checkDraw(Color currentPlayer) const {
         chesses = whiteChesses;
     }
     for (auto& chess : chesses){
-        // Check through all squares again
+        // Check through all chesses on currentPlayer's side, 
+        //  if there are at least one valid move, the game is not draw
         if (chess->validMoves().size() != 0) {
-
+            return false;
         }
     }
-        return false;
-    }
+    return true;
+}
 
 // Set all pawn's canBeImpasant field to false.
 //   This is done at the beginning of every game turn of currentPlayer
@@ -49,16 +59,12 @@ void Board::updateChess(Color currentPlayer) {
         // loop through all white chesses and call update(),
         // Note that update() is only implemented on Pawns
         for (auto& chess : whiteChesses) {
-        //  if(chess->getType() == ChessType::Pawn) {
             chess->update();
-            //}
         }
     } else {
         // loop through all black chesses
         for (auto& chess : blackChesses) {
-            if(chess->getType() == ChessType::Pawn) {
                 chess->update();
-            }
         }
     }
 }
@@ -92,7 +98,6 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
 
     std::unique_ptr<Chess> newChess;
     Square& sq = grid[loc.row][loc.col];
-    
 
     switch (type) {
     case 'K':
@@ -137,6 +142,7 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
         whiteChesses.emplace_back(std::move(newChess))
     }
     sq.setChess(newChess.get());
+    sq.notifyDisplayer();
 }
 
 // Remove existing chess on loc, do nothing if there's no chess on loc
@@ -145,12 +151,14 @@ void Board::removeChess(Coordinate loc) {
     Chess* piece = sq.getChess();
     // Do nothing if the location has no chess on it
     if(!piece) return;
+    // Detach king pointers (although this might never happen)
     if(piece == whiteKing) {
         whiteKing = nullptr;
     }
     if (piece == blackKing) {
         blackKing = nullptr
     }
+    // Detach the chess with the square
     sq.removeChess();
     
     // Figure out which game side is the chess on
@@ -165,24 +173,46 @@ void Board::removeChess(Coordinate loc) {
         }
     }
     // If the chess is actually found in chess vector of its color
+    //  Remove chess from the vector of unique pointers
     if (uniqueChess != ownerVec.end()) ownerVec.erase(uniqueChess);
 
     sq.notifyDisplayer();
 }
 
-// place all chesses with default layout before gamestart
-void Board::initChessesWithDefaultArrange();
+// place all chesses with default layout before gamestart.
+//   The chess fields are left as nullptr, while observers are
+//   attached to the squares.
+void Board::initChessesWithDefaultArrange() {
+    Color currentColor = Color::BLACK;
+    grid(sideLength, vector<Square>(sideLength));
+    for (size_t row = 0; row < sideLength; ++row) {
+        for (size_t col = 0; col < sideLength; ++col) {
+            grid[row][col].setCoordinate(row, col);
+            grid[row][col].getColor(currentColor);
+            grid[row][col].attachObserver(obs);
+            grid[row][col].notifyDisplayer();
+            if (currentColor == Color::BLACK) {
+                currentColor = Color::WHITE;
+            } else {
+                currentColor = Color::BLACK;
+            }
+        }
+    }
+}
 
 
 bool Board::isValidSetup() {
     // Checks if there are two kings, each in different colors
     if (numOfChesses(ChessType::King, Color::BLACK) != 1 || 
         numOfChesses(ChessType::King, Color::WHITE) != 1) {
+        cout << "Invalid Setup! Does not have one white " <<
+            "king and one black king." << endl;
         return false;
     }
     // Two kings should not be in check
     if ((*whiteKing).isChecked(grid, whiteChesses, blackChesses) || 
         (*blackKing).isChecked(grid, whiteChesses, blackChesses)) {
+        cout << "Invalid Setup! At least one King is in check." << endl;
         return false;
     }
     // No pawns should be on the first or last row of the board
@@ -190,37 +220,96 @@ bool Board::isValidSetup() {
         for (size_t col = 0; col < sideLength; ++col) {
             if (grid[row][col].getChess() && 
                 grid[row][col].getChess()->getType() == ChessType::Pawn) {
+                    cout << "Invalid Setup! A pawn is at the " <<
+                        "first or last row." << endl;
                     return false;
             }
         }
     }
     return true;
 }
-// Move the chess from begin coordinate to end coordinate
+
+// checks if the chess is a pawn and can be promoted in current round
+//   This method is called on A Pawn only (after using getChessType on begin)
+bool Board::canPromote(Coordinate begin, Coordinate end) {
+    // coordinate begin is ensured valid during input stage
+    Square sq& = grid[begin.row][begin.col];
+    Chess* piece = sq.getChess();
+
+    if (!moveChess(begin, end)) return false;
+
+    if (piece->getColor() == Color::BLACK) {
+        // Case where black Pawn reached the white bottom
+        if (end.row == 0) return true;
+    } else {
+        // Case where white Pawn reached the black bottom
+        if (end.row == (sideLength - 1))
+            return true;
+    }
+    return false;
+}
+
+// Checks if it is valid to move the chess on begin to end,
+//   return true if the move is valid, else return false.
 bool Board::moveChess(Coordinate begin, Coordinate end) {
     Square &sq = grid[begin.row][begin.col];
-    if (sq.getChess()->getColor() == Color::NOTHING) {
-        cout << "Invalid move! There's no chess on the grid you specified" << endl;
-    } else {
-        sq.
+    if (!sq.getChess()) {
+        cout << "Invalid move! There's no chess on the " << 
+            "beginning location you slected!" << endl;
+        return false;
     }
+
+    if (sq.getChess()->isValidMove(*this, begin, end)) {
+        return true;
+    }
+    cout << "Move is invalid! Please input your commamd again." << endl;
+    return false;
 }
 // Used to check if the move will make my 
 void Board::testMove(Coordinate begin, Coordinate end) {
-
+    
 }
 
+// 
 void Board::redoLastStep() {
 
 }
 
-// Determine if a check exist in current step
-bool Bpard::isCheck() const {
 
+// Find if the opposite side is checked. This method is called
+//   after a valid move of currentPlayer
+bool Board::isCheck(Color currentPlayer) const {
+    if (currentPlayer == Color::WHITE) {
+        if (blackKing>isChecked()) {
+            cout << "Black is in check." << endl;
+            return true;
+        }
+    } else {
+        if (whiteKing->isChecked()) {
+            cout << "White is in check." << endl;
+            return true;
+        }
+    }
+    return false;
 }
-// Determine if a checkmate exist in current step
+
+// Find if the opposite side is checkmated. This method is called
+//   after a valid move of currentPlayer and after isCheck() method.
+//   If the method returns true, terminate current game immediately.
 bool Board::isCheckmate() const {
-    
+
+    if (currentPlayer == Color::WHITE) {
+        if (blackKing->isCheckmated()) {
+            cout << "Checkmate! White wins!" << endl;
+            return true;
+        }
+    } else {
+        if (whiteKing->isCheckmated()) {
+            cout << "Checkmate! Black wins!" << endl;
+            return true;
+        }
+    }
+    return false;
 }
 
 ostream &operator<<(ostream &out, const Grid &g) {

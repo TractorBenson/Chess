@@ -15,8 +15,10 @@ Square::Square(const Square& newSquare){
 }
 
 // Remember to attach observer after initilizing a new Square
-void Square::attachObserver(unique_ptr<Observer> newObs) {
-    obs.emplace_back(newObs.get());
+void Square::attachObserver(vector<unique_ptr<Observer>>& newObs) {
+    for (auto& ob : newObs) {
+        obs.emplace_back(ob.get());
+    }
 }
 
 // notifies both text and graph displayer. This method
@@ -56,6 +58,14 @@ void Square::setChess(unique_ptr<Chess> newChess) {
     }
 }
 
+void Square::setCoordinate(int row, int col) {
+    coordinate.row = row;
+    coordinate.col = col;
+}
+
+void Square::setColor(Color newColor) {
+    color = newColor;
+}
 void Square::removeChess() {
     chess = nullptr;
 }
