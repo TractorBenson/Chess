@@ -105,21 +105,19 @@ vector<Coordinate> Bishop::validMoves (Board &theBoard) {
         // The mock position
 
 
-        // Let the position go one step first
-        mock_posi.row += directions[i][0];
-        mock_posi.col += directions[i][1];
-
 
         for (int j = 0; j < theBoard.getSideLength(); j++) {
+
+            // Move the mock position one step further
+            mock_posi.row += directions[i][0];
+            mock_posi.col += directions[i][1];
+
+            
             if (this->isValidMove(theBoard, original_posi, 
                                   mock_posi)) {
                 // While this mock position is a valid move, 
                 result_moves.emplace_back(mock_posi);
             }
-
-            // Move the mock position one step further
-            mock_posi.row += directions[i][0];
-            mock_posi.col += directions[i][1];
         }
     }
 

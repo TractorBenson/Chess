@@ -165,7 +165,7 @@ vector<Coordinate> King::validMoves (Board &theBoard) {
     vector<Coordinate> result_moves;
     vector<vector<int>> directions = {
         { 0,   2}, 
-        { 0,  -3}, 
+        { 0,  -2}, 
         { 0,   1}, 
         { 0,  -1}, 
         {-1,   1}, 
@@ -276,29 +276,31 @@ int King::isChecked (const Board &theBoard) const {
             }
             tmp_chess = tmp_grid[mock_diag_posi.row]
                                 [mock_diag_posi.col].getChess();
-            if (tmp_chess != nullptr && 
-                tmp_chess->getColor() != this->getColor() &&
-                (tmp_chess->getType() == ChessType::Queen || 
-                 tmp_chess->getType() == ChessType::Bishop)) {
+            if (tmp_chess != nullptr) { 
+                if (tmp_chess->getColor() == this->getColor()) break;
+                else if (tmp_chess->getType() == ChessType::Queen || 
+                         tmp_chess->getType() == ChessType::Bishop) {
                     attacking_num++;
                     break;
+                }
+                break;
             }
         }
     }
 
     // Fourthly, check the horizontal/vertical lines, which are
     //   queens and rooks.
-    vector <Coordinate> diag_dir = {
+    vector <Coordinate> sline_dir = {
         Coordinate{ 1,  0},
         Coordinate{-1,  0},
         Coordinate{ 0,  1},
         Coordinate{ 0, -1}
     };
-    for (int i = 0; i < diag_dir.size(); i++) {
+    for (int i = 0; i < sline_dir.size(); i++) {
         Coordinate mock_sline_posi = this->getCoordinate();
         while (true) {
-            mock_sline_posi.row += diag_dir[i].row;
-            mock_sline_posi.col += diag_dir[i].col;
+            mock_sline_posi.row += sline_dir[i].row;
+            mock_sline_posi.col += sline_dir[i].col;
             if (mock_sline_posi.col < 0 || 
                 mock_sline_posi.col >= theBoard.getSideLength() ||
                 mock_sline_posi.row < 0 || 
@@ -307,12 +309,14 @@ int King::isChecked (const Board &theBoard) const {
             }
             tmp_chess = tmp_grid[mock_sline_posi.row]
                                 [mock_sline_posi.col].getChess();
-            if (tmp_chess != nullptr && 
-                tmp_chess->getColor() != this->getColor() &&
-                (tmp_chess->getType() == ChessType::Queen || 
-                 tmp_chess->getType() == ChessType::Rook)) {
+            if (tmp_chess != nullptr) {
+                if (tmp_chess->getColor() == this->getColor()) break;
+                else if (tmp_chess->getType() == ChessType::Queen || 
+                         tmp_chess->getType() == ChessType::Rook) {
                     attacking_num++;
                     break;
+                }
+                break;
             }
         }
     }

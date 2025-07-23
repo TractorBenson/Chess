@@ -90,16 +90,10 @@ vector<Coordinate> Knight::validMoves (Board &theBoard) {
         mock_posi.row += directions[i][0];
         mock_posi.col += directions[i][1];
 
-        for (int j = 0; j < theBoard.getSideLength(); j++) {
-            if (this->isValidMove(theBoard, original_posi, 
-                                  mock_posi)) {
-                // While this mock position is a valid move, 
-                result_moves.emplace_back(mock_posi);
-            }
-
-            // Move the mock position one step further
-            mock_posi.row += directions[i][0];
-            mock_posi.col += directions[i][1];
+        if (this->isValidMove(theBoard, original_posi, 
+                                mock_posi)) {
+            // While this mock position is a valid move, 
+            result_moves.emplace_back(mock_posi);
         }
     }
     // Give back the result

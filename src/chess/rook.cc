@@ -19,6 +19,11 @@ bool Rook::isValidMove(Board &theBoard, Coordinate begin,
         return false;
     }
     if (begin.col == end.col && begin.row == end.row) return false;
+    
+    
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+    // Get the grid reference
+
 
     // Check if the ending point is the friend chess, if is, then give false 
     //   back.
@@ -32,9 +37,7 @@ bool Rook::isValidMove(Board &theBoard, Coordinate begin,
 
     int diff_y_coordinate = end.row - begin.row;
     // The distance of y-coordinate from begin's position to end's position
-
-    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
-    // Get the grid reference
+    
 
     if (!(diff_x_coordinate == 0 || diff_y_coordinate == 0)) {
         // If the path from begin position to end position is not a horizontal 

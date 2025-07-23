@@ -45,7 +45,7 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
     }
 
 
-    int distance = abs(max(diff_x_coordinate, diff_y_coordinate));
+    int distance = max(abs(diff_x_coordinate), abs(diff_y_coordinate));
     // Find the number of step between begin position and end position
 
 
