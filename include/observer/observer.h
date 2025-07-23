@@ -5,7 +5,9 @@
 class Square; // forward declaration
 
 class Observer {
-    virtual void notify(Square&) = 0;
+public:
+    virtual void notify(const Square&) = 0;
+    virtual ~Observer() = default;
 };
 
 #endif

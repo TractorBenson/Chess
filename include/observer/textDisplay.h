@@ -23,7 +23,7 @@ public:
     TextDisplay(size_t size);
 
     // Square call this to update state
-    void notify(Square&) override;
+    void notify(const Square&) override;
 
     // use to output the board to given ostream
     std::ostream &printBoard(std::ostream &os);

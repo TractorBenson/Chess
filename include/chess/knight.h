@@ -3,8 +3,12 @@
 
 #include "chess/chess.h"
 
+using namespace std;
+
+
 class Knight : public Chess {
     public:
+        Knight(Color color, Square *theSquare);
         bool isValidMove(const Board &theBoard, Coordinate begin, 
                                     Coordinate end) const override;
             // The override declaration

@@ -107,10 +107,10 @@ char TextDisplay::convertSquare(Square &theSquare) {
 }
 
 // when notified, replace corresponding char with new one
-void TextDisplay::notify(Square &theSquare) {
+void TextDisplay::notify(const Square &theSquare) {
     char currentChess = convertSquare(theSquare);
     charGrid.at(
-        (theSquare->getCoordinate()).row
+        (theSquare->getCoordinate()).row 
     ).at(
         (theSquare0>getCoordinate()).col
     ) = currentChess;
