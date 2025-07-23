@@ -8,8 +8,8 @@ using namespace std;
 Queen::Queen(Color color, Square *theSqare): 
     Chess{color, ChessType::Queen, theSqare} {}
 
-bool Queen::isValidMove(const Board &theBoard, Coordinate begin, 
-                                    Coordinate end) const {
+bool Queen::isValidMove(Board &theBoard, Coordinate begin, 
+                        Coordinate end) {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
         begin.row < 0 || begin.row >= theBoard.getSideLength() || 
         end.col < 0 || end.col >= theBoard.getSideLength() ||
@@ -26,7 +26,7 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
     int diff_y_coordinate = end.row - begin.row;
     // The distance of y-coordinate from begin's position to end's position
 
-    vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
 
     if (!(abs(diff_x_coordinate) == abs(diff_y_coordinate) || 
@@ -47,7 +47,7 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
     // Get the step direction to reach the end position
 
 
-    Coordinate moack_posi = this->getCoordinate();
+    Coordinate mock_posi = this->getCoordinate();
     // Get the mock position to see if there are any obstacles on the way
 
 
@@ -67,10 +67,10 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
         }
     }
 
-    Chess *tmp_king = nullptr; // The pointer points to the king
+    King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
-    if (color == Color::White) tmp_king = theBoard->getWhiteKing();
-    else tmp_king = theBoard->getBlackKing();
+    if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
+    else tmp_king = theBoard.getBlackKing();
     // Get the king pointer of the friend color
 
     // Mock the board first
@@ -87,7 +87,7 @@ bool Queen::isValidMove(const Board &theBoard, Coordinate begin,
     return true;
 }
 
-vector<Coordinate> Queen::validMoves (const Board &theBoard) const {
+vector<Coordinate> Queen::validMoves (Board &theBoard) {
     vector<Coordinate> result_moves; // The results
     vector<vector<int>> directions = {
         {-1,  1},
@@ -112,7 +112,7 @@ vector<Coordinate> Queen::validMoves (const Board &theBoard) const {
         mock_posi.col += directions[i][1];
         // Make the mock position move one step
 
-        for (int j = 0; j < theBoard.getSideLength; j++) {
+        for (int j = 0; j < theBoard.getSideLength(); j++) {
             if (this->isValidMove(theBoard, original_posi, 
                                   mock_posi)) {
                 // While this mock position is a valid move, 

@@ -9,8 +9,8 @@ Knight::Knight(Color color, Square *theSquare):
     Chess{color, ChessType::Knight, theSquare} {}
 
 
-bool Knight::isValidMove(const Board &theBoard, Coordinate begin, 
-                                    Coordinate end) const {
+bool Knight::isValidMove(Board &theBoard, Coordinate begin, 
+                         Coordinate end) {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
         begin.row < 0 || begin.row >= theBoard.getSideLength() || 
         end.col < 0 || end.col >= theBoard.getSideLength() ||
@@ -32,10 +32,10 @@ bool Knight::isValidMove(const Board &theBoard, Coordinate begin,
         return false;
     }
 
-    Chess *tmp_king = nullptr; // The pointer points to the king
+    King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
-    if (color == Color::White) tmp_king = theBoard->getWhiteKing();
-    else tmp_king = theBoard->getBlackKing();
+    if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
+    else tmp_king = theBoard.getBlackKing();
     // Get the king pointer of the friend color
 
     
@@ -53,7 +53,7 @@ bool Knight::isValidMove(const Board &theBoard, Coordinate begin,
     return true;
 }
 
-vector<Coordinate> Knight::validMoves (const Board &theBoard) const {
+vector<Coordinate> Knight::validMoves (Board &theBoard) {
     vector<Coordinate> result_moves; // The results
     vector<vector<int>> directions = {
         {  2,  1 },
@@ -73,13 +73,13 @@ vector<Coordinate> Knight::validMoves (const Board &theBoard) const {
         // Loop all the directions to find out all the valid moves
 
         // The mock position
-        Coordinate current_posi = this->getCoordinate();
+        Coordinate mock_posi = original_posi;
 
         // Make the position go one step first
-        current_posi.row += directions[i][0];
-        current_posi.col += directions[i][1];
+        mock_posi.row += directions[i][0];
+        mock_posi.col += directions[i][1];
 
-        for (int j = 0; j < theBoard.getSideLength; j++) {
+        for (int j = 0; j < theBoard.getSideLength(); j++) {
             if (this->isValidMove(theBoard, original_posi, 
                                   mock_posi)) {
                 // While this mock position is a valid move, 

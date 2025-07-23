@@ -11,12 +11,12 @@ Pawn::Pawn(Color color, Square *theSquare, bool isMoved,
                                  isMoved{isMoved}, 
                                  canBeEnPassant{canBeEnPassant} {}
 
-bool Pawn::checkCanBeEnPassant() {
+bool Pawn::checkCanBeEnPassant() const {
     return canBeEnPassant;
 }
 
-bool Pawn::isValidMove(const Board &theBoard, Coordinate begin, 
-                    Coordinate end) const {
+bool Pawn::isValidMove(Board &theBoard, Coordinate begin, 
+                       Coordinate end) const {
     if (begin.col < 0 || begin.col >= theBoard.getSideLength() || 
         begin.row < 0 || begin.row >= theBoard.getSideLength() || 
         end.col < 0 || end.col >= theBoard.getSideLength() ||
@@ -33,13 +33,13 @@ bool Pawn::isValidMove(const Board &theBoard, Coordinate begin,
     int diff_y_coordinate = end.row - begin.row;
     // The distance of y-coordinate from begin's position to end's position
 
-    vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
 
-    Chess *tmp_king = nullptr; // The pointer points to the king
+    King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
-    if (color == Color::White) tmp_king = theBoard->getWhiteKing();
-    else tmp_king = theBoard->getBlackKing();
+    if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
+    else tmp_king = theBoard.getBlackKing();
     // Get the king pointer of the friend color
 
     if ((color == Color::BLACK && diff_y_coordinate >= 0) ||
@@ -63,7 +63,7 @@ bool Pawn::isValidMove(const Board &theBoard, Coordinate begin,
 
         Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
         // If it has a chess at the destination, give back false
-        if (Chess != nullptr) {
+        if (tmp_chess != nullptr) {
             return false;
         }
 
@@ -104,6 +104,20 @@ bool Pawn::isValidMove(const Board &theBoard, Coordinate begin,
             }
         }
     }
+
+
+    // Mock the board first
+    theBoard.moveAnyway(begin, end);
+    if (tmp_king->isChecked() != 0) {
+        theBoard.backOneStep();
+        // If the king is checked after this move, is invalid, 
+        //   return false and remember to undo this move
+        return false;
+    }
+    // If this move will be valid, return true then, and don't
+    //   forget to make the board one step back.
+    theBoard.backOneStep();
+    return true;
 }
 
 vector<Coordinate> Pawn::validMoves (const Board &theBoard) const {
