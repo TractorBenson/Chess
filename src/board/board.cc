@@ -35,7 +35,7 @@ King* Board::getWhiteKing(){
 // checkDraw() returns true if any player ever has no legal 
 //   moves available, but is not in check. Otherwise, return false.
 // This function is used at the beginning of a new turn.
-bool Board::checkDraw(Color currentPlayer) const {
+bool Board::checkDraw(Color currentPlayer) {
     
     const vector<unique_ptr<Chess>> &chesses = (currentPlayer == 
         Color::BLACK) ? blackChesses : whiteChesses;
