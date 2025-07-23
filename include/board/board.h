@@ -5,13 +5,14 @@
 #include "enum/chesstype.h"
 #include "enum/color.h"
 #include "observer/observer.h"
+#include "struct/moveBackup.h"
 #include <iostream>
 #include <cstddef>
 #include <vector>
 #include <memory>
+#include <optional>
 
 using namespace std;
-
 class Board {
     // The grid consists of mutiple squares
     vector<vector<Square>> grid;
@@ -28,7 +29,8 @@ class Board {
     King* blackKing = nullptr;
 
     const size_t sideLength = 8;
-
+    // Allows for undoing the last step of the move
+    optional<MoveBackup> lastTry;
     
     public:
         const vector<vector<Square>>& getGrid() const;
@@ -38,9 +40,9 @@ class Board {
         King* getBlackKing();
         const vector<unique_ptr<Chess>>& getWhiteChesses() const;
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
-        int numOfChesses(ChessType type, Color color) const;
+        int numOfChesses(ChessType type, Color checkColor) const;
 
-        bool checkDraw(Color currentPlayer) const;
+        bool checkDraw(Color currentPlayer);
         void updateChess(Color CurrentPlayer);
         void initSquares(); // initialize the board before game starts
 
@@ -60,13 +62,13 @@ class Board {
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
         // Try to move a chess, used to check if the move causes a "self-check"
-        void testMove(Coordinate begin, Coordinate end);
+        void testMove(Coordinate begin, Coordinate end, Color currentPlayer);
         // Redo the last movement of current player
         void redoLastStep();
         // Determine if a check exist in current step
-        bool isCheck() const;
+        bool isCheck(Color currentPlayer) const;
         // Determine if a checkmate exist in current step
-        bool isCheckmate() const;
+        bool isCheckmate(Color currentPlayer) const;
         friend ostream &operator<<(ostream &out, const Board &board);
 };
 
