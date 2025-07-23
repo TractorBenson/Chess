@@ -47,7 +47,7 @@ class Board {
         void initSquares(); // initialize the board before game starts
 
         // Place a chess of certain type on loc with certain color
-        void placeChess(Coordinate loc, char type, Color color);
+        void placeChess(Coordinate loc, char type);
 
         // Remove existing chess on loc, do nothing if there's no chess on loc
         void removeChess(Coordinate loc);
@@ -68,7 +68,7 @@ class Board {
         // Determine if a check exist in current step
         bool isCheck(Color currentPlayer) const;
         // Determine if a checkmate exist in current step
-        bool isCheckmate(Color currentPlayer) const;
+        bool isCheckmate(Color currentPlayer);
         friend ostream &operator<<(ostream &out, const Board &board);
 };
 
