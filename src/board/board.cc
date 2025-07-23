@@ -5,6 +5,7 @@
 #include "../include/chess/knight.h"
 #include "../include/chess/queen.h"
 #include "../include/chess/rook.h"
+#include "observer/textDisplay.h"
 
 using namespace std;
 
@@ -35,17 +36,14 @@ King* Board::getWhiteKing(){
 //   moves available, but is not in check. Otherwise, return false.
 // This function is used at the beginning of a new turn.
 bool Board::checkDraw(Color currentPlayer) const {
-    vector<unique_ptr<Chess>>& chesses;
+    
+    const vector<unique_ptr<Chess>> &chesses = (currentPlayer == 
+        Color::BLACK) ? blackChesses : whiteChesses;
 
-    if (currentPlayer == Color::BLACK) {
-        chesses = blackChesses;
-    } else {
-        chesses = whiteChesses;
-    }
-    for (auto& chess : chesses){
+    for (const auto& piece : chesses){
         // Check through all chesses on currentPlayer's side, 
         //  if there are at least one valid move, the game is not draw
-        if (chess->validMoves().size() != 0) {
+        if (!piece->validMoves(*this).empty()) {
             return false;
         }
     }
@@ -73,7 +71,7 @@ void Board::updateChess(Color currentPlayer) {
 //   if a type of chess has its maximum number allowed on one side
 int Board::numOfChesses(ChessType type, Color color) const{
     int count = 0;
-    if (currentPlayer == Color::WHITE) {
+    if ( color == Color::WHITE) {
         // loop through all white chesses
         for (auto& chess : whiteChesses) {
             if(chess->getType() == type) {
@@ -102,27 +100,27 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
     switch (type) {
     case 'K':
         newChess = std::make_unique<King>
-            (color, ChessType::King, &sq, false);
+            (color, &sq, false);
         break;
     case 'Q':
         newChess = std::make_unique
-            <Queen>(color, ChessType::Queen, &sq);
+            <Queen>(color, &sq);
         break;
     case 'B': 
         newChess = std::make_unique
-            <Bishop>(color, ChessType::Bishop, &sq);
+            <Bishop>(color, &sq);
         break;
     case 'R':
         newChess = std::make_unique
-            <Rook>(color, ChessType::Rook, &sq);
+            <Rook>(color, &sq);
         break;
     case 'N':
         newChess = std::make_unique
-            <Knight>(color, ChessType::Knight, &sq);
+            <Knight>(color, &sq);
         break;
     case 'P': 
         newChess = std::make_unique
-            <Pawn>(color, ChessType::Pawn, &sq, false, false);
+            <Pawn>(color, &sq, false, false);
         break;
     default:
         throw std::invalid_argument{"unknown chess type"};
@@ -132,14 +130,14 @@ void Board::placeChess(Coordinate loc, char type, Color color) {
     //   if the chess is a King, update the King pointers, too.
     if (color == Color::BLACK) {
         if (newChess->getType() == ChessType::King) {
-            blackKing = newChess.get();
+            blackKing = static_cast<King*>(newChess.get());
         }
         blackChesses.emplace_back(std::move(newChess));
     } else {
         if (newChess->getType() == ChessType::King) {
-            whiteKing = newChess.get();
+            whiteKing = static_cast<King*>(newChess.get());
         }
-        whiteChesses.emplace_back(std::move(newChess))
+        whiteChesses.emplace_back(std::move(newChess));
     }
     sq.setChess(newChess.get());
     sq.notifyDisplayer();
@@ -156,7 +154,7 @@ void Board::removeChess(Coordinate loc) {
         whiteKing = nullptr;
     }
     if (piece == blackKing) {
-        blackKing = nullptr
+        blackKing = nullptr;
     }
     // Detach the chess with the square
     sq.removeChess();
@@ -184,11 +182,11 @@ void Board::removeChess(Coordinate loc) {
 //   attached to the squares.
 void Board::initChessesWithDefaultArrange() {
     Color currentColor = Color::BLACK;
-    grid(sideLength, vector<Square>(sideLength));
+    grid.assign(sideLength, vector<Square>(sideLength));
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
             grid[row][col].setCoordinate(row, col);
-            grid[row][col].getColor(currentColor);
+            grid[row][col].setColor(currentColor);
             grid[row][col].attachObserver(obs);
             grid[row][col].notifyDisplayer();
             if (currentColor == Color::BLACK) {
@@ -233,11 +231,11 @@ bool Board::isValidSetup() {
 //   This method is called on A Pawn only (after using getChessType on begin)
 bool Board::canPromote(Coordinate begin, Coordinate end) {
     // coordinate begin is ensured valid during input stage
-    Square sq& = grid[begin.row][begin.col];
+    Square &sq = grid[begin.row][begin.col];
     Chess* piece = sq.getChess();
-
+    // If the move locations are invalid, return false immediately
     if (!moveChess(begin, end)) return false;
-
+    // After the move being valid, check if the pawn is at bottom lines
     if (piece->getColor() == Color::BLACK) {
         // Case where black Pawn reached the white bottom
         if (end.row == 0) return true;
@@ -265,14 +263,67 @@ bool Board::moveChess(Coordinate begin, Coordinate end) {
     cout << "Move is invalid! Please input your commamd again." << endl;
     return false;
 }
-// Used to check if the move will make my 
-void Board::testMove(Coordinate begin, Coordinate end) {
-    
+// Used to check if the move will make currentPlayer's king in check.
+//    (It does not check the king itself). It attempts to move chess 
+//   from begin to end, but stores the original location of the chess
+//    and any chess potentialy being taken. It allows for
+//   redoing the attempt move later. Assume begin and end are valid
+//   coordinate for a move.
+void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
+    Square* from = &grid[begin.row][begin.col];
+    Square* to = &grid[end.row][end.col];
+    Chess* movedC = from->getChess();
+    Chess* capturedC = to->getChess();
+    King* movedKing = nullptr;
+
+    // When we are moving a King, connect the point as well
+    if (movedC->getType() == ChessType::King) {
+        movedKing = (CurrentPlayer == Color::BLACK) ? blackKing : whiteKing;
+    }
+
+    lastTry = MoveBackup{from, to, movedC, capturedC, movedKing};
+
+    // Actaully move the chess from begin to end
+    to->setChess(movedC);
+    from->setChess(nullptr);
+
+    movedC->setSquare(to);
+
+    // if the destination has a chess, it is captured,
+    //   remove the chess
+    if (capturedC) capturedC->setSquare(nullptr);
+
+    if (movedC->getType() == ChessType::King) {
+        if(CurrentPlayer == Color::BLACK) {
+            blackKing = static_cast<King*>(movedC);
+        } else {
+            whiteKing = static_cast<King*>(movedC);
+        }
+    }
 }
 
 // 
 void Board::redoLastStep() {
+    if (!lastTry) return; // nothing to undo
 
+    const MoveBackup& m = *lastTry;
+
+    // Put moved and captured chess back;
+    m.from->setChess(m.movedC);
+    m.to->setChess(m.capturedC);
+    m.movedC->setSquare(m.from);
+    if (m.capturedC) m.capturedC->setSquare(m.to);
+
+    // update king pointers if king were moved
+    if (m.movedC->getType() == ChessType::King) {
+        if (m.movedC->getColor() == Color::BLACK) {
+            blackKing = m.movedKing;
+        } else {
+            whiteKing = m.movedKing;
+        }
+    }
+
+    lastTry.reset();    // discard the backup
 }
 
 
@@ -280,12 +331,12 @@ void Board::redoLastStep() {
 //   after a valid move of currentPlayer
 bool Board::isCheck(Color currentPlayer) const {
     if (currentPlayer == Color::WHITE) {
-        if (blackKing>isChecked()) {
+        if (blackKing->isChecked(grid, whiteChesses, blackChesses)) {
             cout << "Black is in check." << endl;
             return true;
         }
     } else {
-        if (whiteKing->isChecked()) {
+        if (whiteKing->isChecked(grid, whiteChesses, blackChesses)) {
             cout << "White is in check." << endl;
             return true;
         }
@@ -296,15 +347,15 @@ bool Board::isCheck(Color currentPlayer) const {
 // Find if the opposite side is checkmated. This method is called
 //   after a valid move of currentPlayer and after isCheck() method.
 //   If the method returns true, terminate current game immediately.
-bool Board::isCheckmate() const {
+bool Board::isCheckmate(Color currentPlayer) const {
 
     if (currentPlayer == Color::WHITE) {
-        if (blackKing->isCheckmated()) {
+        if (blackKing->isCheckmated(grid, whiteChesses, blackChesses)) {
             cout << "Checkmate! White wins!" << endl;
             return true;
         }
     } else {
-        if (whiteKing->isCheckmated()) {
+        if (whiteKing->isCheckmated(grid, whiteChesses, blackChesses)) {
             cout << "Checkmate! Black wins!" << endl;
             return true;
         }
@@ -312,6 +363,8 @@ bool Board::isCheckmate() const {
     return false;
 }
 
-ostream &operator<<(ostream &out, const Grid &g) {
-
+// Outputs current chess board in text form.
+ostream &operator<<(ostream &out, const Board &b) {
+    if (b.obs[0]) out << *(static_cast<TextDisplay*>(b.obs[0].get()));
+    return out;
 }
