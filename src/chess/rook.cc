@@ -19,6 +19,14 @@ bool Rook::isValidMove(Board &theBoard, Coordinate begin,
         return false;
     }
     if (begin.col == end.col && begin.row == end.row) return false;
+
+    // Check if the ending point is the friend chess, if is, then give false 
+    //   back.
+    Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+        return false;
+
+
     int diff_x_coordinate = end.col - begin.col;
     // The distance of x-coordinate from begin's position to end's position
 
@@ -41,12 +49,12 @@ bool Rook::isValidMove(Board &theBoard, Coordinate begin,
                         diff_x_coordinate / distance};
     // Get one step direction to reach the end position
 
-    Coordinate current_posi = begin;
+    Coordinate mock_posi = begin;
     for (int i = 1; i < distance; i++) {
-        current_posi.row += one_step.row;
-        current_posi.col += one_step.col;
-        Chess *tmp_chess = tmp_grid[current_posi.row]
-                                   [current_posi.col].getChess();
+        mock_posi.row += one_step.row;
+        mock_posi.col += one_step.col;
+        tmp_chess = tmp_grid[mock_posi.row]
+                            [mock_posi.col].getChess();
         if (tmp_chess != nullptr) {
             // If it has obstacle, return false
             return false;
@@ -61,7 +69,7 @@ bool Rook::isValidMove(Board &theBoard, Coordinate begin,
 
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked() != 0) {
+    if (tmp_king->isChecked(theBoard) != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
@@ -110,4 +118,12 @@ vector<Coordinate> Rook::validMoves (Board &theBoard) {
 void Rook::update() {}
 
 void Rook::updateMoved() {}
+
+const Rook *Rook::getRook() const {
+    return this;
+}
+
+const bool Rook::getIsMovedStatus() const {
+    return isMoved;
+}
 

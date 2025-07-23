@@ -37,6 +37,13 @@ bool Bishop::isValidMove(Board &theBoard, Coordinate begin,
         // If the distance is not diagonal, return false (not a valid move)
         return false;
     }
+
+    // Check if the ending point is the friend chess, if is, then give false 
+    //   back.
+    Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+        return false;
+    
     else {
         int steps_to_check_obstacle = abs(diff_x_coordinate);
         // The steps to move from the begin coordinate to end coordinate
@@ -66,7 +73,7 @@ bool Bishop::isValidMove(Board &theBoard, Coordinate begin,
 
         // Mock the board first
         theBoard.moveAnyway(begin, end);
-        if (tmp_king->isChecked() != 0) {
+        if (tmp_king->isChecked(theBoard) != 0) {
             theBoard.backOneStep();
             // If the king is checked after this move, is invalid, 
             //   return false and remember to undo this move

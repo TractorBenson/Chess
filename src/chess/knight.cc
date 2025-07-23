@@ -32,6 +32,17 @@ bool Knight::isValidMove(Board &theBoard, Coordinate begin,
         return false;
     }
 
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+    // Get the grid reference
+
+
+    // Check if the ending point is the friend chess, if is, then give false 
+    //   back.
+    Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+        return false;
+    
+
     King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
     if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
@@ -41,7 +52,7 @@ bool Knight::isValidMove(Board &theBoard, Coordinate begin,
     
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked() != 0) {
+    if (tmp_king->isChecked(theBoard) != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move

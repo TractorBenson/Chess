@@ -36,6 +36,13 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
 
+    // Check if the ending point is the friend chess, if is, then give false 
+    //   back.
+    Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+        return false;
+
+
     King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
     if (color == Color::WHITE) tmp_king = theBoard.getWhiteKing();
@@ -61,7 +68,7 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     //   at the destination.
     if (diff_x_coordinate == 0) {
 
-        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        tmp_chess = tmp_grid[end.row][end.col].getChess();
         // If it has a chess at the destination, give back false
         if (tmp_chess != nullptr) {
             return false;
@@ -71,9 +78,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         if (abs(diff_y_coordinate) == 2)
         {
             // If it has already been moved
-            Chess *tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
-                                                    abs(diff_y_coordinate))]
-                                       [begin.col].getChess();
+            tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
+                                             abs(diff_y_coordinate))]
+                                [begin.col].getChess();
             if (isMoved == true) return false;
             else if (tmp_chess != nullptr) return false;
             // Else if there is an obstacle on the way, give back false
@@ -85,7 +92,7 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
             //   invalid, give back false.
             return false;
         }
-        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        tmp_chess = tmp_grid[end.row][end.col].getChess();
         if (tmp_chess == nullptr) {
             // If there is no chess there that can be eaten, check the 
             //   En Passant situation.
@@ -108,7 +115,7 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
 
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked() != 0) {
+    if (tmp_king->isChecked(theBoard) != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move

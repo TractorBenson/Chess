@@ -29,6 +29,13 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
     const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
 
+
+    // Check if the ending point is the friend chess, if is, then give false 
+    //   back.
+    Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+        return false;
+
     if (!(abs(diff_x_coordinate) == abs(diff_y_coordinate) || 
           diff_x_coordinate == 0 || 
           diff_y_coordinate == 0)) {
@@ -57,8 +64,8 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
         // Get one step further first, then check
         mock_posi.col += one_step_direction.col;
         mock_posi.row += one_step_direction.row;
-        Chess *tmp_chess = tmp_grid[mock_posi.row]
-                                   [mock_posi.col].getChess();
+        tmp_chess = tmp_grid[mock_posi.row]
+                            [mock_posi.col].getChess();
         // Get the chess on the grid with that mock position coordinate
         if (tmp_chess != nullptr) {
             // If there exist a chess, then it's impossible to get through, 
@@ -66,6 +73,7 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
             return false;
         }
     }
+    
 
     King *tmp_king = nullptr; // The pointer points to the king
     Color color = this->getColor(); // The color of the current player
@@ -75,7 +83,7 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
 
     // Mock the board first
     theBoard.moveAnyway(begin, end);
-    if (tmp_king->isChecked() != 0) {
+    if (tmp_king->isChecked(theBoard) != 0) {
         theBoard.backOneStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move

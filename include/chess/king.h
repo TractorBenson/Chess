@@ -19,15 +19,11 @@ class King : public Chess {
         vector<Coordinate> validMoves (Board &theBoard) override;
             // Give all the valid move options
 
-        int isChecked (const vector<vector<Square>> &grid, 
-                       const vector<unique_ptr<Chess>> &whiteChesses, 
-                       const vector<unique_ptr<Chess>> &blackChesses) const;
+        int isChecked (const Board &theBoard) const;
             // Determine whether the king is checked, and return the number 
             //   of enemy chesses that are checking it.
     
-        bool isCheckmated (const vector<vector<Square>> &grid, 
-                           const vector<unique_ptr<Chess>> &whiteChesses, 
-                           const vector<unique_ptr<Chess>> &blackChesses) const;
+        bool isCheckmated (const Board &theBoard) const;
             // Determine if the king is checkmated
         
         void update() override;

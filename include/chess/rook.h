@@ -19,6 +19,10 @@ class Rook : public Chess {
         void update() override;
 
         void updateMoved() override;
+
+        const Rook *getRook() const override;
+
+        const bool getIsMovedStatus() const;
 };
 
 #endif
