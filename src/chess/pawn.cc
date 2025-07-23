@@ -87,11 +87,8 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         }
     } else {
         // Else, the x-coordinate movement must be 1
-        if (abs(diff_y_coordinate) == 2) {
-            // If the x-coordinate movement is 1 and y movement is 2, must be
-            //   invalid, give back false.
-            return false;
-        }
+        if (abs(diff_y_coordinate) != 1) return false;
+
         tmp_chess = tmp_grid[end.row][end.col].getChess();
         if (tmp_chess == nullptr) {
             // If there is no chess there that can be eaten, check the 
@@ -99,11 +96,13 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
             if (color == Color::BLACK) {
                 // If the chess color is black, add row number by 1 to find 
                 //   the pawn beside it.
-                tmp_chess = tmp_grid[end.row + 1][end.row].getChess();
+                tmp_chess = tmp_grid[end.row + 1][end.col].getChess();
             } else {
-                tmp_chess = tmp_grid[end.row - 1][end.row].getChess();
+                tmp_chess = tmp_grid[end.row - 1][end.col].getChess();
             }
+            if (tmp_chess == nullptr) return false;
             if (!(tmp_chess->getType() == ChessType::Pawn && 
+                  tmp_chess->getColor() != this->getColor() && 
                   tmp_chess->checkCanBeEnPassant())) {
                 // If the chess is not the situation: A Pawn that can be 
                 //   En Passant, give false back.

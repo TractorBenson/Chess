@@ -35,21 +35,24 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
     if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
         return false;
 
-
-    // Check if the ending point will make the king be under attacked
-    theBoard.moveAnyway(begin, end);
-    // Mock that position after moving
-    if (this->isChecked(theBoard) != 0) {
-        // If the king will be underattacked, go back first, and 
-        //   give back false since it is invalid.
-        theBoard.backOneStep();
-        return false;
-    }
-    // If it's fine, remember to go back
-    theBoard.backOneStep();
-
     
-    if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
+    if (abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1) {
+        // If the king goes 2 steps or more in either x or y coordinate, 
+        //   it's invalid, give false back.
+        
+        // Check if the ending point will make the king be under attacked
+        theBoard.moveAnyway(begin, end);
+        // Mock that position after moving
+        if (this->isChecked(theBoard) != 0) {
+            // If the king will be underattacked, go back first, and 
+            //   give back false since it is invalid.
+            theBoard.backOneStep();
+            return false;
+        }
+        // If it's fine, remember to go back
+        theBoard.backOneStep();
+        return true;
+    } else if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
         // The castling situation haha!
 
         // If the king is already underattacked, it's invalid, return false
@@ -132,21 +135,30 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         // If it's fine, remember to go back
         theBoard.backOneStep();
 
+
+        // Check if the ending point will make the king be under attacked
+        theBoard.moveAnyway(begin, end);
+        // Mock that position after moving
+        if (this->isChecked(theBoard) != 0) {
+            // If the king will be underattacked, go back first, and 
+            //   give back false since it is invalid.
+            theBoard.backOneStep();
+            return false;
+        }
+        // If it's fine, remember to go back
+        theBoard.backOneStep();
+
         // If all the conditions are satisfied, give back true
         return true;
 
         // The following will be the normal moves!
-    } else if (!(abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1)) {
-        // If the king goes 2 steps or more in either x or y coordinate, 
-        //   it's invalid, give false back.
-        return false;
     } else {
-        // If it goes to here, the move will be valid
-        return true;
+        // If it goes to here, the move will be invalid
+        return false;
     }
     
-    // If it goes to here, then the king's move would be valid
-    return true;
+    // If it goes to here, then the king's move would be invalid
+    return false;
 }
 
 vector<Coordinate> King::validMoves (Board &theBoard) {

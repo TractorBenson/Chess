@@ -32,8 +32,7 @@ bool Bishop::isValidMove(Board &theBoard, Coordinate begin,
     // Get the grid reference
 
 
-    if (diff_x_coordinate != diff_y_coordinate & 
-        diff_x_coordinate != diff_y_coordinate * -1) {
+    if (abs(diff_x_coordinate) != abs(diff_y_coordinate)) {
         // If the distance is not diagonal, return false (not a valid move)
         return false;
     }
@@ -55,7 +54,7 @@ bool Bishop::isValidMove(Board &theBoard, Coordinate begin,
 
         Coordinate current_check_step{begin};
         // Initialize the start position for checking
-        for (int i = 1; i < steps_to_check_obstacle - 1; i++) {
+        for (int i = 1; i < steps_to_check_obstacle; i++) {
             current_check_step.col += one_step.col;
             current_check_step.row += one_step.row;
             Chess *getTheChess = tmp_grid[current_check_step.row]
@@ -130,7 +129,7 @@ vector<Coordinate> Bishop::validMoves (Board &theBoard) {
 
 void Bishop::update() {}
 
-void Bishop::updateMoved {}
+void Bishop::updateMoved() {}
 
 
 
