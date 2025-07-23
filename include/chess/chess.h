@@ -40,6 +40,8 @@ class Chess {
         virtual void updateMoved() = 0; // Make the isMoved true
 
         virtual void update() = 0; // Make canBeEnPassant false
+
+        virtual bool checkCanBeEnPassant() const;
 };
 
 #endif

@@ -11,6 +11,9 @@ Pawn::Pawn(Color color, Square *theSquare, bool isMoved,
                                  isMoved{isMoved}, 
                                  canBeEnPassant{canBeEnPassant} {}
 
+bool Pawn::checkCanBeEnPassant() {
+    return canBeEnPassant;
+}
 
 bool Pawn::isValidMove(const Board &theBoard, Coordinate begin, 
                     Coordinate end) const {
@@ -40,18 +43,67 @@ bool Pawn::isValidMove(const Board &theBoard, Coordinate begin,
     // Get the king pointer of the friend color
 
     if ((color == Color::BLACK && diff_y_coordinate >= 0) ||
-        (color == Color::WHITE && diff_x_coordinate <= 0)) {
+        (color == Color::WHITE && diff_y_coordinate <= 0)) {
             // If the pawn is not moving forward, return false
         return false;
     }
 
-    if (isMoved == true && diff_y_coordinate > 1) {
-        // If the pawn has moved, but it moves vertically over 1 step, 
-        //   return false.
+    if (abs(diff_y_coordinate) > 2) {
+        // If the pawn's vertical movement is greater than 2, give back false
         return false;
     }
 
+    // Check if the x coordinate is over 1 steps
+    if (abs(diff_x_coordinate) > 1) return false;
 
+
+    // Check if the pawn goes vertically, there is no obstacles on the way and 
+    //   at the destination.
+    if (diff_x_coordinate == 0) {
+
+        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        // If it has a chess at the destination, give back false
+        if (Chess != nullptr) {
+            return false;
+        }
+
+        // If it goes two steps
+        if (abs(diff_y_coordinate) == 2)
+        {
+            // If it has already been moved
+            if (isMoved == true) return false;
+            Chess *tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
+                                           abs(diff_y_coordinate))]
+                                       [begin.col].getChess();
+            else if (tmp_chess != nullptr) return false;
+            // Else if there is an obstacle on the way, give back false
+        }
+    } else {
+        // Else, the x-coordinate movement must be 1
+        if (abs(diff_y_coordinate) == 2) {
+            // If the x-coordinate movement is 1 and y movement is 2, must be
+            //   invalid, give back false.
+            return false;
+        }
+        Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
+        if (tmp_chess == nullptr) {
+            // If there is no chess there that can be eaten, check the 
+            //   En Passant situation.
+            if (color == Color::BLACK) {
+                // If the chess color is black, add row number by 1 to find 
+                //   the pawn beside it.
+                tmp_chess = tmp_grid[end.row + 1][end.row].getChess();
+            } else {
+                tmp_chess = tmp_grid[end.row - 1][end.row].getChess();
+            }
+            if (!(tmp_chess->getType() == ChessType::Pawn && 
+                  tmp_chess->checkCanBeEnPassant())) {
+                // If the chess is not the situation: A Pawn that can be 
+                //   En Passant, give false back.
+                return false;
+            }
+        }
+    }
 }
 
 vector<Coordinate> Pawn::validMoves (const Board &theBoard) const {

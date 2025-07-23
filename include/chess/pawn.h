@@ -26,6 +26,8 @@ class Pawn : public Chess {
         void update() override; // Update the canBeEnPassant to false
 
         void updateMoved() override; // Set isMoved to true
+
+        bool checkCanBeEnPassant() const override;
 };
 
 #endif
