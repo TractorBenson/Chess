@@ -1,4 +1,7 @@
+#include <algorithm>
 #include "chess/king.h"
+#include "board/board.h"
+#include "square/square.h"
 
 using namespace std;
 
@@ -25,57 +28,6 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
 
     const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
     // Get the grid reference
-    
-    if (!(abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1)) {
-        // If the king goes 2 steps or more in either x or y coordinate, 
-        //   it's invalid, give false back.
-        return false;
-    } else if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
-        // The castling situation haha!
-
-        // If the king is already underattacked, it's invalid, return false
-        if (this->isChecked(theBoard) != 0) return false;
-
-        Coordinate mock_rook_posi = begin;
-        Chess *tmp_chess; // The Rook doing the castling
-        // The position of the rook
-        if (this->getColor() == Color::BLACK) {
-            // If the castling color is black
-            if (diff_x_coordinate > 0) {
-                // If the king is going right
-                tmp_chess = tmp_grid[end.row][end.col + 1].getChess();
-                // Then get the black rook on the right
-                // If the chess does not exist or the chess is not rook, 
-                //   give back false.
-                if (tmp_chess == nullptr || 
-                    tmp_chess->getType() != ChessType::Rook) return false;
-
-                const Rook *tmp_rook = tmp_chess->getRook();
-
-                // If the king is moved or the rook is moved, then 
-                //   the castling is also invalid, give back false.
-                if (isMoved == true || tmp_rook->getIsMovedStatus() == true) {
-                    return false;
-                }
-
-                for (int i = 1; i < 3; i++) {
-                    Coordinate mock_king_way{begin.row, begin.col + i};
-                    theBoard.moveAnyway(begin, mock_king_way);
-                    if (this->isChecked(theBoard) != 0) {
-                        theBoard.backOneStep();
-                        return false;
-                    }
-                    theBoard.backOneStep();
-                }
-            } else {
-                
-            }
-        }
-    }
-
-    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
-    // Get the grid reference
-
 
     // Check if the ending point is the friend chess, if is, then give false 
     //   back.
@@ -83,10 +35,193 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
     if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
         return false;
 
+
+    // Check if the ending point will make the king be under attacked
+    theBoard.moveAnyway(begin, end);
+    // Mock that position after moving
+    if (this->isChecked(theBoard) != 0) {
+        // If the king will be underattacked, go back first, and 
+        //   give back false since it is invalid.
+        theBoard.backOneStep();
+        return false;
+    }
+    // If it's fine, remember to go back
+    theBoard.backOneStep();
+
     
-    // If it goes to here, then the king's move would be valid if it is
+    if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
+        // The castling situation haha!
+
+        // If the king is already underattacked, it's invalid, return false
+        if (this->isChecked(theBoard) != 0) return false;
+
+        // If the king is already moved, it's also invalid, return false!
+        if (isMoved == true) return false;
+
+        // Get the direction king is going to move
+        const int x_one_step = diff_x_coordinate / abs(diff_x_coordinate);
+
+        Coordinate mock_rook_posi = begin; // The mock rook position
+
+        Chess *tmp_chess; // The temporary chess
+
+        const Rook *tmp_rook; // The temporary rook
+
+        if (diff_x_coordinate > 0) {
+            // If the king is going to the right
+
+            // Then get the rook on the right (3 steps away)
+            tmp_chess = tmp_grid[end.row][end.col + 1].getChess();
+            
+        } else {
+            // If the king is going to the left
+
+            // Then the the rook on the left (4 steps away)
+            tmp_chess = tmp_grid[end.row][end.col - 2].getChess();
+        }
+
+        // If the chess does not exist or the chess is not the friend rook, 
+        //   give back false.
+        if (tmp_chess == nullptr || 
+            tmp_chess->getType() != ChessType::Rook || 
+            tmp_chess->getColor() != this->getColor()) return false;
+
+        tmp_rook = tmp_chess->getRook();
+
+        // If the rook is moved, then the castling is also invalid, 
+        //   give back false.
+        if (tmp_rook->getIsMovedStatus() == true) {
+            return false;
+        }
+
+        // The absolute distance between king and rook
+        const int distance = abs(tmp_rook->getCoordinate().col - begin.col);
+
+        for (int i = 1; i < distance; i++)
+        {
+            // To loop the position between the king and the rook, check if
+            //   there are any obstacles.
+
+            Coordinate mock_king_way{begin.row, begin.col + i * x_one_step};
+            // Get the mock position
+
+            // Get the chess information on that square
+            tmp_chess = tmp_grid[mock_king_way.row]
+                                [mock_king_way.col].getChess();
+
+            if (tmp_chess != nullptr) {
+                // If there is some obstacles on the way, it's invalid, false
+                return false;
+            }
+        }
+
+        // Check whether the the way king is going to go through will be 
+        //   under attacked.
+
+        Coordinate mock_king_way{begin.row, begin.col + x_one_step};
+        // Get the mock position of the expect rook position after castling
+
+        theBoard.moveAnyway(begin, mock_king_way);
+        // Mock that position after castling
+        if (this->isChecked(theBoard) != 0) {
+            // If the king will be underattacked, go back first, and 
+            //   give back false since it is invalid.
+            theBoard.backOneStep();
+            return false;
+        }
+        // If it's fine, remember to go back
+        theBoard.backOneStep();
+
+        // If all the conditions are satisfied, give back true
+        return true;
+
+        // The following will be the normal moves!
+    } else if (!(abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1)) {
+        // If the king goes 2 steps or more in either x or y coordinate, 
+        //   it's invalid, give false back.
+        return false;
+    } else {
+        // If it goes to here, the move will be valid
+        return true;
+    }
+    
+    // If it goes to here, then the king's move would be valid
+    return true;
 }
 
+vector<Coordinate> King::validMoves (Board &theBoard) {
+    vector<Coordinate> result_moves;
+    vector<vector<int>> directions = {
+        { 0,   2}, 
+        { 0,  -3}, 
+        { 0,   1}, 
+        { 0,  -1}, 
+        {-1,   1}, 
+        {-1,   0}, 
+        {-1,  -1}, 
+        { 1,   1}, 
+        { 1,   0}, 
+        { 1,  -1}
+    };
+    Coordinate original_posi = this->getCoordinate();
+    for (int i = 0; i < directions.size(); i++) {
+        Coordinate mock_posi = original_posi;
+        mock_posi.row += directions[i][0];
+        mock_posi.col += directions[i][1];
+        if (this->isValidMove(theBoard, original_posi, 
+                              mock_posi)) {
+            result_moves.emplace_back(mock_posi);
+        }
+    }
+    return result_moves;
+}
+
+int King::isChecked (const Board &theBoard) const {
+    
+    // Get the grid reference
+    const vector<vector<Square>> &tmp_grid = theBoard.getGrid();
+
+    Chess *tmp_chess;
+    int attacking_num = 0;
+    // First, check if the knight is attacking the king
+    vector<Coordinate> knight_dir = {
+        Coordinate{  2,  1 },
+        Coordinate{  1,  2 },
+        Coordinate{ -1,  2 },
+        Coordinate{ -2,  1 },
+        Coordinate{ -2, -1 },
+        Coordinate{ -1, -2 },
+        Coordinate{  1, -2 },
+        Coordinate{  2, -1 }
+    };
+
+    for (int i = 0; i < knight_dir.size(); i++) {
+        Coordinate mock_knight_posi = this->getCoordinate();
+        mock_knight_posi.row += knight_dir[i].row;
+        mock_knight_posi.col += knight_dir[i].col;
+        if (mock_knight_posi.col < 0 || 
+            mock_knight_posi.col >= theBoard.getSideLength() ||
+            mock_knight_posi.row < 0 || 
+            mock_knight_posi.row >= theBoard.getSideLength()) {
+                continue;
+        }
+        tmp_chess = tmp_grid[mock_knight_posi.row]
+                            [mock_knight_posi.col].getChess();
+        if (tmp_chess != nullptr && 
+            tmp_chess->getColor() != this->getColor() &&
+            tmp_chess->getType() == ChessType::Knight) {
+                attacking_num++;
+        }
+    }
+
+    // Secondly, check the pawns
+    if (this->getColor() == Color::BLACK) {
+        // If the king is black
+        
+    }
+
+    // Secondly, check the diagnals, 
+}
 
 void King::update() {}
 

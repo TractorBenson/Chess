@@ -18,9 +18,9 @@ class Chess {
     Color color;
     ChessType type;
     Square *theSquare;
-    protected:
-        Coordinate getCoordinate() const;
+        
     public:
+        Coordinate getCoordinate() const;
 
         Chess() = default;
         Chess(Color color, ChessType type, Square *theSquare);
@@ -30,6 +30,8 @@ class Chess {
         ChessType getType() const; // Get the type
 
         Square *getSquare() const; // Get its Square
+
+        void setSquare(const Square *sqr);
 
         virtual bool isValidMove(Board &theBoard, Coordinate begin, 
                                  Coordinate end) = 0;

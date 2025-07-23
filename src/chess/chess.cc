@@ -26,3 +26,11 @@ Square *Chess::getSquare() const {
 Coordinate Chess::getCoordinate() const {
     return this->getSquare()->getCoordinate();
 }
+
+void Chess::setSquare(const Square *sqr) {
+    theSquare = sqr;
+    return;
+}
+
+
+
