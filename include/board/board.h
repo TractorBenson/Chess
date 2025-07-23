@@ -68,7 +68,7 @@ class Board {
         // Determine if a check exist in current step
         bool isCheck(Color currentPlayer) const;
         // Determine if a checkmate exist in current step
-        bool isCheckmate(Color currentPlayer) const;
+        bool isCheckmate(Color currentPlayer);
         friend ostream &operator<<(ostream &out, const Board &board);
 };
 

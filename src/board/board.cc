@@ -399,10 +399,10 @@ bool Board::isCheck(Color currentPlayer) const {
 // Find if the opposite side is checkmated. This method is called
 //   after a valid move of currentPlayer and after isCheck() method.
 //   If the method returns true, terminate current game immediately.
-bool Board::isCheckmate(Color currentPlayer) const {
+bool Board::isCheckmate(Color currentPlayer) {
 
     if (currentPlayer == Color::WHITE) {
-        if (blackKing->isCheckmated((*this))) {
+        if (blackKing->isCheckmated(*this)) {
             cout << "Checkmate! White wins!" << endl;
             return true;
         }
