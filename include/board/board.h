@@ -16,7 +16,6 @@ using namespace std;
 class Board {
     // The grid consists of mutiple squares
     vector<vector<Square>> grid;
-    Color color = Color::WHITE;
     // Pointing to the textdisplayer and graphic displayer
     vector<unique_ptr<Observer>> obs;
 
@@ -33,6 +32,7 @@ class Board {
     optional<MoveBackup> lastTry;
     
     public:
+        Board();
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
         ChessType getChessType(Coordinate coord) const;

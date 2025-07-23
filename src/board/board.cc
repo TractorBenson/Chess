@@ -1,13 +1,31 @@
-#include "../include/board/board.h"
-#include "../include/chess/pawn.h"
-#include "../include/chess/king.h"
-#include "../include/chess/bishop.h"
-#include "../include/chess/knight.h"
-#include "../include/chess/queen.h"
-#include "../include/chess/rook.h"
+#include "board/board.h"
+#include "chess/pawn.h"
+#include "chess/king.h"
+#include "chess/bishop.h"
+#include "chess/knight.h"
+#include "chess/queen.h"
+#include "chess/rook.h"
 #include "observer/textDisplay.h"
+#include "observer/graphDisplay.h"
 
 using namespace std;
+
+Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
+
+    whiteChesses.reserve(16);
+    blackChesses.reserve(16);
+
+    obs.reserve(2);
+    obs.emplace_back(make_unique<TextDisplay>(sideLength));
+    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+
+    // Attach observer to all squares.
+    for (auto& row : grid) {
+        for (auto& sq : row) {
+                sq.attachObserver(obs);     // raw Observer*
+        }
+    }
+}
 
 const vector<vector<Square>>& Board::getGrid() const {
     return grid;
@@ -203,9 +221,10 @@ void Board::removeChess(Coordinate loc) {
 //   attached to the squares.
 void Board::initChessesWithDefaultArrange() {
     Color currentColor = Color::BLACK;
-    grid.assign(sideLength, vector<Square>(sideLength));
+
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
+            // set fields of all squares
             Coordinate coord = Coordinate{row, col};
             grid[row][col].setCoordinate(row, col);
             grid[row][col].setColor(currentColor);
@@ -239,7 +258,6 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 6) {
                 placeChess(coord, 'p');
             }
-            grid[row][col].attachObserver(obs);
             grid[row][col].notifyDisplayer();
             if (currentColor == Color::BLACK) {
                 currentColor = Color::WHITE;
