@@ -331,12 +331,12 @@ void Board::redoLastStep() {
 //   after a valid move of currentPlayer
 bool Board::isCheck(Color currentPlayer) const {
     if (currentPlayer == Color::WHITE) {
-        if (blackKing->isChecked(grid, whiteChesses, blackChesses)) {
+        if (blackKing->isChecked(*this)) {
             cout << "Black is in check." << endl;
             return true;
         }
     } else {
-        if (whiteKing->isChecked(grid, whiteChesses, blackChesses)) {
+        if (whiteKing->isChecked(*this)) {
             cout << "White is in check." << endl;
             return true;
         }
@@ -350,12 +350,12 @@ bool Board::isCheck(Color currentPlayer) const {
 bool Board::isCheckmate(Color currentPlayer) const {
 
     if (currentPlayer == Color::WHITE) {
-        if (blackKing->isCheckmated(grid, whiteChesses, blackChesses)) {
+        if (blackKing->isCheckmated((*this))) {
             cout << "Checkmate! White wins!" << endl;
             return true;
         }
     } else {
-        if (whiteKing->isCheckmated(grid, whiteChesses, blackChesses)) {
+        if (whiteKing->isCheckmated(*this)) {
             cout << "Checkmate! Black wins!" << endl;
             return true;
         }
