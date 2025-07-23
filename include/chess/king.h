@@ -23,7 +23,7 @@ class King : public Chess {
             // Determine whether the king is checked, and return the number 
             //   of enemy chesses that are checking it.
     
-        bool isCheckmated (const Board &theBoard) const;
+        bool isCheckmated (Board &theBoard);
             // Determine if the king is checkmated
         
         void update() override;

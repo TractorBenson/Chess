@@ -215,12 +215,102 @@ int King::isChecked (const Board &theBoard) const {
     }
 
     // Secondly, check the pawns
+    vector<Coordinate> pawn_dir;
     if (this->getColor() == Color::BLACK) {
         // If the king is black
-        
+        pawn_dir.emplace_back(Coordinate{-1, -1});
+        pawn_dir.emplace_back(Coordinate{-1,  1});
+    } else {
+        // Else, the king is white
+        pawn_dir.emplace_back(Coordinate{1, -1});
+        pawn_dir.emplace_back(Coordinate{1,  1});
+    }
+    for (int i = 0; i < pawn_dir.size(); i++) {
+        Coordinate mock_pawn_posi = this->getCoordinate();
+        mock_pawn_posi.row += pawn_dir[i].row;
+        mock_pawn_posi.col += pawn_dir[i].col;
+        if (mock_pawn_posi.col < 0 || 
+            mock_pawn_posi.col >= theBoard.getSideLength() ||
+            mock_pawn_posi.row < 0 || 
+            mock_pawn_posi.row >= theBoard.getSideLength()) {
+                continue;
+        }
+        tmp_chess = tmp_grid[mock_pawn_posi.row]
+                            [mock_pawn_posi.col].getChess();
+        if (tmp_chess != nullptr && 
+            tmp_chess->getColor() != this->getColor() &&
+            tmp_chess->getType() == ChessType::Pawn) {
+                attacking_num++;
+        }
     }
 
-    // Secondly, check the diagnals, 
+    // Thirdly, check the diagnals, which are the queens and bishops
+    vector <Coordinate> diag_dir = {
+        Coordinate{ 1,  1},
+        Coordinate{ 1, -1},
+        Coordinate{-1,  1},
+        Coordinate{-1, -1}
+    };
+    for (int i = 0; i < diag_dir.size(); i++) {
+        Coordinate mock_diag_posi = this->getCoordinate();
+        while (true) {
+            mock_diag_posi.row += diag_dir[i].row;
+            mock_diag_posi.col += diag_dir[i].col;
+            if (mock_diag_posi.col < 0 || 
+                mock_diag_posi.col >= theBoard.getSideLength() ||
+                mock_diag_posi.row < 0 || 
+                mock_diag_posi.row >= theBoard.getSideLength()) {
+                    break;
+            }
+            tmp_chess = tmp_grid[mock_diag_posi.row]
+                                [mock_diag_posi.col].getChess();
+            if (tmp_chess != nullptr && 
+                tmp_chess->getColor() != this->getColor() &&
+                (tmp_chess->getType() == ChessType::Queen || 
+                 tmp_chess->getType() == ChessType::Bishop)) {
+                    attacking_num++;
+                    break;
+            }
+        }
+    }
+
+    // Fourthly, check the horizontal/vertical lines, which are
+    //   queens and rooks.
+    vector <Coordinate> diag_dir = {
+        Coordinate{ 1,  0},
+        Coordinate{-1,  0},
+        Coordinate{ 0,  1},
+        Coordinate{ 0, -1}
+    };
+    for (int i = 0; i < diag_dir.size(); i++) {
+        Coordinate mock_sline_posi = this->getCoordinate();
+        while (true) {
+            mock_sline_posi.row += diag_dir[i].row;
+            mock_sline_posi.col += diag_dir[i].col;
+            if (mock_sline_posi.col < 0 || 
+                mock_sline_posi.col >= theBoard.getSideLength() ||
+                mock_sline_posi.row < 0 || 
+                mock_sline_posi.row >= theBoard.getSideLength()) {
+                    break;
+            }
+            tmp_chess = tmp_grid[mock_sline_posi.row]
+                                [mock_sline_posi.col].getChess();
+            if (tmp_chess != nullptr && 
+                tmp_chess->getColor() != this->getColor() &&
+                (tmp_chess->getType() == ChessType::Queen || 
+                 tmp_chess->getType() == ChessType::Rook)) {
+                    attacking_num++;
+                    break;
+            }
+        }
+    }
+
+    return attacking_num;
+}
+
+bool King::isCheckmated (Board &theBoard) {
+    return (this->isChecked(theBoard) && 
+            theBoard.noValidMoves(this->getColor()));
 }
 
 void King::update() {}
