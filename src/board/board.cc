@@ -27,11 +27,21 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
     }
 }
 
+// const Square& Board::getSquare(Coordinate coord) const {
+//     return grid[coord.row][coord.col];
+// }
+bool Board::squareIsEmpty(Coordinate coord) const {
+    return (grid[coord.row][coord.col].getChess() != nullptr);
+}
+
 const vector<vector<Square>>& Board::getGrid() const {
     return grid;
 }
 size_t Board::getSideLength() const {
     return sideLength;
+}
+Color Board::getChessColor(Coordinate coord) const {
+    return grid[coord.row][coord.col].getChess()->getColor();
 }
 const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
     return whiteChesses;
@@ -43,11 +53,11 @@ ChessType Board::getChessType(Coordinate coord) const{
     return grid[coord.row][coord.col].getChess()->getType();
 }
 
-King* Board::getBlackKing(){
+King* Board::getBlackKing() const {
     return blackKing;
 }
 
-King* Board::getWhiteKing(){
+King* Board::getWhiteKing() const{
     return whiteKing;
 }
 // checkDraw() returns true if any player ever has no legal 
@@ -298,13 +308,15 @@ bool Board::isValidSetup() {
 }
 
 // checks if the chess is a pawn and can be promoted in current round
-//   This method is called on A Pawn only (after using getChessType on begin)
+//   This is called after using moveChess(begin, end), which means the move is
+//   valid, the method only checks if the chess is a pawn and can be promoted
 bool Board::canPromote(Coordinate begin, Coordinate end) {
     // coordinate begin is ensured valid during input stage
     Square &sq = grid[begin.row][begin.col];
     Chess* piece = sq.getChess();
-    // If the move locations are invalid, return false immediately
-    if (!moveChess(begin, end)) return false;
+    if (piece->getType() != ChessType::Pawn) {
+        return false;
+    }
     // After the move being valid, check if the pawn is at bottom lines
     if (piece->getColor() == Color::BLACK) {
         // Case where black Pawn reached the white bottom
@@ -372,6 +384,48 @@ void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
             whiteKing = static_cast<King*>(movedC);
         }
     }
+}
+// move chess at begin to end, no matter what, assume the move is already valid
+void Board::simpleMove(Coordinate begin, Coordinate end){
+    Square* from = &(grid[begin.row][begin.col]);
+    Square* to = &(grid[end.row][end.col]);
+    Chess* movedC = from->getChess();
+        // Actaully move the chess from begin to end
+
+        
+    int diff_x = end.col - begin.col;
+    int diff_y = end.row - begin.row;
+
+    if (movedC->getType() == ChessType::King) {
+        // Castling case ahha!
+        if (diff_x == 2 && diff_y == 0) {
+            Square *future_rook = &(grid[end.row][end.col - 1]);
+            Square *original_rook = &(grid[end.row][end.col + 1]);
+            future_rook->setChess(original_rook->getChess());
+            original_rook->setChess(nullptr);
+        } else if (diff_x == -2 && diff_y == 0) {
+            Square *future_rook = &(grid[end.row][end.col + 1]);
+            Square *original_rook = &(grid[end.row][end.col - 2]);
+            future_rook->setChess(original_rook->getChess());
+            original_rook->setChess(nullptr);
+        }
+    } else if (movedC->getType() == ChessType::Pawn) {
+        if (abs(diff_x) == 1 && abs(diff_y) == 1 && to->getChess() == nullptr)
+        {
+            // The En Passant situation haha!
+            Square *pawnBeEaten = &(grid[begin.row][end.col]);
+            pawnBeEaten->setChess(nullptr);
+        }
+    }
+
+    to->setChess(movedC);
+    from->setChess(nullptr);
+
+    movedC->setSquare(to);
+}
+
+bool Board::resetLT() {
+    lastTry.reset();
 }
 
 // 

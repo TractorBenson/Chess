@@ -35,14 +35,17 @@ class Board {
         Board();
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
+        Color getChessColor(Coordinate coord) const;
         ChessType getChessType(Coordinate coord) const;
-        King* getWhiteKing();
-        King* getBlackKing();
+        King* getWhiteKing() const;
+        King* getBlackKing() const;
+        //const Square& getSquare(Coordinate coord) const;
+        bool squareIsEmpty(Coordinate coord) const;
         const vector<unique_ptr<Chess>>& getWhiteChesses() const;
         const vector<unique_ptr<Chess>>& getBlackChesses() const;
         int numOfChesses(ChessType type, Color checkColor) const;
 
-        bool noValidMoves(Color currentPlayer);
+        bool noValidMoves(Color currentPlayer); // check for draw and checkmate
         void updateChess(Color CurrentPlayer);
         void initSquares(); // initialize the board before game starts
 
@@ -61,8 +64,11 @@ class Board {
         // Move the chess on location begin to end, 
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
+        bool resetLT();
         // Try to move a chess, used to check if the move causes a "self-check"
         void testMove(Coordinate begin, Coordinate end, Color currentPlayer);
+
+        void simpleMove(Coordinate begin, Coordinate end);
         // Redo the last movement of current player
         void redoLastStep();
         // Determine if a check exist in current step
