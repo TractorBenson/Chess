@@ -69,21 +69,26 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
 
         istringstream iss(player_input); // Make a istringstream
         string cmd;
-        
-        // command "move coord1 coord2" is provided
-        if (!(iss >> cmd >> fromCoord >> toCoord)) {
-            cout << "Syntax: move <from> <to> [chess]" << endl;
-            continue;                                   // ask again
+        if (!(iss >> cmd)) {
+            cout << "read unsuccessful. Enter command again" << endl;
+            continue;
         }
-        if (cmd != "move" && cmd != "resign") {                            // only “move” handled
+        if (cmd != "move" && cmd != "resign") { // check for first part of command
             std::cout << "Unknown command: " << cmd << endl;
             continue;
         }
+        // if resigned, exit game immediately
         if (cmd == "resign") {
             resigned = true;
             return;
         }
-        // Two coordinates are checked
+        // command "move coord1 coord2" is provided
+        if (!(iss >> fromCoord >> toCoord)) {
+            cout << "Syntax: move <from> <to> [chess]" << endl;
+            continue;                                   // ask again
+        }
+        
+        // Two coordinate arguments are checked
         if (!validCoord(fromCoord) || !validCoord(toCoord)) {
             std::cout << "Invalid coordinate arguments." << endl;
             continue;
@@ -95,7 +100,9 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             cout << "Invalid command. Please choose your own chess to move." << endl;
             continue;
         }
+        // Input is a valid format move coord1 coord2
         if (b.moveChess(fromC, toC)) {
+            // a promtion is needed.
             if (b.canPromote(fromC, toC)) {
                 // read char successful
                 if (iss >> promotedTo) {
@@ -127,7 +134,7 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                 continue;
             } // check promotion
             // ordinary move for chess other than pawn
-            remove(toC);
+            b.removeChess(toC);
             b.simpleMove(fromC, toC);
             break;
         } // move valid check
@@ -135,18 +142,19 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
 }
 
 unique_ptr<Bot> createWhiteBot(Board* board, string& kind) {
-    if (kind == "computer[1]") return make_unique<Bot1>(board, Color::WHITE);
-    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::WHITE);
-    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::WHITE);
-    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::WHITE);
+    if (kind == "computer[1]") return make_unique<Bot>(board, Color::WHITE, 1);
+    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::WHITE, 2);
+    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::WHITE, 3);
+    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::WHITE, 4);
 
     return nullptr;
 }
 unique_ptr<Bot> createBlackBot(Board* board, string kind) {
-    if (kind == "computer[1]") return make_unique<Bot1>(board, Color::BLACK);
-    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::BLACK);
-    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::BLACK);
-    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::BLACK);
+
+    if (kind == "computer[1]") return make_unique<Bot>(board, Color::BLACK, 1);
+    else if (kind == "computer[2]") return make_unique<Bot>(board, Color::BLACK, 2);
+    else if (kind == "computer[3]") return make_unique<Bot>(board, Color::BLACK, 3);
+    else if (kind == "computer[4]") return make_unique<Bot>(board, Color::BLACK, 4);
 
     return nullptr;
 }
@@ -365,7 +373,19 @@ int main () {
                 while (true) {
                     cin >> command;
                     if (command == "move") {
-                        whiteBot->move();
+                        command = whiteBot->move();
+                        istringstream iss4(command);
+                        iss4 >> from;
+                        iss4 >> end;
+                        
+                        // deal with promotion and ordinary moves
+                         if (iss4 >> promotedTo) {
+                            board.removeChess(convertCoord(end));
+                            board.removeChess(convertCoord(from));
+                            board.placeChess(end, promotedTo);
+                        } else {
+                            board.simpleMove(convertCoord(from), convertCoord(end));
+                        }
                         break;
                     } else if (command == "resign") {
                         if (currentPlayer == Color::BLACK) {
@@ -378,14 +398,27 @@ int main () {
                         break;
                     }
                     cout << "invalid command, enter \"move\" "
-                        << "to let the computer make a move" << endl;
+                        << "to let the computer make a move.\n"
+                        << "Enter \"resign\" to give up current game." << endl;
                 }
             // move directly if black player is a bot
             } else if (currentPlayer == Color::BLACK && blackPlayer != "human") {
                  while (true) {
                     cin >> command;
                     if (command == "move") {
-                        blackBot->move();
+                        command = blackBot->move();
+                        // the command output from bot is garanteed to be valid.
+                        istringstream iss5(command);
+                        iss5 >> from;
+                        iss5 >> end;
+                        // deal with promotion and ordinary moves
+                         if (iss5 >> promotedTo) {
+                            board.removeChess(convertCoord(end));
+                            board.removeChess(convertCoord(from));
+                            board.placeChess(end, promotedTo);
+                        } else {
+                            board.simpleMove(convertCoord(from), convertCoord(end));
+                        }
                         break;
                     } else if (command == "resign") {
                         if (currentPlayer == Color::BLACK) {
@@ -398,7 +431,8 @@ int main () {
                         break;
                     }
                     cout << "invalid command, enter \"move\" "
-                        << "to let the computer make a move" << endl;
+                        << "to let the computer make a move.\n"
+                        << "Enter \"resign\" to give up current game." << endl;
                 }
             } else { // current turn is a human player
                 // take input from user and make the move
