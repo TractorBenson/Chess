@@ -194,23 +194,26 @@ int main () {
     vector<string> players = {"human", "computer[1]", "computer[2]",
          "computer[3]", "computer[4]"};
 
-    cout << "Welcome to the Chess Game!" << endl;
+    
     Board board;
 
     // outmost loop,allows for multiple gameplays
     while(true) {
+        bool isQuit = false;
+        cout << "Welcome to the Chess Game!" << endl;
+        cout << "Choose game mode:\n"
+                << "  setup - manual setup mode\n"
+                << "  default - standard starting position\n"
+                << "  quit - exit program " << endl;  
+        
         // Mode selection stage
         while(true) {
             // Step one: initilizing a empty board
-            
-            cout << "Choose game mode:\n"
-                << "  setup - manual setup mode\n"
-                << "  game [player_white] [player_black] - standard starting position\n"
-                << "  quit - exit program " << endl;
-            
-
-            cin >> command;
-            if (cin.fail()) break;
+            if (!(cin >> command)) break;
+            if (command == "quit"){
+                isQuit = true;
+                break;
+            }
             if (command == "setup") {
                 cout << "place a chess:  + [Chesstype] [coordinate]\n"
                         << "remove a chess:  - [coordinate]\n"
@@ -284,6 +287,8 @@ int main () {
                             if (!board.isValidSetup()) {
                                 cout << "Current setup is invalid!"
                                 << " Cannot exit until the setup become valid." << end;
+                                cin >> command;
+                                continue;
                             } else {
                                 cout << "Setup mode exited." << endl;
                                 break;
@@ -301,16 +306,16 @@ int main () {
                 board.initChessesWithDefaultArrange();
                 break;
 
-            } else if (command == "quit") {
-                cout << "You quit the game. Game terminates." << endl;
-                return 0;
-            }else{
+            } else{
                 cout << "Invalid command, enter command again." << endl;
                 continue;
             }
         }// while
 
-        
+        if (isQuit) {
+            cout << "Game is terminated." << endl;
+            break;
+        }
         // determine if the palyers on both sides computers? humans? a mix?
         //   what level is the computer?
         while (true) {
