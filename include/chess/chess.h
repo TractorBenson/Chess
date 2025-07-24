@@ -9,7 +9,7 @@
 // #include "board/board.h"
 #include "square/square.h"
 #include "struct/coordinate.h"
-// #include "chess/rook.h"
+#include "chess/rook.h"
 // The includes
 
 using namespace std;
@@ -48,7 +48,7 @@ class Chess {
 
         virtual bool checkCanBeEnPassant() const;
 
-        // virtual const Rook *getRook() const;
+        virtual const Rook *getRook() const;
 };
 
 #endif
