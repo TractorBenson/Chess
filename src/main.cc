@@ -304,6 +304,7 @@ int main () {
                 // initialize the 8*8 grid and attach all observers to squares
                 // under default chess layout
                 board.initChessesWithDefaultArrange();
+                
                 break;
 
             } else{
