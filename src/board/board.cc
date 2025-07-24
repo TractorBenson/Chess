@@ -333,6 +333,8 @@ bool Board::moveChess(Coordinate begin, Coordinate end) {
     cout << "Move is invalid! Please input your commamd again." << endl;
     return false;
 }
+
+
 // Used to check if the move will make currentPlayer's king in check.
 //    (It does not check the king itself). It attempts to move chess 
 //   from begin to end, but stores the original location of the chess
