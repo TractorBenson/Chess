@@ -9,8 +9,7 @@
 #include "struct/coordinate.h"
 #include "third_party/PRNG.h"
 #include "chess/king.h"
-
-class Board; // forward declaration
+#include "board/board.h"
 
 class Bot {
     // pointer to current board
