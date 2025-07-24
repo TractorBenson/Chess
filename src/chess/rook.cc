@@ -1,7 +1,7 @@
 #include "chess/rook.h"
-#include "chess/rook.h"
-#include "board/board.h"
 #include "chess/king.h"
+#include "chess/chess.h"
+#include <algorithm>
 
 using namespace std;
 

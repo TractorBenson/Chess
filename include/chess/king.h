@@ -3,9 +3,9 @@
 
 #include <algorithm>
 #include "chess/chess.h"
-#include "board/board.h"
 
 using namespace std;
+
 
 class King : public Chess {
     public:

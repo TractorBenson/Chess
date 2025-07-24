@@ -1,7 +1,7 @@
 #include "chess/queen.h"
 #include <algorithm>
-#include "board/board.h"
 #include "chess/king.h"
+#include "chess/chess.h"
 
 using namespace std;
 

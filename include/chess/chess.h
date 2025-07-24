@@ -6,15 +6,11 @@
 #include "enum/color.h"
 #include "enum/chesstype.h"
 #include "struct/coordinate.h"
-// #include "board/board.h"
 #include "square/square.h"
-#include "struct/coordinate.h"
-// #include "chess/rook.h"
 // The includes
 
 using namespace std;
 
-class Board;
 
 class Chess {
     Color color;
@@ -49,7 +45,7 @@ class Chess {
 
         virtual bool checkCanBeEnPassant() const;
         
-        // virtual const Rook *getRook() const;
+        bool getIsMovedStatus() const;
 };
 
 #endif
