@@ -11,6 +11,7 @@
 
 using namespace std;
 
+class Board;
 
 class Chess {
     Color color;
