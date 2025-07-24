@@ -238,6 +238,7 @@ void Board::initChessesWithDefaultArrange() {
             Coordinate coord = Coordinate{row, col};
             grid[row][col].setCoordinate(row, col);
             grid[row][col].setColor(currentColor);
+            cout << "reached here" << endl;
 
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {

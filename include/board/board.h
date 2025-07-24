@@ -15,6 +15,7 @@
 class King;
 using namespace std;
 class Board {
+    const size_t sideLength = 8;
     // The grid consists of mutiple squares
     vector<vector<Square>> grid;
     // Pointing to the textdisplayer and graphic displayer
@@ -28,7 +29,6 @@ class Board {
     King* whiteKing = nullptr;
     King* blackKing = nullptr;
 
-    const size_t sideLength = 8;
     // Allows for undoing the last step of the move
     optional<MoveBackup> lastTry;
     
