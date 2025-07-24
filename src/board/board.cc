@@ -345,6 +345,8 @@ bool Board::moveChess(Coordinate begin, Coordinate end) {
     cout << "Move is invalid! Please input your commamd again." << endl;
     return false;
 }
+
+
 // Used to check if the move will make currentPlayer's king in check.
 //    (It does not check the king itself). It attempts to move chess 
 //   from begin to end, but stores the original location of the chess
@@ -385,10 +387,37 @@ void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
 }
 // move chess at begin to end, no matter what, assume the move is already valid
 void Board::simpleMove(Coordinate begin, Coordinate end){
-    Square* from = &grid[begin.row][begin.col];
-    Square* to = &grid[end.row][end.col];
+    Square* from = &(grid[begin.row][begin.col]);
+    Square* to = &(grid[end.row][end.col]);
     Chess* movedC = from->getChess();
         // Actaully move the chess from begin to end
+
+        
+    int diff_x = end.col - begin.col;
+    int diff_y = end.row - begin.row;
+
+    if (movedC->getType() == ChessType::King) {
+        // Castling case ahha!
+        if (diff_x == 2 && diff_y == 0) {
+            Square *future_rook = &(grid[end.row][end.col - 1]);
+            Square *original_rook = &(grid[end.row][end.col + 1]);
+            future_rook->setChess(original_rook->getChess());
+            original_rook->setChess(nullptr);
+        } else if (diff_x == -2 && diff_y == 0) {
+            Square *future_rook = &(grid[end.row][end.col + 1]);
+            Square *original_rook = &(grid[end.row][end.col - 2]);
+            future_rook->setChess(original_rook->getChess());
+            original_rook->setChess(nullptr);
+        }
+    } else if (movedC->getType() == ChessType::Pawn) {
+        if (abs(diff_x) == 1 && abs(diff_y) == 1 && to->getChess() == nullptr)
+        {
+            // The En Passant situation haha!
+            Square *pawnBeEaten = &(grid[begin.row][end.col]);
+            pawnBeEaten->setChess(nullptr);
+        }
+    }
+
     to->setChess(movedC);
     from->setChess(nullptr);
 

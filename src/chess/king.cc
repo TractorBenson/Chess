@@ -41,16 +41,16 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         //   it's invalid, give false back.
         
         // Check if the ending point will make the king be under attacked
-        theBoard.moveAnyway(begin, end);
+        theBoard.testMove(begin, end, this->getColor());
         // Mock that position after moving
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
-            theBoard.backOneStep();
+            theBoard.redoLastStep();
             return false;
         }
         // If it's fine, remember to go back
-        theBoard.backOneStep();
+        theBoard.redoLastStep();
         return true;
     } else if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
         // The castling situation haha!
@@ -124,29 +124,29 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         Coordinate mock_king_way{begin.row, begin.col + x_one_step};
         // Get the mock position of the expect rook position after castling
 
-        theBoard.moveAnyway(begin, mock_king_way);
+        theBoard.testMove(begin, mock_king_way, this->getColor());
         // Mock that position after castling
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
-            theBoard.backOneStep();
+            theBoard.redoLastStep();
             return false;
         }
         // If it's fine, remember to go back
-        theBoard.backOneStep();
+        theBoard.redoLastStep();
 
 
         // Check if the ending point will make the king be under attacked
-        theBoard.moveAnyway(begin, end);
+        theBoard.testMove(begin, end, this->getColor());
         // Mock that position after moving
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
-            theBoard.backOneStep();
+            theBoard.redoLastStep();
             return false;
         }
         // If it's fine, remember to go back
-        theBoard.backOneStep();
+        theBoard.redoLastStep();
 
         // If all the conditions are satisfied, give back true
         return true;

@@ -82,16 +82,16 @@ bool Queen::isValidMove(Board &theBoard, Coordinate begin,
     // Get the king pointer of the friend color
 
     // Mock the board first
-    theBoard.moveAnyway(begin, end);
+    theBoard.testMove(begin, end, color);
     if (tmp_king->isChecked(theBoard) != 0) {
-        theBoard.backOneStep();
+        theBoard.redoLastStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
         return false;
     }
     // If this move will be valid, return true then, and don't
     //   forget to make the board one step back.
-    theBoard.backOneStep();
+    theBoard.redoLastStep();
     return true;
 }
 
