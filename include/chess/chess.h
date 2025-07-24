@@ -7,6 +7,7 @@
 #include "enum/chesstype.h"
 #include "struct/coordinate.h"
 #include "square/square.h"
+#include "board/board.h"
 // The includes
 
 using namespace std;
