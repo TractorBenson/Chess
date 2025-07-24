@@ -27,6 +27,13 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
     }
 }
 
+// const Square& Board::getSquare(Coordinate coord) const {
+//     return grid[coord.row][coord.col];
+// }
+bool Board::squareIsEmpty(Coordinate coord) const {
+    return (grid[coord.row][coord.col].getChess() != nullptr);
+}
+
 const vector<vector<Square>>& Board::getGrid() const {
     return grid;
 }
@@ -43,11 +50,11 @@ ChessType Board::getChessType(Coordinate coord) const{
     return grid[coord.row][coord.col].getChess()->getType();
 }
 
-King* Board::getBlackKing(){
+King* Board::getBlackKing() const {
     return blackKing;
 }
 
-King* Board::getWhiteKing(){
+King* Board::getWhiteKing() const{
     return whiteKing;
 }
 // checkDraw() returns true if any player ever has no legal 
@@ -370,6 +377,10 @@ void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
             whiteKing = static_cast<King*>(movedC);
         }
     }
+}
+
+bool Board::resetLT() {
+    lastTry.reset();
 }
 
 // 
