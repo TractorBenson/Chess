@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Queen::Queen(Color color, Square *theSqare): 
-    Chess{color, ChessType::Queen, theSqare} {}
+Queen::Queen(Color color, Square *theSqare, bool isMoved): 
+    Chess{color, ChessType::Queen, theSqare, isMoved} {}
 
 bool Queen::isValidMove(Board &theBoard, Coordinate begin, 
                         Coordinate end) {

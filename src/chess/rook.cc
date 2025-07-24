@@ -6,7 +6,7 @@
 using namespace std;
 
 Rook::Rook(Color color, Square *theSquare, bool isMoved): 
-    Chess{color, ChessType::Rook, theSquare}, isMoved{isMoved} {}
+    Chess{color, ChessType::Rook, theSquare, isMoved} {}
 
 
 bool Rook::isValidMove(Board &theBoard, Coordinate begin, 
@@ -120,13 +120,6 @@ vector<Coordinate> Rook::validMoves (Board &theBoard) {
 
 void Rook::update() {}
 
-void Rook::updateMoved() {}
+void Rook::updateMoved() { isMoved = true; }
 
-const Rook *Rook::getRook() const {
-    return this;
-}
-
-const bool Rook::getIsMovedStatus() const {
-    return isMoved;
-}
 

@@ -8,7 +8,7 @@ using namespace std;
 
 class Knight : public Chess {
     public:
-        Knight(Color color, Square *theSquare);
+        Knight(Color color, Square *theSquare, bool isMoved);
         bool isValidMove(Board &theBoard, Coordinate begin, 
                          Coordinate end) override;
             // The override declaration

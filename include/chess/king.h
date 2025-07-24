@@ -3,13 +3,11 @@
 
 #include <algorithm>
 #include "chess/chess.h"
-// #include "chess/king.h"
-// #include "board/board.h"
+#include "board/board.h"
 
 using namespace std;
 
 class King : public Chess {
-    bool isMoved;
     public:
         King(Color color, Square *theSquare, bool isMoved);
         bool isValidMove(Board &theBoard, Coordinate begin, 
