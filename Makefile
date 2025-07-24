@@ -2,10 +2,8 @@
 # used for CS 246 final project by 
 # group of Alick, Benson, Leo
 
-MAKEFILEDIR := $(shell cd $(dir $(abspath $(lastword $(MAKEFILE_LIST)))) && pwd)
-
 CXX = g++-14
-CXXFLAGS = -std=c++20 -MMD -Wall -g -I$(MAKEFILEDIR)/include
+CXXFLAGS = -std=c++20 -MMD -Wall -g -Iinclude
 
 SRCDIR = src
 BUILDDIR = build
