@@ -7,8 +7,8 @@
 using namespace std;
 
 Pawn::Pawn(Color color, Square *theSquare, bool isMoved, 
-           bool canBeEnPassant): Chess{color, ChessType::Pawn, theSquare}, 
-                                 isMoved{isMoved}, 
+           bool canBeEnPassant): Chess{color, ChessType::Pawn, 
+                                       theSquare, isMoved}, 
                                  canBeEnPassant{canBeEnPassant} {}
 
 bool Pawn::checkCanBeEnPassant() const {

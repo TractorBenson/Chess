@@ -8,8 +8,8 @@
 
 using namespace std;
 
-Chess::Chess(Color color, ChessType type, Square *theSquare): color{color}, 
-                type{type}, theSquare{theSquare} {}
+Chess::Chess(Color color, ChessType type, Square *theSquare, bool isMoved): 
+            color{color}, type{type}, theSquare{theSquare}, isMoved{isMoved} {}
 
 Color Chess::getColor() const {
     return color;
@@ -32,5 +32,8 @@ void Chess::setSquare(Square *sqr) {
     return;
 }
 
+bool Chess::getIsMovedStatus() const {
+    return isMoved;
+}
 
 

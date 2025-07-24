@@ -6,7 +6,6 @@
 using namespace std;
 
 class Rook : public Chess {
-    bool isMoved;
     public:
         Rook(Color color, Square *theSquare, bool isMoved);
         bool isValidMove(Board &theBoard, Coordinate begin, 
@@ -19,10 +18,7 @@ class Rook : public Chess {
         void update() override;
 
         void updateMoved() override;
-
-        const Rook *getRook() const override;
-
-        const bool getIsMovedStatus() const;
+        
 };
 
 #endif

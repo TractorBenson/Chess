@@ -6,7 +6,7 @@
 using namespace std;
 
 King::King(Color color, Square *theSquare, bool isMoved): 
-    Chess{color, ChessType::King, theSquare}, isMoved{isMoved} {}
+    Chess{color, ChessType::King, theSquare, isMoved} {}
 
 bool King::isValidMove(Board &theBoard, Coordinate begin, 
                        Coordinate end) {
@@ -89,16 +89,14 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
             tmp_chess->getType() != ChessType::Rook || 
             tmp_chess->getColor() != this->getColor()) return false;
 
-        tmp_rook = tmp_chess->getRook();
-
         // If the rook is moved, then the castling is also invalid, 
         //   give back false.
-        if (tmp_rook->getIsMovedStatus() == true) {
+        if (tmp_chess->getIsMovedStatus() == true) {
             return false;
         }
 
         // The absolute distance between king and rook
-        const int distance = abs(tmp_rook->getCoordinate().col - begin.col);
+        const int distance = abs(tmp_chess->getCoordinate().col - begin.col);
 
         for (int i = 1; i < distance; i++)
         {

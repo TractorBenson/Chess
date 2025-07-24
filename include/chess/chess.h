@@ -18,12 +18,13 @@ class Chess {
     Color color;
     ChessType type;
     Square *theSquare;
-        
+    protected:
+        bool isMoved;
     public:
         Coordinate getCoordinate() const;
 
         Chess() = default;
-        Chess(Color color, ChessType type, Square *theSquare);
+        Chess(Color color, ChessType type, Square *theSquare, bool isMoved);
         
         Color getColor() const; // Get the color
 
@@ -46,7 +47,7 @@ class Chess {
 
         virtual bool checkCanBeEnPassant() const;
 
-        virtual const Rook *getRook() const;
+        bool getIsMovedStatus() const;
 };
 
 #endif

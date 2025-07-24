@@ -6,7 +6,7 @@
 using namespace std;
 class Queen : public Chess {
     public:
-        Queen(Color color, Square *theSqare);
+        Queen(Color color, Square *theSqare, bool isMoved);
         bool isValidMove(Board &theBoard, Coordinate begin, 
                          Coordinate end) override;
             // The override declaration

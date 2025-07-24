@@ -8,8 +8,8 @@
 using namespace std;
 
 
-Bishop::Bishop(Color color, Square *theSquare):
-    Chess{color, ChessType::Bishop, theSquare} {}
+Bishop::Bishop(Color color, Square *theSquare, bool isMoved):
+    Chess{color, ChessType::Bishop, theSquare, isMoved} {}
 
 
 bool Bishop::isValidMove(Board &theBoard, Coordinate begin, 
