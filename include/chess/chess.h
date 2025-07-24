@@ -4,16 +4,18 @@
 
 #include <cstddef>
 #include "enum/color.h"
-#include "chess/chess.h"
 #include "enum/chesstype.h"
 #include "struct/coordinate.h"
-#include "board/board.h"
+// #include "board/board.h"
 #include "square/square.h"
 #include "struct/coordinate.h"
-#include "chess/rook.h"
+// #include "chess/rook.h"
 // The includes
 
 using namespace std;
+
+class Board;
+
 class Chess {
     Color color;
     ChessType type;
@@ -46,7 +48,7 @@ class Chess {
 
         virtual bool checkCanBeEnPassant() const;
 
-        virtual const Rook *getRook() const;
+        // virtual const Rook *getRook() const;
 };
 
 #endif

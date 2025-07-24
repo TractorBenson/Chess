@@ -16,7 +16,7 @@ class TextDisplay : public Observer{
     std::vector<std::vector<char>> charGrid;
 
     // helper function convert a Square to specific char
-    char convertSquare(Square&);
+    char convertSquare(const Square&);
 
 public:
     // use a size_t to init vector

@@ -14,11 +14,11 @@ TextDisplay::TextDisplay(size_t size): size{size} {
 }
 
 // helper function convert a Square to specific char
-char TextDisplay::convertSquare(Square &theSquare) {
+char TextDisplay::convertSquare(const Square &theSquare) {
     Chess* pChess = theSquare.getChess();
 
     // of chess* is nullptr, the square is empty
-    if (theChess == nullptr) {
+    if (pChess == nullptr) {
         if (theSquare.getColor() == Color::WHITE) {
             return ' ';
         }
@@ -110,9 +110,9 @@ char TextDisplay::convertSquare(Square &theSquare) {
 void TextDisplay::notify(const Square &theSquare) {
     char currentChess = convertSquare(theSquare);
     charGrid.at(
-        (theSquare->getCoordinate()).row 
+        (theSquare.getCoordinate()).row 
     ).at(
-        (theSquare0>getCoordinate()).col
+        (theSquare.getCoordinate()).col
     ) = currentChess;
 }
 
