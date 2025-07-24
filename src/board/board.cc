@@ -403,11 +403,15 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
             Square *original_rook = &(grid[end.row][end.col + 1]);
             future_rook->setChess(original_rook->getChess());
             original_rook->setChess(nullptr);
+            grid[end.row][end.col - 1].notifyDisplayer();
+            grid[end.row][end.col + 1].notifyDisplayer();
         } else if (diff_x == -2 && diff_y == 0) {
             Square *future_rook = &(grid[end.row][end.col + 1]);
             Square *original_rook = &(grid[end.row][end.col - 2]);
             future_rook->setChess(original_rook->getChess());
             original_rook->setChess(nullptr);
+            grid[end.row][end.col - 2].notifyDisplayer();
+            grid[end.row][end.col + 1].notifyDisplayer();
         }
     } else if (movedC->getType() == ChessType::Pawn) {
         if (abs(diff_x) == 1 && abs(diff_y) == 1 && to->getChess() == nullptr)
@@ -422,6 +426,8 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
     from->setChess(nullptr);
 
     movedC->setSquare(to);
+    grid[begin.row][begin.col].notifyDisplayer();
+    grid[end.row][end.col].notifyDisplayer();
 }
 
 void Board::resetLT() {
@@ -448,7 +454,7 @@ void Board::redoLastStep() {
             whiteKing = m.movedKing;
         }
     }
-
+    
     lastTry.reset();    // discard the backup
 }
 
