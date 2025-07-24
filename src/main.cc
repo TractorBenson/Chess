@@ -384,6 +384,7 @@ int main () {
                             board.removeChess(convertCoord(from));
                             board.placeChess(end, promotedTo);
                         } else {
+                            board.removeChess(convertCoord(end));
                             board.simpleMove(convertCoord(from), convertCoord(end));
                         }
                         break;
@@ -417,6 +418,7 @@ int main () {
                             board.removeChess(convertCoord(from));
                             board.placeChess(end, promotedTo);
                         } else {
+                            board.removeChess(convertCoord(end));
                             board.simpleMove(convertCoord(from), convertCoord(end));
                         }
                         break;
