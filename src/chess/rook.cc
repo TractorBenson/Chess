@@ -2,6 +2,7 @@
 #include "chess/king.h"
 #include "chess/chess.h"
 #include <algorithm>
+#include "board/board.h"
 
 using namespace std;
 

@@ -3,6 +3,7 @@
 #include "chess/king.h"
 #include "chess/chess.h"
 #include "square/square.h"
+#include "board/board.h"
 
 using namespace std;
 

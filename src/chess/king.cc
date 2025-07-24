@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "chess/king.h"
 #include "chess/chess.h"
+#include "board/board.h"
 
 using namespace std;
 
@@ -66,8 +67,6 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         Coordinate mock_rook_posi = begin; // The mock rook position
 
         Chess *tmp_chess; // The temporary chess
-
-        const Rook *tmp_rook; // The temporary rook
 
         if (diff_x_coordinate > 0) {
             // If the king is going to the right
