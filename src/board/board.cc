@@ -136,35 +136,35 @@ void Board::placeChess(Coordinate loc, char type) {
         break;
     case 'Q':
         newChess = std::make_unique
-            <Queen>(Color::WHITE, &sq);
+            <Queen>(Color::WHITE, &sq, false);
         break;
     case 'q':
         newChess = std::make_unique
-            <Queen>(Color::BLACK, &sq);
+            <Queen>(Color::BLACK, &sq, false);
         break;
     case 'B': 
         newChess = std::make_unique
-            <Bishop>(Color::WHITE, &sq);
+            <Bishop>(Color::WHITE, &sq, false);
         break;
     case 'b': 
         newChess = std::make_unique
-            <Bishop>(Color::BLACK, &sq);
+            <Bishop>(Color::BLACK, &sq, false);
         break;
     case 'R':
         newChess = std::make_unique
-            <Rook>(Color::WHITE, &sq);
+            <Rook>(Color::WHITE, &sq, false);
         break;
     case 'r':
         newChess = std::make_unique
-            <Rook>(Color::BLACK, &sq);
+            <Rook>(Color::BLACK, &sq, false);
         break;
     case 'N':
         newChess = std::make_unique
-            <Knight>(Color::WHITE, &sq);
+            <Knight>(Color::WHITE, &sq, false);
         break;
     case 'n':
         newChess = std::make_unique
-            <Knight>(Color::BLACK, &sq);
+            <Knight>(Color::BLACK, &sq, false);
         break;
     case 'P': 
         newChess = std::make_unique
@@ -424,7 +424,7 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
     movedC->setSquare(to);
 }
 
-bool Board::resetLT() {
+void Board::resetLT() {
     lastTry.reset();
 }
 
