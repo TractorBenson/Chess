@@ -3,7 +3,6 @@
 #include "chess/chess.h"
 #include "enum/chesstype.h"
 #include "struct/coordinate.h"
-#include "board/board.h"
 #include "square/square.h"
 
 using namespace std;

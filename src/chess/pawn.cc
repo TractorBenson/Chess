@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "chess/pawn.h"
 #include "chess/king.h"
-#include "board/board.h"
+#include "chess/chess.h"
 #include "square/square.h"
 
 using namespace std;
