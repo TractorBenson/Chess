@@ -68,8 +68,9 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
         getline(cin, player_input); // Get the whole line
 
         istringstream iss(player_input); // Make a istringstream
-        // command "move" is correct
         string cmd;
+        
+        // command "move coord1 coord2" is provided
         if (!(iss >> cmd >> fromCoord >> toCoord)) {
             cout << "Syntax: move <from> <to> [chess]" << endl;
             continue;                                   // ask again
