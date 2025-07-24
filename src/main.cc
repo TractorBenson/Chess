@@ -15,6 +15,7 @@
 #include "struct/coordinate.h"
 #include "struct/moveBackup.h"
 #include "third_party/stb_image.h"
+#include "bot/bot.h"
 #include "RandomNumberGenerator/PRNG.h"
 #include <iostream>
 #include <cstddef>
@@ -55,18 +56,133 @@ void switchPlayer(Color& color) {
     }
 } 
 
+void cin_move(Board &b, bool &resigned, string &fromCoord,
+             string &toCoord, char &promotedTo, Color &currentPlayer,
+            vector<char>& validPromote) {
+
+    string player_input; // The player input
+    Coordinate fromC;
+    Coordinate toC;
+    while (true) {
+        cout << "Enter command:\n move [begin] [end]" << endl;
+        getline(cin, player_input); // Get the whole line
+
+        istringstream iss(player_input); // Make a istringstream
+        // command "move" is correct
+        string cmd;
+        if (!(iss >> cmd >> fromCoord >> toCoord)) {
+            cout << "Syntax: move <from> <to> [chess]" << endl;
+            continue;                                   // ask again
+        }
+        if (cmd != "move" && cmd != "resign") {                            // only “move” handled
+            std::cout << "Unknown command: " << cmd << endl;
+            continue;
+        }
+        if (cmd == "resign") {
+            resigned = true;
+            return;
+        }
+        // Two coordinates are checked
+        if (!validCoord(fromCoord) || !validCoord(toCoord)) {
+            std::cout << "Invalid coordinate arguments." << endl;
+            continue;
+        }
+        fromC = convertCoord(fromCoord);
+        toC = convertCoord(toCoord);
+        // Only allowed to move chess on currentPlayer's side.
+        if (b.getChessColor(fromC) != currentPlayer) {
+            cout << "Invalid command. Please choose your own chess to move." << endl;
+            continue;
+        }
+        if (b.moveChess(fromC, toC)) {
+            if (b.canPromote(fromC, toC)) {
+                // read char successful
+                if (iss >> promotedTo) {
+                    if (contains(validPromote, promotedTo)) {
+                    
+                        if (currentPlayer == Color::WHITE) {
+                            // only allowed to promote chess to own color
+                            if(islower(static_cast<unsigned char>(promotedTo))) {
+                                b.removeChess(toC); // remove destination chess, if any
+                                b.simple(fromC, toC); // move to destination chess,
+                                b.removeChess(toC); // remove the pawn
+                                b.placeChess(toC, promotedTo); // add the new promoted chess
+                                break;
+                            }
+                        } else {
+                            if(isupper(static_cast<unsigned char>(promotedTo))) {
+                                b.removeChess(toC); // remove destination chess, if any
+                                b.simple(fromC, toC); // move to destination chess,
+                                b.removeChess(toC); // remove the pawn
+                                b.placeChess(toC, promotedTo); // add the new promoted chess
+                                break;
+                            }
+                        }
+                    }
+                    cout << "Invalid promotion" << endl;
+                    continue;
+                }// read promote char
+                cout << "Promotion argument cannot found. Invalid command." << endl;
+                continue;
+            } // check promotion
+            // ordinary move for chess other than pawn
+            remove(toC);
+            b.simpleMove(fromC, toC);
+            break;
+        } // move valid check
+    } // while loop
+}
+
+unique_ptr<Bot> createWhiteBot(Board* board, string& kind) {
+    if (kind == "computer[1]") return make_unique<Bot1>(board, Color::WHITE);
+    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::WHITE);
+    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::WHITE);
+    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::WHITE);
+
+    return nullptr;
+}
+unique_ptr<Bot> createBlackBot(Board* board, string kind) {
+    if (kind == "computer[1]") return make_unique<Bot1>(board, Color::BLACK);
+    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::BLACK);
+    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::BLACK);
+    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::BLACK);
+
+    return nullptr;
+}
+
+void endGameMessage(int black_score, int white_score) {
+   cout << "The score so far is: " << endl;
+   cout << "White: " << white_score << endl;
+   cout << "Black: " << black_score << endl;
+}
 
 
 int main () {
+
     int intCoord;
-    int blackScore = 0;
-    int whiteScore = 0;
+    double blackScore = 0;
+    double whiteScore = 0;
     char typeChar;
+    // strings to store whether palyers are computer or human
+    string playerMode;
+    string currentPlayerType;
+    string whitePlayer;
+    string blackPlayer;
+    string from;
+    string end;
+    string promotedTo;
+
+    bool resigned = false;
+
     string para; 
     string command;
     Color currentPlayer = Color::WHITE;
     vector<char> validParams = {'R', 'K', 'Q', 'P', 'B', 'N', 'r'
         , 'k', 'q', 'p', 'b', 'n'};
+    vector<char> validPromote ={ "R", 'Q', 'B', 'N', 'r',
+         'q', 'b', 'n'};
+    vector<string> players = {"human", "computer[1]", "computer[2]",
+         "computer[3]", "computer[4]"};
 
     cout << "Welcome to the Chess Game!" << endl;
     Board board;
@@ -182,20 +298,141 @@ int main () {
                 cout << "Invalid command, enter command again." << endl;
                 continue;
             }
-        }
+        }// while
 
+        
+        // determine if the palyers on both sides computers? humans? a mix?
+        //   what level is the computer?
         while (true) {
-            if (command == "resign") {
-                if (currentPlayer == Color::BLACK) {
-                    cout << "Black resigned! White wins!" << endl;
+            
+            getline(cin, playerMode);
+            istringstream iss2(playerMode);
+            cout << "Enter:\ngame [white-player] [black-player], "
+                << "players are either \"human\" or \"computer[1-4]\"." << endl;
+            if (iss2 >> command) {
+                // the command is correct
+                if (command == "game") {
+                    // success in reading first arg
+                    if(iss2 >> whitePlayer) {
+                        // arg1 in range
+                        if (contains(players, whitePlayer)){
+                            // read of second arg successful
+                            if (iss2 >> blackPlayer) {
+                                // arg2 in range
+                                if (contains(players, blackPlayer)) {
+                                    continue;
+                                }
+                            }// if arg2
+                        } // if contain
+                    }// if arg1
+                }// if game
+                cout << "Invalid command." << endl;
+                continue;
+            }
+            cout << "Read from input is unsuccessful." << endl;
+        }// while
+
+        // The actual playing section starts, repeatedly taking
+        //  move commands until resign, draw, or checkmate.
+        while (true) {
+            Color opponent;
+            if (currentPlayer == Color::BLACK){
+                opponent = Color::WHITE;
+            } else {
+                opponent = Color::BLACK;
+            }
+
+            // Check draw at beginning of each turn:
+            //   not checked but has no valid moves.
+            //   Terminate current game immediately
+            if ((!(board.isCheck(opponent)) &&
+                board.noValidMoves(currentPlayer))) {
+                cout << "Stalemate!" << endl;
+                blackScore += 0.5;
+                whiteScore += 0.5;
+                break;
+            }
+            // create bots, if exists
+            if (whitePlayer != "human") {
+                auto whiteBot = createWhiteBot(*board, whitePlayer);
+            }
+            if (blackPlayer != "human") {
+                auto blackBot = createBlackBot(*board, blackPlayer);
+            }
+            // move directly if white player is a bot
+            if (currentPlayer == Color::WHITE && whitePlayer != "human") {
+                while (true) {
+                    cin >> command;
+                    if (command == "move") {
+                        whiteBot->move();
+                        break;
+                    } else if (command == "resign") {
+                        if (currentPlayer == Color::BLACK) {
+                            cout << "Black resigned! White wins!" << endl;
+                            whiteScore++;
+                        } else {
+                            cout << "White resigned! Black wins!" << endl;
+                            blackScore++;
+                        }
+                        break;
+                    }
+                    cout << "invalid command, enter \"move\" "
+                        << "to let the computer make a move" << endl;
+                }
+            // move directly if black player is a bot
+            } else if (currentPlayer == Color::BLACK && blackPlayer != "human") {
+                 while (true) {
+                    cin >> command;
+                    if (command == "move") {
+                        blackBot->move();
+                        break;
+                    } else if (command == "resign") {
+                        if (currentPlayer == Color::BLACK) {
+                            cout << "Black resigned! White wins!" << endl;
+                            whiteScore++;
+                        } else {
+                            cout << "White resigned! Black wins!" << endl;
+                            blackScore++;
+                        }
+                        break;
+                    }
+                    cout << "invalid command, enter \"move\" "
+                        << "to let the computer make a move" << endl;
+                }
+            } else { // current turn is a human player
+                // take input from user and make the move
+                cin_move(board, resigned, from, end, promotedTo,
+                     currentPlayer, validPromote);
+                if (resigned) {
+                    if (currentPlayer == Color::BLACK) {
+                        cout << "Black resigned! White wins!" << endl;
+                        whiteScore++;
+                    } else {
+                        cout << "White resigned! Black wins!" << endl;
+                        blackScore++;
+                    }
+                    break;
+                }
+            }// current turn move finished
+
+            // examine checkmate situation at start of each turn
+            //   (currentPlayer checkmates the opponent)
+            if (board.isCheckmate(currentPlayer)) {
+                // Add one score on currentPlayer
+                if (currentPlayer == Color::WHITE) {
                     whiteScore++;
                 } else {
-                    cout << "White resigned! Black wins!" << endl;
                     blackScore++;
                 }
+                // terminate current game immediately
                 break;
-            } else if (command == move)
-        }
-    }
-
+            } // check condition is determined together with draw at the
+            //   beginning of the turn.
+            switchPlayer();
+        }// while loop for each game
+        endGameMessage(blackScore, whiteScore);
+    } // outmost while
+    cout << "Final Score:\n"
+        << "White: " << whiteScore << "\n"
+        << "Black: " << blackScore << endl;
 }

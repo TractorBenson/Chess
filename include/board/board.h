@@ -35,6 +35,7 @@ class Board {
         Board();
         const vector<vector<Square>>& getGrid() const;
         size_t getSideLength() const;
+        Color getChessColor(Coordinate coord) const;
         ChessType getChessType(Coordinate coord) const;
         King* getWhiteKing() const;
         King* getBlackKing() const;
@@ -66,6 +67,8 @@ class Board {
         bool resetLT();
         // Try to move a chess, used to check if the move causes a "self-check"
         void testMove(Coordinate begin, Coordinate end, Color currentPlayer);
+
+        void simpleMove(Coordinate begin, Coordinate end);
         // Redo the last movement of current player
         void redoLastStep();
         // Determine if a check exist in current step

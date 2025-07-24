@@ -40,6 +40,9 @@ const vector<vector<Square>>& Board::getGrid() const {
 size_t Board::getSideLength() const {
     return sideLength;
 }
+Color Board::getChessColor(Coordinate coord) const {
+    return grid[coord.row][coord.col].getChess()->getColor();
+}
 const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
     return whiteChesses;
 }
@@ -305,13 +308,15 @@ bool Board::isValidSetup() {
 }
 
 // checks if the chess is a pawn and can be promoted in current round
-//   This method is called on A Pawn only (after using getChessType on begin)
+//   This is called after using moveChess(begin, end), which means the move is
+//   valid, the method only checks if the chess is a pawn and can be promoted
 bool Board::canPromote(Coordinate begin, Coordinate end) {
     // coordinate begin is ensured valid during input stage
     Square &sq = grid[begin.row][begin.col];
     Chess* piece = sq.getChess();
-    // If the move locations are invalid, return false immediately
-    if (!moveChess(begin, end)) return false;
+    if (piece->getType() != ChessType::Pawn) {
+        return false;
+    }
     // After the move being valid, check if the pawn is at bottom lines
     if (piece->getColor() == Color::BLACK) {
         // Case where black Pawn reached the white bottom
@@ -377,6 +382,17 @@ void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
             whiteKing = static_cast<King*>(movedC);
         }
     }
+}
+// move chess at begin to end, no matter what, assume the move is already valid
+void Board::simpleMove(Coordinate begin, Coordinate end){
+    Square* from = &grid[begin.row][begin.col];
+    Square* to = &grid[end.row][end.col];
+    Chess* movedC = from->getChess();
+        // Actaully move the chess from begin to end
+    to->setChess(movedC);
+    from->setChess(nullptr);
+
+    movedC->setSquare(to);
 }
 
 bool Board::resetLT() {
