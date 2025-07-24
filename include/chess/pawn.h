@@ -7,7 +7,6 @@
 using namespace std;
 
 class Pawn : public Chess {
-    bool isMoved;
     bool canBeEnPassant;
     public:
         Pawn(Color color, Square *theSquare, bool isMoved, 
