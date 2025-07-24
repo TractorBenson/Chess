@@ -1,10 +1,11 @@
 #ifndef COORDINATE_H
 #define COORDINATE_H
 // Just ensure the class is defined only once
+#include <cstddef>
 
 struct Coordinate {
-    int row;
-    int col;
+    size_t row;
+    size_t col;
 };
 
 

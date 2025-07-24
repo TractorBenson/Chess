@@ -12,6 +12,7 @@
 #include <memory>
 #include <optional>
 
+class King;
 using namespace std;
 class Board {
     // The grid consists of mutiple squares
@@ -64,7 +65,7 @@ class Board {
         // Move the chess on location begin to end, 
         //   remember to take these two coordinate from a vector from bot 
         bool moveChess(Coordinate begin, Coordinate end);
-        bool resetLT();
+        void resetLT();
         // Try to move a chess, used to check if the move causes a "self-check"
         void testMove(Coordinate begin, Coordinate end, Color currentPlayer);
 

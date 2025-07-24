@@ -1,7 +1,9 @@
-#include "square/square.h"
-#include "chess/chess.h"
-#include "chess/king.h"
+#ifndef MOVEBACKUP_H
+#define MOVEBACKUP_H
 
+class Square;
+class Chess;
+class King;
 struct MoveBackup {
     Square* from;
     Square* to;
@@ -9,3 +11,5 @@ struct MoveBackup {
     Chess* capturedC;
     King* movedKing;
 };
+
+#endif

@@ -16,8 +16,8 @@
 #include "struct/moveBackup.h"
 #include "third_party/stb_image.h"
 #include "bot/bot.h"
-#include "RandomNumberGenerator/PRNG.h"
 #include <iostream>
+#include <sstream>
 #include <cstddef>
 #include <vector>
 #include <memory>
@@ -28,16 +28,16 @@
 using namespace std;
 
 // Helper function to ensure input in range
-
-bool contains(const vector<char>& range, char value) const{
-    return std::find(range.begin(), range.end(), value) != range.end();
+template <typename T>
+bool contains(const vector<T>& range, T value){
+    return find(range.begin(), range.end(), value) != range.end();
 }
 
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
-    int irow = row - '1';
-    int icol = col - 'a';
+    size_t irow = row - '1';
+    size_t icol = col - 'a';
     return Coordinate{irow, icol};
 }
 
@@ -112,16 +112,14 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                             // only allowed to promote chess to own color
                             if(islower(static_cast<unsigned char>(promotedTo))) {
                                 b.removeChess(toC); // remove destination chess, if any
-                                b.simple(fromC, toC); // move to destination chess,
-                                b.removeChess(toC); // remove the pawn
+                                b.removeChess(fromC); // remove the pawn
                                 b.placeChess(toC, promotedTo); // add the new promoted chess
                                 break;
                             }
                         } else {
                             if(isupper(static_cast<unsigned char>(promotedTo))) {
                                 b.removeChess(toC); // remove destination chess, if any
-                                b.simple(fromC, toC); // move to destination chess,
-                                b.removeChess(toC); // remove the pawn
+                                b.removeChess(fromC); // remove the pawn
                                 b.placeChess(toC, promotedTo); // add the new promoted chess
                                 break;
                             }
@@ -168,7 +166,7 @@ void endGameMessage(int black_score, int white_score) {
 
 int main () {
 
-    int intCoord;
+    Coordinate intCoord;
     double blackScore = 0;
     double whiteScore = 0;
     char typeChar;
@@ -179,7 +177,10 @@ int main () {
     string blackPlayer;
     string from;
     string end;
-    string promotedTo;
+    char promotedTo;
+
+    unique_ptr<Bot> whiteBot = nullptr;
+    unique_ptr<Bot> blackBot = nullptr;
 
     bool resigned = false;
 
@@ -188,7 +189,7 @@ int main () {
     Color currentPlayer = Color::WHITE;
     vector<char> validParams = {'R', 'K', 'Q', 'P', 'B', 'N', 'r'
         , 'k', 'q', 'p', 'b', 'n'};
-    vector<char> validPromote ={ "R", 'Q', 'B', 'N', 'r',
+    vector<char> validPromote ={ 'R', 'Q', 'B', 'N', 'r',
          'q', 'b', 'n'};
     vector<string> players = {"human", "computer[1]", "computer[2]",
          "computer[3]", "computer[4]"};
@@ -302,7 +303,7 @@ int main () {
 
             } else if (command == "quit") {
                 cout << "You quit the game. Game terminates." << endl;
-                return;
+                return 0;
             }else{
                 cout << "Invalid command, enter command again." << endl;
                 continue;
@@ -341,6 +342,13 @@ int main () {
             cout << "Read from input is unsuccessful." << endl;
         }// while
 
+        // create bots, if exists
+        if (whitePlayer != "human") {
+            whiteBot = createWhiteBot(&board, whitePlayer);
+        }
+        if (blackPlayer != "human") {
+            blackBot = createBlackBot(&board, blackPlayer);
+        }
         // The actual playing section starts, repeatedly taking
         //  move commands until resign, draw, or checkmate.
         while (true) {
@@ -361,13 +369,7 @@ int main () {
                 whiteScore += 0.5;
                 break;
             }
-            // create bots, if exists
-            if (whitePlayer != "human") {
-                auto whiteBot = createWhiteBot(*board, whitePlayer);
-            }
-            if (blackPlayer != "human") {
-                auto blackBot = createBlackBot(*board, blackPlayer);
-            }
+            
             // move directly if white player is a bot
             if (currentPlayer == Color::WHITE && whitePlayer != "human") {
                 while (true) {
@@ -382,7 +384,7 @@ int main () {
                          if (iss4 >> promotedTo) {
                             board.removeChess(convertCoord(end));
                             board.removeChess(convertCoord(from));
-                            board.placeChess(end, promotedTo);
+                            board.placeChess(convertCoord(end), promotedTo);
                         } else {
                             board.removeChess(convertCoord(end));
                             board.simpleMove(convertCoord(from), convertCoord(end));
@@ -416,7 +418,7 @@ int main () {
                          if (iss5 >> promotedTo) {
                             board.removeChess(convertCoord(end));
                             board.removeChess(convertCoord(from));
-                            board.placeChess(end, promotedTo);
+                            board.placeChess(convertCoord(end), promotedTo);
                         } else {
                             board.removeChess(convertCoord(end));
                             board.simpleMove(convertCoord(from), convertCoord(end));
@@ -465,7 +467,7 @@ int main () {
                 break;
             } // check condition is determined together with draw at the
             //   beginning of the turn.
-            switchPlayer();
+            switchPlayer(currentPlayer);
         }// while loop for each game
         endGameMessage(blackScore, whiteScore);
     } // outmost while
