@@ -143,9 +143,9 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
 
 unique_ptr<Bot> createWhiteBot(Board* board, string& kind) {
     if (kind == "computer[1]") return make_unique<Bot>(board, Color::WHITE, 1);
-    else if (kind == "computer[2]") return make_unique<Bot2>(board, Color::WHITE, 2);
-    else if (kind == "computer[3]") return make_unique<Bot3>(board, Color::WHITE, 3);
-    else if (kind == "computer[4]") return make_unique<Bot4>(board, Color::WHITE, 4);
+    else if (kind == "computer[2]") return make_unique<Bot>(board, Color::WHITE, 2);
+    else if (kind == "computer[3]") return make_unique<Bot>(board, Color::WHITE, 3);
+    else if (kind == "computer[4]") return make_unique<Bot>(board, Color::WHITE, 4);
 
     return nullptr;
 }
@@ -329,7 +329,7 @@ int main () {
                             if (iss2 >> blackPlayer) {
                                 // arg2 in range
                                 if (contains(players, blackPlayer)) {
-                                    continue;
+                                    break;
                                 }
                             }// if arg2
                         } // if contain
