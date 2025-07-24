@@ -41,7 +41,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         //   it's invalid, give false back.
         
         // Check if the ending point will make the king be under attacked
-        theBoard.testMove(begin, end);
+        theBoard.testMove(begin, end, this->getColor());
         // Mock that position after moving
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
@@ -124,7 +124,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         Coordinate mock_king_way{begin.row, begin.col + x_one_step};
         // Get the mock position of the expect rook position after castling
 
-        theBoard.testMove(begin, mock_king_way);
+        theBoard.testMove(begin, mock_king_way, this->getColor());
         // Mock that position after castling
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
@@ -137,7 +137,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
 
 
         // Check if the ending point will make the king be under attacked
-        theBoard.testMove(begin, end);
+        theBoard.testMove(begin, end, this->getColor());
         // Mock that position after moving
         if (this->isChecked(theBoard) != 0) {
             // If the king will be underattacked, go back first, and 
