@@ -16,7 +16,7 @@ GraphDisplay::GraphDisplay(size_t n): numSquare{n} {
     xw->fillRectangle(0, 0, WINDOW_SIZE, WINDOW_SIZE, BACKGROUND_COLOR);
 }
 
-Color switchColor(Color color) {
+Color GraphDisplay::switchColor(Color color) {
     if (color == Color::WHITE) return Color::BLACK;
     else if (color == Color::BLACK) return Color::WHITE;
     else return color;

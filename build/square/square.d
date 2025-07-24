@@ -1,5 +1,3 @@
-build/square/square.o: src/square/square.cc \
- /u8/b42xiao/cs246/project/include/square/square.h \
- /u8/b42xiao/cs246/project/include/enum/color.h \
- /u8/b42xiao/cs246/project/include/struct/coordinate.h \
- /u8/b42xiao/cs246/project/include/observer/observer.h
+build/square/square.o: src/square/square.cc include/square/square.h \
+ include/enum/color.h include/struct/coordinate.h \
+ include/observer/observer.h
