@@ -453,6 +453,10 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
             grid[end.row][end.col + 1].notifyDisplayer();
         }
     } else if (movedC->getType() == ChessType::Pawn) {
+
+        if (abs(diff_y) == 2) {
+            static_cast<Pawn*>(movedC)->setEnPassant();
+        }
         // The en passant situation
         if (abs(diff_x) == 1 && abs(diff_y) == 1 && to.getChess() == nullptr)
         {   
