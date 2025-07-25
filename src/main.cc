@@ -37,10 +37,8 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
-    cout << "col is: " << col << endl;
     int irow = row - '1';
     int icol = col - 'a';
-    cout << "icol is: " << icol << endl;
     return Coordinate{irow, icol};
 }
 
@@ -125,13 +123,11 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                 // read char successful
                 if (iss >> promotedTo) {
                     if (currentPlayer == Color::WHITE && (validWhiteP, promotedTo)) {
-                        cout << "line 128" << endl;
                         b.removeChess(toC); // remove destination chess, if any
                         b.removeChess(fromC); // remove the pawn
                         b.placeChess(toC, promotedTo); // add the new promoted chess
                         break;
                     } else if (currentPlayer == Color::BLACK && (validBlackP, promotedTo)) {
-                        cout << "line 140" << endl;
                         b.removeChess(toC); // remove destination chess, if any
                         b.removeChess(fromC); // remove the pawn
                         b.placeChess(toC, promotedTo); // add the new promoted chess
@@ -148,7 +144,6 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             b.removeChess(toC);   
             b.simpleMove(fromC, toC);
             
-            cout << "line 163" << endl;
             break;
         } // move valid check
         if (cin.fail()) {
@@ -312,9 +307,7 @@ int main () {
                         } else if (command == "done") {
                             // exit setup mode
                             // check if the setup is valid?
-                            cout << "line 317" << endl;
                             if (!board.isValidSetup()) {
-                                cout << "line 319" << endl;
                                 cin >> command;
                                 continue;
                             } else {
@@ -353,7 +346,7 @@ int main () {
         //-----------------------------------------------------------------------------------
         // Second while loop determine if the palyers on both sides computers? humans? a mix?
         //   what level is the computer?
-        if (cin.fail()) cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        //cin.clear();
         while (true) {
             if (cin.fail()) {
                 cin.clear();   // reset fail bit
@@ -450,7 +443,6 @@ int main () {
                         } else {
                             board.removeChess(convertCoord(end));
                             board.simpleMove(convertCoord(from), convertCoord(end));
-                            cout << "reached 447" << endl;
                         }
 
                         break;

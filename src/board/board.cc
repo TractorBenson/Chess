@@ -50,9 +50,7 @@ size_t Board::getSideLength() const {
 Color Board::getChessColor(Coordinate coord) const {
     cout << coord.row << endl;
     cout << coord.col << endl;
-    if (grid[coord.row][coord.col].getChess()->getColor() == Color::WHITE) {
-        cout << "it's white" << endl;
-    }
+
     return grid[coord.row][coord.col].getChess()->getColor();
 }
 const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
