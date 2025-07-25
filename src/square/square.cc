@@ -67,3 +67,4 @@ void Square::setColor(Color newColor) {
 void Square::removeChess() {
     chess = nullptr;
 }
+

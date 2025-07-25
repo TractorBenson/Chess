@@ -256,3 +256,4 @@ void Xwindow::drawPic(string key, int x, int y) {
 
   XSetClipMask(d, gc, None); // reset clip info, prevent affect further drawing
 }
+

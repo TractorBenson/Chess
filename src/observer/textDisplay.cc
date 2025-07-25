@@ -156,3 +156,4 @@ std::ostream &TextDisplay::printBoard(std::ostream &os) {
 std::ostream &operator<<(std::ostream &os, TextDisplay &td) {
     return td.printBoard(os);
 }
+

@@ -18,7 +18,9 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    //obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+#ifndef NOGD
+    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+#endif
 
     // Attach observer to all squares.
     for (auto& row : grid) {
@@ -541,3 +543,4 @@ ostream &operator<<(ostream &out, const Board &b) {
     if (b.obs[0]) out << *(static_cast<TextDisplay*>(b.obs[0].get()));
     return out;
 }
+

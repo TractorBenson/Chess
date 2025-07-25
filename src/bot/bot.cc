@@ -273,3 +273,4 @@ string Bot::surviveFirstMove() {
     // if there is not captured chesses, try to capture opponent's and check opponent
     return captureFirstMove();
 }
+
