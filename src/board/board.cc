@@ -12,6 +12,7 @@ using namespace std;
 
 Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
+    initBoard();
     whiteChesses.reserve(16);
     blackChesses.reserve(16);
 
@@ -226,6 +227,29 @@ void Board::removeChess(Coordinate loc) {
     sq.notifyDisplayer();
 }
 
+void Board::initBoard() {
+    Color currentColor = Color::BLACK;
+
+    for (size_t row = 0; row < sideLength; ++row) {
+        for (size_t col = 0; col < sideLength; ++col) {
+            // set fields of all squares
+            Coordinate coord = Coordinate{row, col};
+            grid[row][col].setCoordinate(row, col);
+            grid[row][col].setColor(currentColor);
+            if (currentColor == Color::BLACK) {
+                currentColor = Color::WHITE;
+            } else {
+                currentColor = Color::BLACK;
+            }
+        }
+        if (currentColor == Color::BLACK) {
+                currentColor = Color::WHITE;
+            } else {
+                currentColor = Color::BLACK;
+            }
+    }       
+}
+
 // place all chesses with default layout before gamestart.
 //   The chess fields are left as nullptr, while observers are
 //   attached to the squares.
@@ -236,9 +260,6 @@ void Board::initChessesWithDefaultArrange() {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
             Coordinate coord = Coordinate{row, col};
-            grid[row][col].setCoordinate(row, col);
-            grid[row][col].setColor(currentColor);
-            cout << "reached here" << endl;
 
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {

@@ -306,7 +306,6 @@ int main () {
                 board.initChessesWithDefaultArrange();
                 
                 break;
-
             } else{
                 cout << "Invalid command, enter command again." << endl;
                 continue;
