@@ -217,12 +217,12 @@ int main () {
 
     // outmost loop,allows for multiple gameplays
     while(true) {
+        currentPlayer = Color::WHITE;
+        resigned = false;
         Board board;
         bool isQuit = false;
         cout << "Welcome to the Chess Game!" << endl;
         
-        
-        cout << board;
         // Mode selection stage
         while(true) {
             cout << "Choose game mode:\n"
@@ -353,8 +353,12 @@ int main () {
         //-----------------------------------------------------------------------------------
         // Second while loop determine if the palyers on both sides computers? humans? a mix?
         //   what level is the computer?
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (cin.fail()) cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         while (true) {
+            if (cin.fail()) {
+                cin.clear();   // reset fail bit
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
             cout << "Enter:\ngame [white-player] [black-player], "
                 << "players are either \"human\" or \"computer[1-4]\"." << endl;
             string playerType;
@@ -380,12 +384,6 @@ int main () {
             }
 
             cout << "Invalid command. Try again.\n";
-
-            //---------- CLEAR ONLY IF NEEDED -------------
-            if (cin.fail()) {
-                cin.clear();   // reset fail bit
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
         }// while
         
         if (isQuit) {
@@ -429,17 +427,14 @@ int main () {
                         cin.clear();   // reset fail bit
                         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     }
-                    cout << board;
-                    cout << "Enter \"move\" to let the bot move" << endl;
+                    cout << "Enter \"move\" to let the bot move\n"
+                        << "Enter \"resign\" to resign\n"
+                        << "Enter \"quit\" to terminate program" << endl;
                     cin >> command;
 
                     if (command == "move") {
 
-                        // cout << "11111" << endl;
-
                         command = whiteBot->move();
-
-                        // cout << "2222" << endl;
 
                         istringstream iss4(command);
                         iss4 >> from;
@@ -453,9 +448,7 @@ int main () {
                             board.removeChess(convertCoord(from));
                             board.placeChess(convertCoord(end), promotedTo);
                         } else {
-                            cout << "reached 443" << endl;
                             board.removeChess(convertCoord(end));
-                            cout << "reached 445" << endl;
                             board.simpleMove(convertCoord(from), convertCoord(end));
                             cout << "reached 447" << endl;
                         }
@@ -470,22 +463,28 @@ int main () {
                             blackScore++;
                         }
                         break;
+                    } else if (command == "quit") {
+                        isQuit = true;
+                        break;
                     }
                     cout << "invalid command, enter \"move\" "
                         << "to let the computer make a move.\n"
                         << "Enter \"resign\" to give up current game." << endl;
+                }// move while loop
+                if (isQuit) {
+                    break;
                 }
             // move directly if black player is a bot
             } else if (currentPlayer == Color::BLACK && blackPlayer != "human") {
+                // while loop to ensure move command correct
                  while (true) {
                     if (cin.fail()){
                         cin.clear();   // reset fail bit
                         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     }
-                    cout << "Enter \"move\" to let the bot move" << endl;
-                    cin.clear();   // reset fail bit
-                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    cout << board;
+                    cout << "Enter \"move\" to let the bot move\n"
+                        << "Enter \"resign\" to resign\n"
+                        << "Enter \"quit\" to terminate program" << endl;
                     cin >> command;
                     if (command == "move") {
                         command = blackBot->move();
@@ -512,10 +511,16 @@ int main () {
                             blackScore++;
                         }
                         break;
+                    } else if (command == "quit") {
+                        isQuit = true;
+                        break;
                     }
                     cout << "invalid command, enter \"move\" "
                         << "to let the computer make a move.\n"
                         << "Enter \"resign\" to give up current game." << endl;
+                }// while loop
+                if (isQuit) {
+                    break;
                 }
             } else { // current turn is a human player
                 // take input from user and make the move
@@ -536,10 +541,9 @@ int main () {
                     break;
                 }
             }// current turn move finished
-
+            cout << board;
             // examine checkmate situation at start of each turn
             //   (currentPlayer checkmates the opponent)
-            cout << "main 545" << endl;
             if (board.isCheckmate(currentPlayer)) {
                 // Add one score on currentPlayer
                 if (currentPlayer == Color::WHITE) {
@@ -550,9 +554,9 @@ int main () {
                 // terminate current game immediately
                 break;
             } // check condition is determined together with draw at the
-            cout << "line 556" << endl;
             switchPlayer(currentPlayer);
         }// while loop for each game
+
         if (isQuit) {
             break;
         }
