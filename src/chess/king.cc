@@ -337,6 +337,31 @@ int King::isChecked (const Board &theBoard) const {
         }
     }
 
+    // Lastly, check the king cannot see king (Setup mode)
+    for (int lrow=-1; lrow<=1; ++lrow)
+        for (int lcol=-1; lcol<=1; ++lcol)
+            if (!(lrow == 0 && lcol == 0)){
+                Coordinate mock_king_posi;
+                mock_king_posi.row = this->getCoordinate().row + lrow;
+                mock_king_posi.col = this->getCoordinate().col + lcol;
+                if (mock_king_posi.col < 0 || 
+                    mock_king_posi.col >= theBoard.getSideLength() ||
+                    mock_king_posi.row < 0 || 
+                    mock_king_posi.col >= theBoard.getSideLength()) {
+                        continue;
+                }
+                Chess *mock_king = tmp_grid[mock_king_posi.row]
+                                           [mock_king_posi.col].getChess();
+                if (mock_king == nullptr) {
+                    continue;
+                }
+                if (mock_king->getType() == ChessType::King &&
+                    mock_king->getColor() != this->getColor()) {
+                    attacking_num++;
+                    return attacking_num;
+                }
+            }
+
     return attacking_num;
 }
 
