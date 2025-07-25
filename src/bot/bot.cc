@@ -45,11 +45,16 @@ string Bot::convertCoordinate(Coordinate begin, Coordinate end) {
     endR = static_cast<char>(end.row + '1');
     endC = static_cast<char>(end.col + 'a');
 
-    string result;
-    result += beginC + beginR + ' ' + endC + endR;
+    string result = "";
+    result += beginC;
+    result += beginR;
+    result += ' ';
+    result += endC;
+    result += endR;
 
     if ((end.row == 0 || end.row == 7) && theBoard->getGrid().at(begin.row).at(begin.col).getChess()->getType() == ChessType::Pawn) {
-        result += ' ' + 'Q';
+        result += ' ';
+        result += 'Q';
     }
 
     return result;
