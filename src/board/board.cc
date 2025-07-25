@@ -199,18 +199,19 @@ void Board::placeChess(Coordinate loc, char type) {
         whiteKing = static_cast<King*>(newChess.get());
     }
 
-    if (newChess->getColor() == Color::WHITE) {
+    if (newChess->getColor() == Color::WHITE && 
+        whiteChesses.size() != 16) {
         whiteChesses.emplace_back(std::move(newChess));
-    } else {
+    } else if (newChess->getColor() == Color::BLACK 
+        && blackChesses.size() != 16) {
         blackChesses.emplace_back(std::move(newChess));
+    } else {
+        cout << "Chess number limit of this color reached." << endl;
     }
     // Add the newly added chess to the corresponding chess vector,
     //   if the chess is a King, update the King pointers, too.
     
     sq.notifyDisplayer();
-    if (whiteChesses[0].get()->getColor() == Color::WHITE) {
-        cout << "chess color is white " << endl;
-    }
 }
 
 // Remove existing chess on loc, do nothing if there's no chess on loc
@@ -326,8 +327,8 @@ bool Board::isValidSetup() {
         return false;
     }
     // Two kings should not be in check
-    if ((*whiteKing).isChecked(*this) || 
-        (*blackKing).isChecked(*this)) {
+    if (whiteKing->isChecked(*this) || 
+        blackKing->isChecked(*this)) {
         cout << "Invalid Setup! At least one King is in check." << endl;
         return false;
     }

@@ -178,7 +178,7 @@ unique_ptr<Bot> createBlackBot(Board* board, string kind) {
     return nullptr;
 }
 
-void endGameMessage(int black_score, int white_score) {
+void endGameMessage(double black_score, double white_score) {
    cout << "The score so far is: " << endl;
    cout << "White: " << white_score << endl;
    cout << "Black: " << black_score << endl;
@@ -223,28 +223,37 @@ int main () {
         Board board;
         bool isQuit = false;
         cout << "Welcome to the Chess Game!" << endl;
-        cout << "Choose game mode:\n"
-                << "  setup - manual setup mode\n"
-                << "  default - standard starting position\n"
-                << "  quit - exit program " << endl;  
+        
         
         cout << board;
         // Mode selection stage
         while(true) {
+            cout << "Choose game mode:\n"
+                << "  setup - manual setup mode\n"
+                << "  default - standard starting position\n"
+                << "  quit - exit program " << endl;  
             // Step one: initilizing a empty board
             if (!(cin >> command)) break;
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             if (command == "quit"){
                 isQuit = true;
                 break;
             }
+            // Enter setup mode
             if (command == "setup") {
-                cout << "place a chess:  + [Chesstype] [coordinate]\n"
+                // while loop for setup operations
+                while (true) {
+                    if (cin.fail()) {
+                        cin.clear();   // reset fail bit
+                        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    string line;
+                     cout << "place a chess:  + [Chesstype] [coordinate]\n"
                         << "remove a chess:  - [coordinate]\n"
                         << "make it color's turn to go next:  = [color]\n"
-                        << "quit:  Exits setup mode" << endl;
-                while (true) {
-                    string line;
-
+                        << "done:  Exits setup mode" << endl;
+                    cout << board;
                     getline(cin, line);
                     istringstream iss(line);
 
@@ -260,14 +269,10 @@ int main () {
                                     // cannot place on an existing piece
                                     if (board.squareIsEmpty(intCoord)) {
                                         board.placeChess(intCoord, typeChar);
-                                        cout << board;
-                                        // check if the setup is valid?
-                                        // if (!board.isValidSetup()) {
-                                        //     cout << "Current setup is invalid!"
-                                        //     << " Please remove the last chess placed." << end;
-                                        // }
-                                    } else {
-                                        cout << "The square is occupied!" << endl;
+
+                                    } else { // the square has an existing chess
+                                        board.removeChess(intCoord);
+                                        board.placeChess(intCoord, typeChar);
                                     }
                                     continue;
                                 }
@@ -308,8 +313,6 @@ int main () {
                             // exit setup mode
                             // check if the setup is valid?
                             if (!board.isValidSetup()) {
-                                cout << "Current setup is invalid!"
-                                << " Cannot exit until the setup become valid." << end;
                                 cin >> command;
                                 continue;
                             } else {
@@ -321,7 +324,8 @@ int main () {
                     } else {
                         cout << "Fail to read mode! Enter command again." << endl;
                     }
-                }
+                    
+                }// while loop for setup commands
                 break;
             } else if (command == "default") {
                 // initialize the 8*8 grid and attach all observers to squares
@@ -334,7 +338,11 @@ int main () {
                 cout << "Invalid command, enter command again." << endl;
                 continue;
             }
-        }// while
+            if (cin.fail()) {
+                cin.clear();   // reset fail bit
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+        }// while for mode selection
 
         if (isQuit) {
             cout << "Game is terminated." << endl;
@@ -343,7 +351,7 @@ int main () {
         //-----------------------------------------------------------------------------------
         // Second while loop determine if the palyers on both sides computers? humans? a mix?
         //   what level is the computer?
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         while (true) {
             cout << "Enter:\ngame [white-player] [black-player], "
                 << "players are either \"human\" or \"computer[1-4]\"." << endl;
@@ -371,7 +379,7 @@ int main () {
 
             cout << "Invalid command. Try again.\n";
 
-            /*  ---------- CLEAR ONLY IF NEEDED ------------- */
+            //---------- CLEAR ONLY IF NEEDED -------------
             if (cin.fail()) {
                 cin.clear();   // reset fail bit
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -414,12 +422,28 @@ int main () {
             // move directly if white player is a bot
             if (currentPlayer == Color::WHITE && whitePlayer != "human") {
                 while (true) {
+                   
+                    if (cin.fail()){
+                        cin.clear();   // reset fail bit
+                        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    cout << board;
+                    cout << "Enter \"move\" to let the bot move" << endl;
                     cin >> command;
+
                     if (command == "move") {
+
+                        // cout << "11111" << endl;
+
                         command = whiteBot->move();
+
+                        // cout << "2222" << endl;
+
                         istringstream iss4(command);
                         iss4 >> from;
+                        cout << "before bot move: " << from;
                         iss4 >> end;
+                        cout << "before bot move: " << end;
                         
                         // deal with promotion and ordinary moves
                          if (iss4 >> promotedTo) {
@@ -427,9 +451,13 @@ int main () {
                             board.removeChess(convertCoord(from));
                             board.placeChess(convertCoord(end), promotedTo);
                         } else {
+                            cout << "reached 443" << endl;
                             board.removeChess(convertCoord(end));
+                            cout << "reached 445" << endl;
                             board.simpleMove(convertCoord(from), convertCoord(end));
+                            cout << "reached 447" << endl;
                         }
+
                         break;
                     } else if (command == "resign") {
                         if (currentPlayer == Color::BLACK) {
@@ -448,6 +476,14 @@ int main () {
             // move directly if black player is a bot
             } else if (currentPlayer == Color::BLACK && blackPlayer != "human") {
                  while (true) {
+                    if (cin.fail()){
+                        cin.clear();   // reset fail bit
+                        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    cout << "Enter \"move\" to let the bot move" << endl;
+                    cin.clear();   // reset fail bit
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cout << board;
                     cin >> command;
                     if (command == "move") {
                         command = blackBot->move();
@@ -456,7 +492,7 @@ int main () {
                         iss5 >> from;
                         iss5 >> end;
                         // deal with promotion and ordinary moves
-                         if (iss5 >> promotedTo) {
+                        if (iss5 >> promotedTo) {
                             board.removeChess(convertCoord(end));
                             board.removeChess(convertCoord(from));
                             board.placeChess(convertCoord(end), promotedTo);
@@ -517,6 +553,7 @@ int main () {
         if (isQuit) {
             break;
         }
+        cout << board;
         endGameMessage(blackScore, whiteScore);
     } // outmost while
     cout << "Final Score:\n"

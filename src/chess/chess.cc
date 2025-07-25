@@ -37,5 +37,7 @@ bool Chess::getIsMovedStatus() const {
 }
 
 
-bool Chess::checkCanBeEnPassant() const {}
+bool Chess::checkCanBeEnPassant() const {
+    return false;
+}
 
