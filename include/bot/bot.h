@@ -30,6 +30,7 @@ class Bot {
 
     std::string convertCoordinate(Coordinate begin, Coordinate end);
 
+    int random(int n);
     std::string randomMove();
     std::string captureFirstMove();
     std::string surviveFirstMove();

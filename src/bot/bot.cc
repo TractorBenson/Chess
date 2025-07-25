@@ -16,6 +16,15 @@ theBoard{theBoard}, color{color}, level{level} {
     }
 }
 
+int Bot::random(int n) {
+    int result = prng(n);
+    while (result >= n) {
+        result -= 1;
+    }
+    if (result < 0) result = 0;
+    return result;
+}
+
 void Bot::constructMoveMap() {
     // init a Chess* vector
     vector<Chess*> myChesses;
@@ -45,7 +54,7 @@ string Bot::convertCoordinate(Coordinate begin, Coordinate end) {
     endR = static_cast<char>(end.row + '1');
     endC = static_cast<char>(end.col + 'a');
 
-    string result;
+    string result = "";
     result += beginC + beginR + ' ' + endC + endR;
 
     if ((end.row == 0 || end.row == 7) && theBoard->getGrid().at(begin.row).at(begin.col).getChess()->getType() == ChessType::Pawn) {
@@ -63,13 +72,13 @@ string Bot::move() {
 
     string result;
 
-    if (level <= 0) {
+    if (level <= 1) {
         result = randomMove();
     }
-    else if (level == 1) {
+    else if (level == 2) {
         result = captureFirstMove();
     }
-    else if (level >= 2) {
+    else if (level >= 3) {
         result = surviveFirstMove();
     }
 
@@ -83,10 +92,10 @@ string Bot::randomMove() {
             keys.emplace_back(cc);
         }
     }
-    
-    Coordinate selectedBegin = keys.at(prng(keys.size()));
+
+    Coordinate selectedBegin = keys.at(random(keys.size()));
     vector<Coordinate> selectedMoves = moveMap.find(selectedBegin)->second;
-    Coordinate selectedEnd = selectedMoves.at(prng(selectedMoves.size()));
+    Coordinate selectedEnd = selectedMoves.at(random(selectedMoves.size()));
 
     return convertCoordinate(selectedBegin, selectedEnd);
 }
@@ -118,9 +127,9 @@ string Bot::captureFirstMove() {
 
     // if there are capture move(s), go with it
     if (!captureMovesKeys.empty()) {
-        Coordinate selectedBegin = captureMovesKeys.at(prng(captureMovesKeys.size()));
+        Coordinate selectedBegin = captureMovesKeys.at(random(captureMovesKeys.size()));
         vector<Coordinate> selectedMoves = captureMoves.find(selectedBegin)->second;
-        Coordinate selectedEnd = selectedMoves.at(prng(selectedMoves.size()));
+        Coordinate selectedEnd = selectedMoves.at(random(selectedMoves.size()));
         
         return convertCoordinate(selectedBegin, selectedEnd);
     }
@@ -154,9 +163,9 @@ string Bot::captureFirstMove() {
     
     // if there are check move(s), go with it
     if (!checkMovesKeys.empty()) {
-        Coordinate selectedBegin = checkMovesKeys.at(prng(checkMovesKeys.size()));
+        Coordinate selectedBegin = checkMovesKeys.at(random(checkMovesKeys.size()));
         vector<Coordinate> selectedMoves = checkMoves.find(selectedBegin)->second;
-        Coordinate selectedEnd = selectedMoves.at(prng(selectedMoves.size()));
+        Coordinate selectedEnd = selectedMoves.at(random(selectedMoves.size()));
         
         return convertCoordinate(selectedBegin, selectedEnd);
     }
@@ -241,7 +250,7 @@ string Bot::surviveFirstMove() {
 
             // if such move(s) exist, go with it
             if (!selectedMoves.empty()) {
-                Coordinate selectedEnd = selectedMoves.at(prng(selectedMoves.size()));
+                Coordinate selectedEnd = selectedMoves.at(random(selectedMoves.size()));
                 return convertCoordinate(selectedBegin, selectedEnd); 
             }
             // if not, check next captured chess
