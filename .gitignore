@@ -1,4 +1,6 @@
 sourceSSH.sh
 activate
+build/*
 *.o
 test.*
+*.out

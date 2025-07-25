@@ -8,9 +8,9 @@
 #include <unistd.h>
 #include "observer/window.h"
 
-// // use to handle png
-// #define STB_IMAGE_IMPLEMENTATION
-// #include "third_party/stb_image.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "third_party/stb_image.h"
 
 using namespace std;
 
@@ -47,7 +47,7 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   Colormap cmap;
   RGB color_vals[4] = {
     {"Black", 0,0,0},
-    {"White", 255,255,255},
+    {"Yellow", 254,164,67},
     {"ChessWhite", 235,236,208},
     {"ChessGreen", 115,149,82}
   };
@@ -73,6 +73,22 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   XSetNormalHints(d, w, &hints);
 
   XSynchronize(d,True);
+
+#ifndef NOICON
+  // load all images
+  loadPixmap("BlackBishop", "assets/BlackBishop.png");
+  loadPixmap("BlackKing", "assets/BlackKing.png");
+  loadPixmap("BlackKnight", "assets/BlackKnight.png");
+  loadPixmap("BlackPawn", "assets/BlackPawn.png");
+  loadPixmap("BlackQueen", "assets/BlackQueen.png");
+  loadPixmap("BlackRook", "assets/BlackRook.png");
+  loadPixmap("WhiteBishop", "assets/WhiteBishop.png");
+  loadPixmap("WhiteKing", "assets/WhiteKing.png");
+  loadPixmap("WhiteKnight", "assets/WhiteKnight.png");
+  loadPixmap("WhitePawn", "assets/WhitePawn.png");
+  loadPixmap("WhiteQueen", "assets/WhiteQueen.png");
+  loadPixmap("WhiteRook", "assets/WhiteRook.png");
+#endif
 
   usleep(1000);
 }
@@ -106,7 +122,7 @@ but I failed to do resize
 so I think it's a little dumb
 so use char repre first
 But I miss these work, so tmply comment out
-
+*/
 
 Pixmap Xwindow::makeColorPixmap(const unsigned char *rgba, int width, int height) {
   // create a Pixmap (my understanding - sub canvas) to store
@@ -240,4 +256,3 @@ void Xwindow::drawPic(string key, int x, int y) {
 
   XSetClipMask(d, gc, None); // reset clip info, prevent affect further drawing
 }
-*/

@@ -14,7 +14,7 @@
 
 class GraphDisplay : public Observer{
     // store chars to display the board
-    const size_t WINDOW_SIZE = 500; // set screen size to be 500. can be adjusted to be other values.
+    const size_t WINDOW_SIZE = 800; // set screen size to be 800. 
     const int BACKGROUND_COLOR = 0; // set default background color to be black
 
     std::unique_ptr<Xwindow> xw;
@@ -24,9 +24,11 @@ class GraphDisplay : public Observer{
 
     // helper functions
     Color switchColor(Color color);
+    char convertChess(const Chess*);
     void drawSquareByIndex(size_t row, size_t col, Color color);
     void drawStringByIndex(size_t row, size_t col, std::string str, Color color);
     void drawCharAtCorner(size_t row, size_t col, char c, Color color, int corner); // corner - 0 means top-left, !0 means bottom-right
+    void drawPicByIndex(size_t row, size_t col, char c);
 
 public:
     // ctor, n is number of cell in the grid

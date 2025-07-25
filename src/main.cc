@@ -37,8 +37,10 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
+    cout << "col is: " << col << endl;
     int irow = row - '1';
     int icol = col - 'a';
+    cout << "icol is: " << icol << endl;
     return Coordinate{irow, icol};
 }
 

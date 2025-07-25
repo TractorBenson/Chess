@@ -32,9 +32,9 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
     // Check if the ending point is the friend chess, if is, then give false 
     //   back.
     Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
-    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) {
         return false;
-
+    }
     
     if (abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1) {
         // If the king goes 2 steps or more in either x or y coordinate, 
@@ -56,10 +56,14 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         // The castling situation haha!
 
         // If the king is already underattacked, it's invalid, return false
-        if (this->isChecked(theBoard) != 0) return false;
+        if (this->isChecked(theBoard) != 0) {
+            return false;
+        }
 
         // If the king is already moved, it's also invalid, return false!
-        if (isMoved == true) return false;
+        if (isMoved == true) {
+            return false;
+        }
 
         // Get the direction king is going to move
         const int x_one_step = diff_x_coordinate / abs(diff_x_coordinate);
@@ -85,7 +89,9 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         //   give back false.
         if (tmp_chess == nullptr || 
             tmp_chess->getType() != ChessType::Rook || 
-            tmp_chess->getColor() != this->getColor()) return false;
+            tmp_chess->getColor() != this->getColor()) {
+                return false;
+        }
 
         // If the rook is moved, then the castling is also invalid, 
         //   give back false.
@@ -316,6 +322,31 @@ int King::isChecked (const Board &theBoard) const {
             }
         }
     }
+
+    // Lastly, check the king cannot see king (Setup mode)
+    for (int lrow=-1; lrow<=1; ++lrow)
+        for (int lcol=-1; lcol<=1; ++lcol)
+            if (!(lrow == 0 && lcol == 0)){
+                Coordinate mock_king_posi;
+                mock_king_posi.row = this->getCoordinate().row + lrow;
+                mock_king_posi.col = this->getCoordinate().col + lcol;
+                if (mock_king_posi.col < 0 || 
+                    mock_king_posi.col >= theBoard.getSideLength() ||
+                    mock_king_posi.row < 0 || 
+                    mock_king_posi.col >= theBoard.getSideLength()) {
+                        continue;
+                }
+                Chess *mock_king = tmp_grid[mock_king_posi.row]
+                                           [mock_king_posi.col].getChess();
+                if (mock_king == nullptr) {
+                    continue;
+                }
+                if (mock_king->getType() == ChessType::King &&
+                    mock_king->getColor() != this->getColor()) {
+                    attacking_num++;
+                    return attacking_num;
+                }
+            }
 
     return attacking_num;
 }
