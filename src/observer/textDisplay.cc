@@ -104,6 +104,8 @@ char TextDisplay::convertSquare(const Square &theSquare) {
 
     // if reach here, means error on Color, that is it is Color::NOTHING
     // so return 'X' to indicate error
+    std::cout << "td-error, converted type is: " << pChess->getType() << std::endl;
+    std::cout << "converted color is: " << chessColor << std::endl;
     return 'X';
 }
 

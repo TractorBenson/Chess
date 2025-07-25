@@ -48,6 +48,8 @@ Color Square::getColor() const{
 void Square::setChess(Chess* newChess) {
     if (!chess) {
         chess = newChess;
+    } else if (!newChess){
+        chess = newChess;
     } else {
         cout << "Invalid chess placement! " << 
         "A chess already exists in the square!" << endl;

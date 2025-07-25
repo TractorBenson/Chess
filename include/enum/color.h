@@ -1,8 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 // Just ensure the class is defined only once
-#include <iostream>
-
+#include<iostream>
 // Categorize the colors
 enum class Color {
     WHITE, 
@@ -13,7 +12,7 @@ enum class Color {
 inline std::ostream &operator<<(std::ostream &os, Color color) {
     if (color == Color::WHITE) os << "WHITE";
     if (color == Color::BLACK) os << "BLACK";
-    if (color == Color::NOTHING) os << "NOTHING";
+    if (color == Color::NOTHING) os << "NOTHNING";
     return os;
 }
 
