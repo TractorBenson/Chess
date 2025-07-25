@@ -38,7 +38,7 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 //     return grid[coord.row][coord.col];
 // }
 bool Board::squareIsEmpty(Coordinate coord) const {
-    return (grid[coord.row][coord.col].getChess() != nullptr);
+    return grid[coord.row][coord.col].getChess() == nullptr;
 }
 
 const vector<vector<Square>>& Board::getGrid() const {
