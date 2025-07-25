@@ -61,7 +61,7 @@ void switchPlayer(Color& color) {
 
 void cin_move(Board &b, bool &resigned, string &fromCoord,
              string &toCoord, char &promotedTo, Color &currentPlayer,
-            vector<char>& validPromote, bool& isQuit) {
+            vector<char>& validWhiteP, vector<char>& validBlackP, bool& isQuit) {
 
     string player_input; // The player input
     Coordinate fromC;
@@ -125,27 +125,18 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             if (b.canPromote(fromC, toC)) {
                 // read char successful
                 if (iss >> promotedTo) {
-                    if (contains(validPromote, promotedTo)) {
-                    
-                        if (currentPlayer == Color::WHITE) {
-                            cout << " promoted to a : " << promotedTo << endl;
-                            // only allowed to promote chess to own color
-                            if(islower(static_cast<unsigned char>(promotedTo))) {
-                                cout << "line 132" << endl;
-                                b.removeChess(toC); // remove destination chess, if any
-                                b.removeChess(fromC); // remove the pawn
-                                b.placeChess(toC, promotedTo); // add the new promoted chess
-                                break;
-                            }
-                        } else {
-                            if(isupper(static_cast<unsigned char>(promotedTo))) {
-                                cout << "line 140" << endl;
-                                b.removeChess(toC); // remove destination chess, if any
-                                b.removeChess(fromC); // remove the pawn
-                                b.placeChess(toC, promotedTo); // add the new promoted chess
-                                break;
-                            }
-                        }
+                    if (currentPlayer == Color::WHITE && (validWhiteP, promotedTo)) {
+                        cout << "line 128" << endl;
+                        b.removeChess(toC); // remove destination chess, if any
+                        b.removeChess(fromC); // remove the pawn
+                        b.placeChess(toC, promotedTo); // add the new promoted chess
+                        break;
+                    } else if (currentPlayer == Color::BLACK && (validBlackP, promotedTo)) {
+                        cout << "line 140" << endl;
+                        b.removeChess(toC); // remove destination chess, if any
+                        b.removeChess(fromC); // remove the pawn
+                        b.placeChess(toC, promotedTo); // add the new promoted chess
+                        break;
                     }
                     cout << "Invalid promotion" << endl;
                     continue;
@@ -216,8 +207,9 @@ int main () {
     Color currentPlayer = Color::WHITE;
     vector<char> validParams = {'R', 'K', 'Q', 'P', 'B', 'N', 'r'
         , 'k', 'q', 'p', 'b', 'n'};
-    vector<char> validPromote ={ 'R', 'Q', 'B', 'N', 'r',
-         'q', 'b', 'n'};
+    vector<char> validWhiteP = {'R', 'Q', 'B', 'N'};
+    vector<char> validBlackP = {'r', 'q', 'b', 'n'};
+ 
     vector<string> players = {"human", "computer[1]", "computer[2]",
          "computer[3]"};
 
@@ -530,7 +522,7 @@ int main () {
                 // take input from user and make the move
                 
                 cin_move(board, resigned, from, end, promotedTo,
-                     currentPlayer, validPromote, isQuit);
+                     currentPlayer, validWhiteP, validBlackP, isQuit);
                 if (isQuit) {
                     break;
                 }
