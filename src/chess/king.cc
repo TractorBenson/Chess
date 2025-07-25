@@ -15,6 +15,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         end.col < 0 || end.col >= theBoard.getSideLength() ||
         end.row < 0 || end.row >= theBoard.getSideLength()) {
         // If it is out of bound, return false
+        cout << "false 0000000000000000000000000" << endl;
         return false;
     }
 
@@ -32,9 +33,10 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
     // Check if the ending point is the friend chess, if is, then give false 
     //   back.
     Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
-    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) {
+        cout << "false 1" << endl;
         return false;
-
+    }
     
     if (abs(diff_x_coordinate) <= 1 && abs(diff_y_coordinate) <= 1) {
         // If the king goes 2 steps or more in either x or y coordinate, 
@@ -47,19 +49,27 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
             theBoard.redoLastStep();
+            cout << "false 3" << endl;
             return false;
         }
         // If it's fine, remember to go back
         theBoard.redoLastStep();
+        cout << "true 1" << endl;
         return true;
     } else if (abs(diff_x_coordinate) == 2 && diff_y_coordinate == 0) {
         // The castling situation haha!
 
         // If the king is already underattacked, it's invalid, return false
-        if (this->isChecked(theBoard) != 0) return false;
+        if (this->isChecked(theBoard) != 0) {
+            cout << "false 4" << endl;
+            return false;
+        }
 
         // If the king is already moved, it's also invalid, return false!
-        if (isMoved == true) return false;
+        if (isMoved == true) {
+            cout << "false 5" << endl;
+            return false;
+        }
 
         // Get the direction king is going to move
         const int x_one_step = diff_x_coordinate / abs(diff_x_coordinate);
@@ -85,11 +95,15 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
         //   give back false.
         if (tmp_chess == nullptr || 
             tmp_chess->getType() != ChessType::Rook || 
-            tmp_chess->getColor() != this->getColor()) return false;
+            tmp_chess->getColor() != this->getColor()) {
+                cout << "false 6" << endl;
+                return false;
+        }
 
         // If the rook is moved, then the castling is also invalid, 
         //   give back false.
         if (tmp_chess->getIsMovedStatus() == true) {
+            cout << "false 7" << endl;
             return false;
         }
 
@@ -110,6 +124,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
 
             if (tmp_chess != nullptr) {
                 // If there is some obstacles on the way, it's invalid, false
+                cout << "false 8" << endl;
                 return false;
             }
         }
@@ -126,6 +141,7 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
             theBoard.redoLastStep();
+            cout << "false 9" << endl;
             return false;
         }
         // If it's fine, remember to go back
@@ -139,21 +155,25 @@ bool King::isValidMove(Board &theBoard, Coordinate begin,
             // If the king will be underattacked, go back first, and 
             //   give back false since it is invalid.
             theBoard.redoLastStep();
+            cout << "false 10" << endl;
             return false;
         }
         // If it's fine, remember to go back
         theBoard.redoLastStep();
 
         // If all the conditions are satisfied, give back true
+        cout << "true 2" << endl;
         return true;
 
         // The following will be the normal moves!
     } else {
         // If it goes to here, the move will be invalid
+        cout << "false 11" << endl;
         return false;
     }
     
     // If it goes to here, then the king's move would be invalid
+    cout << "false 12" << endl;
     return false;
 }
 
