@@ -262,8 +262,6 @@ void Board::initBoard() {
 void Board::initChessesWithDefaultArrange() {
     Color currentColor = Color::BLACK;
 
-    cout << "Grid has bound: " << grid.size() << endl;
-
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
@@ -281,8 +279,6 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 0 && col == 4) {
                 placeChess(coord, 'K');
             }
-
-            cout << "2222222222222" << endl;
 
             // Place all black chesses to their default posistion
             if (row == 7 && (col == 0 || col == sideLength - 1)) {
