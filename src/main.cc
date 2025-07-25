@@ -206,6 +206,7 @@ int main () {
                 << "  default - standard starting position\n"
                 << "  quit - exit program " << endl;  
         
+        cout << board;
         // Mode selection stage
         while(true) {
             // Step one: initilizing a empty board

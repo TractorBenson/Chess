@@ -1,4 +1,5 @@
 #include "observer/textDisplay.h"
+#include <iostream>
 
 // ctor
 TextDisplay::TextDisplay(size_t size): size{size} {
@@ -109,9 +110,9 @@ char TextDisplay::convertSquare(const Square &theSquare) {
 // when notified, replace corresponding char with new one
 void TextDisplay::notify(const Square &theSquare) {
     char currentChess = convertSquare(theSquare);
-    charGrid.at(
+    (charGrid.at(
         (theSquare.getCoordinate()).row 
-    ).at(
+    )).at(
         (theSquare.getCoordinate()).col
     ) = currentChess;
 }
@@ -124,7 +125,7 @@ std::ostream &TextDisplay::printBoard(std::ostream &os) {
         os << i << ' ';
 
         // then, for each element in the row
-        for (size_t j = 0; j < size; --j) {
+        for (size_t j = 0; j < size; ++j) {
             // print that element
             os << charGrid.at(i - 1).at(j);
         }

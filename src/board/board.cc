@@ -24,9 +24,9 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
     for (auto& row : grid) {
         for (auto& sq : row) {
                 sq.attachObserver(obs);     // raw Observer*
+                sq.notifyDisplayer();
         }
     }
-    cout << "Grid size = " << grid.size() << 'x' << grid.at(0).size() << endl;
 }
 
 // const Square& Board::getSquare(Coordinate coord) const {
@@ -263,11 +263,7 @@ void Board::initChessesWithDefaultArrange() {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
             Coordinate coord = Coordinate{row, col};
-<<<<<<< HEAD
-            grid[row][col].setCoordinate(row, col);
-            grid[row][col].setColor(currentColor);
-            cout << "reached here" << endl;
-
+            
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {
                 placeChess(coord, 'R');
