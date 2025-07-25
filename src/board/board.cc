@@ -48,6 +48,11 @@ size_t Board::getSideLength() const {
     return sideLength;
 }
 Color Board::getChessColor(Coordinate coord) const {
+    cout << coord.row << endl;
+    cout << coord.col << endl;
+    if (grid[coord.row][coord.col].getChess()->getColor() == Color::WHITE) {
+        cout << "it's white" << endl;
+    }
     return grid[coord.row][coord.col].getChess()->getColor();
 }
 const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
@@ -186,17 +191,26 @@ void Board::placeChess(Coordinate loc, char type) {
     }
     
     sq.setChess(newChess.get());
-    // Add the newly added chess to the corresponding chess vector,
-    //   if the chess is a King, update the King pointers, too.
+
     if (type == 'k') {
         blackKing = static_cast<King*>(newChess.get());
-        blackChesses.emplace_back(std::move(newChess));
     }
     if (type == 'K') {
         whiteKing = static_cast<King*>(newChess.get());
-        whiteChesses.emplace_back(std::move(newChess));
     }
+
+    if (newChess->getColor() == Color::WHITE) {
+        whiteChesses.emplace_back(std::move(newChess));
+    } else {
+        blackChesses.emplace_back(std::move(newChess));
+    }
+    // Add the newly added chess to the corresponding chess vector,
+    //   if the chess is a King, update the King pointers, too.
+    
     sq.notifyDisplayer();
+    if (whiteChesses[0].get()->getColor() == Color::WHITE) {
+        cout << "chess color is white " << endl;
+    }
 }
 
 // Remove existing chess on loc, do nothing if there's no chess on loc
@@ -204,6 +218,7 @@ void Board::removeChess(Coordinate loc) {
     Square& sq = grid[loc.row][loc.col];
     Chess* piece = sq.getChess();
     // Do nothing if the location has no chess on it
+    
     if(!piece) return;
     // Detach king pointers (although this might never happen)
     if(piece == whiteKing) {
@@ -261,14 +276,12 @@ void Board::initBoard() {
 //   attached to the squares.
 void Board::initChessesWithDefaultArrange() {
     Color currentColor = Color::BLACK;
-
-    cout << "Grid has bound: " << grid.size() << endl;
-
+    
+    Coordinate co{1,0};
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
             Coordinate coord = Coordinate{row, col};
-            Coordinate co{0,0};
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {
                 placeChess(coord, 'R');
@@ -281,8 +294,6 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 0 && col == 4) {
                 placeChess(coord, 'K');
             }
-
-            cout << "2222222222222" << endl;
 
             // Place all black chesses to their default posistion
             if (row == 7 && (col == 0 || col == sideLength - 1)) {
@@ -300,11 +311,9 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 6) {
                 placeChess(coord, 'p');
             }
-            grid[row][col].notifyDisplayer();
-
-            cout << "3333333333333" << endl;
         }
     }
+    cout << grid[0][6].getChess()->getType() << endl;
 }
 
 
@@ -349,7 +358,9 @@ bool Board::canPromote(Coordinate begin, Coordinate end) {
     // After the move being valid, check if the pawn is at bottom lines
     if (piece->getColor() == Color::BLACK) {
         // Case where black Pawn reached the white bottom
-        if (end.row == 0) return true;
+        if (end.row == 0) {
+            return true;
+        }
     } else {
         // Case where white Pawn reached the black bottom
         if (end.row == (sideLength - 1))
@@ -367,7 +378,7 @@ bool Board::moveChess(Coordinate begin, Coordinate end) {
             "beginning location you slected!" << endl;
         return false;
     }
-
+    
     if (sq.getChess()->isValidMove(*this, begin, end)) {
         return true;
     }
@@ -416,11 +427,10 @@ void Board::testMove(Coordinate begin, Coordinate end, Color CurrentPlayer) {
 }
 // move chess at begin to end, no matter what, assume the move is already valid
 void Board::simpleMove(Coordinate begin, Coordinate end){
-    Square* from = &(grid[begin.row][begin.col]);
-    Square* to = &(grid[end.row][end.col]);
-    Chess* movedC = from->getChess();
+    Square &from = grid[begin.row][begin.col];
+    Square &to = grid[end.row][end.col];
+    Chess* movedC = from.getChess();
         // Actaully move the chess from begin to end
-
         
     int diff_x = end.col - begin.col;
     int diff_y = end.row - begin.row;
@@ -443,18 +453,17 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
             grid[end.row][end.col + 1].notifyDisplayer();
         }
     } else if (movedC->getType() == ChessType::Pawn) {
-        if (abs(diff_x) == 1 && abs(diff_y) == 1 && to->getChess() == nullptr)
-        {
-            // The En Passant situation haha!
+        // The en passant situation
+        if (abs(diff_x) == 1 && abs(diff_y) == 1 && to.getChess() == nullptr)
+        {   
             Square *pawnBeEaten = &(grid[begin.row][end.col]);
             pawnBeEaten->setChess(nullptr);
         }
     }
 
-    to->setChess(movedC);
-    from->setChess(nullptr);
-
-    movedC->setSquare(to);
+    to.setChess(movedC);
+    from.setChess(nullptr);
+    movedC->setSquare(&to);
     grid[begin.row][begin.col].notifyDisplayer();
     grid[end.row][end.col].notifyDisplayer();
 }
@@ -463,16 +472,18 @@ void Board::resetLT() {
     lastTry.reset();
 }
 
-// 
+// -------------------------------------------------------
+// Problem here???????????????????
 void Board::redoLastStep() {
     if (!lastTry) return; // nothing to undo
 
-    const MoveBackup& m = *lastTry;
+    MoveBackup m = *lastTry;
+    lastTry.reset();
 
     // Put moved and captured chess back;
     m.from->setChess(m.movedC);
-    m.to->setChess(m.capturedC);
     m.movedC->setSquare(m.from);
+    m.to->setChess(m.capturedC);
     if (m.capturedC) m.capturedC->setSquare(m.to);
 
     // update king pointers if king were moved
@@ -483,8 +494,6 @@ void Board::redoLastStep() {
             whiteKing = m.movedKing;
         }
     }
-    
-    lastTry.reset();    // discard the backup
 }
 
 

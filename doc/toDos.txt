@@ -1,5 +1,7 @@
-1. Give default values to all Chess objects' fields
-2. Add mutators to All fields of Chess objects' fields (need setSquare!!!)
-3. Add isMoved() and update() virtual methods that does nothing in Chess class.
-    actually implement isMoved() in King, Rook, and pawn, update() is implemented in Pawn only
+Debugging:
+1. en passant chess's isvalidMove() is inccorrect.
+2. right direction 王车易位 is valid, test left side as well
+3. check promotion
+4. "check" and "checkmate"
+
 
