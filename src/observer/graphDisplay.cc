@@ -1,7 +1,7 @@
 #include "observer/graphDisplay.h"
 
 GraphDisplay::GraphDisplay(size_t n): numSquare{n} {
-    xw = std::make_unique<Xwindow>();
+    xw = std::make_unique<Xwindow>(800,800);
 
     int resultingGridLength = WINDOW_SIZE; // use to subract until fit
     int mod = resultingGridLength % n; // module to store redundant edge
@@ -14,6 +14,90 @@ GraphDisplay::GraphDisplay(size_t n): numSquare{n} {
 
     // init background
     xw->fillRectangle(0, 0, WINDOW_SIZE, WINDOW_SIZE, BACKGROUND_COLOR);
+}
+
+char GraphDisplay::convertChess(const Chess *pChess) {
+    // if chess* is nullptr:
+    if (pChess == nullptr) {
+        return 'X';
+    }
+
+    Color chessColor = pChess->getColor();
+
+    // if not nullptr, then it has a type
+    switch (pChess->getType()) {
+        // if it is Pawn, return p
+        case ChessType::Pawn: {
+            // if color is white, return capital letter
+            if (chessColor == Color::WHITE) {
+                return 'P';
+            }
+            // if color is black, return lower case letter
+            else if (chessColor == Color::BLACK) {
+                return 'p';
+            }
+            // in case of undefined behaviour, if receive Color::NOTHING, go to end of function
+            break;
+        }
+
+        // if it is Knight, return n
+        case ChessType::Knight: {
+            if (chessColor == Color::WHITE) {
+                return 'N';
+            }
+            else if (chessColor == Color::BLACK) {
+                return 'n';
+            }
+            break;
+        }
+
+        // if it is Bishop, return b
+        case ChessType::Bishop: {
+            if (chessColor == Color::WHITE) {
+                return 'B';
+            }
+            else if (chessColor == Color::BLACK) {
+                return 'b';
+            }
+            break;
+        }
+
+        // if it is Rook, return r
+        case ChessType::Rook: {
+            if (chessColor == Color::WHITE) {
+                return 'R';
+            }
+            else if (chessColor == Color::BLACK) {
+                return 'r';
+            }
+            break;
+        }
+
+        // if it is Queen, return q
+        case ChessType::Queen: {
+            if (chessColor == Color::WHITE) {
+                return 'Q';
+            }
+            else if (chessColor == Color::BLACK) {
+                return 'q';
+            }
+            break;
+        }  
+
+        // if it is King, return k
+        case ChessType::King: {
+            if (chessColor == Color::WHITE) {
+                return 'K';
+            }
+            else if (chessColor == Color::BLACK) {
+                return 'k';
+            }
+            break;
+        }
+    }
+
+    // return 'X' to indicate error
+    return 'X';
 }
 
 Color GraphDisplay::switchColor(Color color) {
@@ -54,13 +138,13 @@ void GraphDisplay::drawCharAtCorner(size_t row, size_t col, char c, Color color,
     int resultY;
     if (corner == 0) {
         // magic numbers to put letters to correct possition
-        resultX = col * size + edgeSize + 2;
-        resultY = row * size + edgeSize + (size / 4) - 2;
+        resultX = col * size + edgeSize + (size * 2 / 62);
+        resultY = row * size + edgeSize + (size / 4) - (size * 2/ 62);
     }
     else {
         // magic numbers to put letters to correct possition
         resultX = col * size + edgeSize + (size * 7 / 8);
-        resultY = row * size + edgeSize + size - 4;
+        resultY = row * size + edgeSize + size - (size * 4 / 62);
     }
 
     int numColor;
@@ -72,6 +156,67 @@ void GraphDisplay::drawCharAtCorner(size_t row, size_t col, char c, Color color,
 
     xw->drawString(resultX, resultY, str, numColor);
 }
+
+void GraphDisplay::drawPicByIndex(size_t row, size_t col, char c) {
+    int resultX = col * size + edgeSize;
+    int resultY = row * size + edgeSize;
+    string key = "";
+
+    switch (c) {
+        case 'b': {
+            key = "BlackBishop";
+            break;
+        }
+        case 'k': {
+            key = "BlackKing";
+            break;
+        }
+        case 'n': {
+            key = "BlackKnight";
+            break;
+        }
+        case 'p': {
+            key = "BlackPawn";
+            break;
+        }
+        case 'q': {
+            key = "BlackQueen";
+            break;
+        }
+        case 'r': {
+            key = "BlackRook";
+            break;
+        }
+        case 'B': {
+            key = "WhiteBishop";
+            break;
+        }
+        case 'K': {
+            key = "WhiteKing";
+            break;
+        }
+        case 'N': {
+            key = "WhiteKnight";
+            break;
+        }
+        case 'P': {
+            key = "WhitePawn";
+            break;
+        }
+        case 'Q': {
+            key = "WhiteQueen";
+            break;
+        }
+        case 'R': {
+            key = "WhiteRook";
+            break;
+        }
+    }
+
+    xw->drawPic(key, resultX, resultY);
+}
+
+
 
 void GraphDisplay::notify(const Square& square) {
     // get coordinate and color of the Square
@@ -88,39 +233,20 @@ void GraphDisplay::notify(const Square& square) {
     drawSquareByIndex(rowIndex, colIndex, squareColor);
 
 
-    // get chess
+
     const Chess *theChess = square.getChess();
-    if (theChess) {
-        std::string stringChess = "X"; // 'X' indicate error
-        switch (theChess->getType()) {
-            case ChessType::Pawn: {
-                stringChess = "P";
-                break;
-            }
-            case ChessType::Knight: {
-                stringChess = "N";
-                break;
-            }
-            case ChessType::Bishop: {
-                stringChess = "B";
-                break;
-            }
-            case ChessType::Rook: {
-                stringChess = "R";
-                break;
-            }
-            case ChessType::Queen: {
-                stringChess = "Q";
-                break;
-            }
-            case ChessType::King: {
-                stringChess = "K";
-                break;
-            }
-        }
-        drawStringByIndex(rowIndex, colIndex, stringChess, theChess->getColor());
-    }
+
+    // // draw chess by char
+    // if (theChess) {
+    //     std::string stringChess = convertChess(theChess);
+    // }
+
+    // drawStringByIndex(rowIndex, colIndex, stringChess, theChess->getColor());
+
+    // draw chess by pics
+    drawPicByIndex(rowIndex, colIndex, convertChess(theChess));
     
+
     // draw small number/letter indicate position
     if (co.row == 0) {
         drawCharAtCorner(rowIndex, colIndex, static_cast<char>('a' + co.col), switchColor(squareColor), 1);
@@ -129,3 +255,4 @@ void GraphDisplay::notify(const Square& square) {
         drawCharAtCorner(rowIndex, colIndex, static_cast<char>('1' + co.row), switchColor(squareColor), 0);
     }
 }
+
