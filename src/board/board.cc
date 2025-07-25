@@ -24,6 +24,7 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
     for (auto& row : grid) {
         for (auto& sq : row) {
                 sq.attachObserver(obs);     // raw Observer*
+                sq.notifyDisplayer();
         }
     }
     for (auto& row : grid) {
@@ -261,11 +262,13 @@ void Board::initBoard() {
 void Board::initChessesWithDefaultArrange() {
     Color currentColor = Color::BLACK;
 
+    cout << "Grid has bound: " << grid.size() << endl;
+
     for (size_t row = 0; row < sideLength; ++row) {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
             Coordinate coord = Coordinate{row, col};
-
+            
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {
                 placeChess(coord, 'R');
@@ -278,6 +281,8 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 0 && col == 4) {
                 placeChess(coord, 'K');
             }
+
+            cout << "2222222222222" << endl;
 
             // Place all black chesses to their default posistion
             if (row == 7 && (col == 0 || col == sideLength - 1)) {
@@ -301,6 +306,8 @@ void Board::initChessesWithDefaultArrange() {
             } else {
                 currentColor = Color::BLACK;
             }
+
+            cout << "3333333333333" << endl;
         }
         if (currentColor == Color::BLACK) {
             currentColor = Color::WHITE;

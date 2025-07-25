@@ -206,6 +206,7 @@ int main () {
                 << "  default - standard starting position\n"
                 << "  quit - exit program " << endl;  
         
+        cout << board;
         // Mode selection stage
         while(true) {
             // Step one: initilizing a empty board
@@ -305,7 +306,6 @@ int main () {
                 // under default chess layout
                 board.initChessesWithDefaultArrange();
                 cout << board;
-                
                 break;
             } else{
                 cout << "Invalid command, enter command again." << endl;
