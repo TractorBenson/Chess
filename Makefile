@@ -7,7 +7,7 @@ CXXFLAGS = -std=c++20 -MMD -Wall -g -Iinclude
 
 SRCDIR = src
 BUILDDIR = build
-TARGET = Chess
+TARGET = Chess.out
 
 SRCS = $(shell find $(SRCDIR) -name '*.cc')
 OBJS = $(patsubst $(SRCDIR)/%.cc,$(BUILDDIR)/%.o,$(SRCS))

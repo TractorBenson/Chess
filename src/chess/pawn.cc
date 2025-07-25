@@ -25,7 +25,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         // If it is out of bound, return false
         return false;
     }
-    if (begin.col == end.col && begin.row == end.row) return false;
+    if (begin.col == end.col && begin.row == end.row) {
+        return false;
+    }
     // If the destination position is the start position, give back false
 
     int diff_x_coordinate = end.col - begin.col;
@@ -40,8 +42,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     // Check if the ending point is the friend chess, if is, then give false 
     //   back.
     Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
-    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) 
+    if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) {
         return false;
+    }
 
 
     King *tmp_king = nullptr; // The pointer points to the king
@@ -62,7 +65,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     }
 
     // Check if the x coordinate is over 1 steps
-    if (abs(diff_x_coordinate) > 1) return false;
+    if (abs(diff_x_coordinate) > 1) {
+        return false;
+    }
 
 
     // Check if the pawn goes vertically, there is no obstacles on the way and 
@@ -82,13 +87,19 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
             tmp_chess = tmp_grid[begin.row + (diff_y_coordinate / 
                                              abs(diff_y_coordinate))]
                                 [begin.col].getChess();
-            if (isMoved == true) return false;
-            else if (tmp_chess != nullptr) return false;
+            if (isMoved == true) {
+                return false;
+            }
+            else if (tmp_chess != nullptr) {
+                return false;
+            }
             // Else if there is an obstacle on the way, give back false
         }
     } else {
         // Else, the x-coordinate movement must be 1
-        if (abs(diff_y_coordinate) != 1) return false;
+        if (abs(diff_y_coordinate) != 1) {
+            return false;
+        }
 
         tmp_chess = tmp_grid[end.row][end.col].getChess();
         if (tmp_chess == nullptr) {
@@ -101,7 +112,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
             } else {
                 tmp_chess = tmp_grid[end.row - 1][end.col].getChess();
             }
-            if (tmp_chess == nullptr) return false;
+            if (tmp_chess == nullptr) {
+                return false;
+            }
             if (!(tmp_chess->getType() == ChessType::Pawn && 
                   tmp_chess->getColor() != this->getColor() && 
                   tmp_chess->checkCanBeEnPassant())) {
@@ -170,7 +183,9 @@ void Pawn::setEnPassant() { canBeEnPassant = true; }
 
 void Pawn::update() { canBeEnPassant = false; }
 
-void Pawn::updateMoved() { isMoved = true; }
+void Pawn::updateMoved() {
+    isMoved = true;
+}
 
 
 

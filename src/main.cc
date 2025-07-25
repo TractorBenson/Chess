@@ -68,6 +68,7 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
     Coordinate toC;
 
     while (true) {
+        // set all pawns to be not capable of en passant
         b.updateChess(currentPlayer);
         cout << b;
 
