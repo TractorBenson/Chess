@@ -23,11 +23,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         end.col < 0 || end.col >= theBoard.getSideLength() ||
         end.row < 0 || end.row >= theBoard.getSideLength()) {
         // If it is out of bound, return false
-        cout << "false 1" << endl;
         return false;
     }
     if (begin.col == end.col && begin.row == end.row) {
-        cout << "false 2" << endl;
         return false;
     }
     // If the destination position is the start position, give back false
@@ -45,7 +43,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     //   back.
     Chess *tmp_chess = tmp_grid[end.row][end.col].getChess();
     if (tmp_chess != nullptr && tmp_chess->getColor() == this->getColor()) {
-        cout << "false 3" << endl;
         return false;
     }
 
@@ -59,19 +56,16 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     if ((color == Color::BLACK && diff_y_coordinate >= 0) ||
         (color == Color::WHITE && diff_y_coordinate <= 0)) {
             // If the pawn is not moving forward, return false
-        cout << "false 4" << endl;
         return false;
     }
 
     if (abs(diff_y_coordinate) > 2) {
         // If the pawn's vertical movement is greater than 2, give back false
-        cout << "false 5" << endl;
         return false;
     }
 
     // Check if the x coordinate is over 1 steps
     if (abs(diff_x_coordinate) > 1) {
-        cout << "false 6" << endl;
         return false;
     }
 
@@ -83,7 +77,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         tmp_chess = tmp_grid[end.row][end.col].getChess();
         // If it has a chess at the destination, give back false
         if (tmp_chess != nullptr) {
-            cout << "false 7" << endl;
             return false;
         }
 
@@ -95,11 +88,9 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
                                              abs(diff_y_coordinate))]
                                 [begin.col].getChess();
             if (isMoved == true) {
-                cout << "false 8" << endl;
                 return false;
             }
             else if (tmp_chess != nullptr) {
-                cout << "false 9" << endl;
                 return false;
             }
             // Else if there is an obstacle on the way, give back false
@@ -107,7 +98,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
     } else {
         // Else, the x-coordinate movement must be 1
         if (abs(diff_y_coordinate) != 1) {
-            cout << "false 10" << endl;
             return false;
         }
 
@@ -123,7 +113,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
                 tmp_chess = tmp_grid[end.row - 1][end.col].getChess();
             }
             if (tmp_chess == nullptr) {
-                cout << "en passant false 1" << endl;
                 return false;
             }
             if (!(tmp_chess->getType() == ChessType::Pawn && 
@@ -131,11 +120,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
                   tmp_chess->checkCanBeEnPassant())) {
                 // If the chess is not the situation: A Pawn that can be 
                 //   En Passant, give false back.
-                if (tmp_chess->getType() != ChessType::Pawn) cout << "not pawn" << endl;
-                if (tmp_chess->getColor() == Color::BLACK) cout << "black" << endl;
-                else cout << "white" << endl;
-                if (!tmp_chess->checkCanBeEnPassant()) cout << "cannot be en passant" << endl;
-                cout << "en passant false 2" << endl;
                 return false;
             }
         }
@@ -148,7 +132,6 @@ bool Pawn::isValidMove(Board &theBoard, Coordinate begin,
         theBoard.redoLastStep();
         // If the king is checked after this move, is invalid, 
         //   return false and remember to undo this move
-        cout << "false mock" << endl;
         return false;
     }
     // If this move will be valid, return true then, and don't
