@@ -17,17 +17,16 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    ///////////
 
-    // obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
     
-    ///////////
     // Attach observer to all squares.
     for (auto& row : grid) {
         for (auto& sq : row) {
                 sq.attachObserver(obs);     // raw Observer*
         }
     }
+    cout << "Grid size = " << grid.size() << 'x' << grid.at(0).size() << endl;
 }
 
 // const Square& Board::getSquare(Coordinate coord) const {
