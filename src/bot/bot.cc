@@ -54,7 +54,7 @@ string Bot::convertCoordinate(Coordinate begin, Coordinate end) {
     endR = static_cast<char>(end.row + '1');
     endC = static_cast<char>(end.col + 'a');
 
-    string result = ""
+    string result = "";
     result += beginC + beginR + ' ' + endC + endR;
 
     if ((end.row == 0 || end.row == 7) && theBoard->getGrid().at(begin.row).at(begin.col).getChess()->getType() == ChessType::Pawn) {
@@ -72,13 +72,13 @@ string Bot::move() {
 
     string result;
 
-    if (level <= 0) {
+    if (level <= 1) {
         result = randomMove();
     }
-    else if (level == 1) {
+    else if (level == 2) {
         result = captureFirstMove();
     }
-    else if (level >= 2) {
+    else if (level >= 3) {
         result = surviveFirstMove();
     }
 
