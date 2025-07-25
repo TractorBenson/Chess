@@ -36,10 +36,7 @@ Coordinate Square::getCoordinate() const {
 // return the pointer to the chess on current board. 
 //   If current Square has no chess on it, return nullptr
 Chess* Square::getChess() const{
-    if (color != Color::NOTHING) {
-        return chess;
-    }
-    return nullptr;
+    return chess;
 }
 
 Color Square::getColor() const{
@@ -49,7 +46,9 @@ Color Square::getColor() const{
 // Place a chess newChess on the current Square. If Current
 //   Square already has an existing chess, output message and do nothing
 void Square::setChess(Chess* newChess) {
-    if (color == Color::NOTHING) {
+    if (!chess) {
+        chess = newChess;
+    } else if (!newChess){
         chess = newChess;
     } else {
         cout << "Invalid chess placement! " << 

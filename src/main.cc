@@ -22,12 +22,13 @@
 #include <vector>
 #include <memory>
 #include <optional>
+#include <limits>
 
 #include <string>
 
 using namespace std;
 
-// Helper function to ensure input in range
+// per function to ensure input in range
 template <typename T>
 bool contains(const vector<T>& range, T value){
     return find(range.begin(), range.end(), value) != range.end();
@@ -36,8 +37,8 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
-    size_t irow = row - '1';
-    size_t icol = col - 'a';
+    int irow = row - '1';
+    int icol = col - 'a';
     return Coordinate{irow, icol};
 }
 
@@ -58,12 +59,16 @@ void switchPlayer(Color& color) {
 
 void cin_move(Board &b, bool &resigned, string &fromCoord,
              string &toCoord, char &promotedTo, Color &currentPlayer,
-            vector<char>& validPromote) {
+            vector<char>& validPromote, bool& isQuit) {
 
     string player_input; // The player input
     Coordinate fromC;
     Coordinate toC;
+
     while (true) {
+        b.updateChess(currentPlayer);
+        cout << b;
+
         cout << "Enter command:\n move [begin] [end]" << endl;
         getline(cin, player_input); // Get the whole line
 
@@ -73,9 +78,13 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             cout << "read unsuccessful. Enter command again" << endl;
             continue;
         }
-        if (cmd != "move" && cmd != "resign") { // check for first part of command
+        if (cmd != "move" && cmd != "resign" && cmd != "quit") { // check for first part of command
             std::cout << "Unknown command: " << cmd << endl;
             continue;
+        }
+        if (cmd == "quit") {
+            isQuit = true;
+            break;
         }
         // if resigned, exit game immediately
         if (cmd == "resign") {
@@ -93,14 +102,20 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             std::cout << "Invalid coordinate arguments." << endl;
             continue;
         }
+        // cout << fromCoord << endl;
+        // cout << toCoord << endl;
         fromC = convertCoord(fromCoord);
         toC = convertCoord(toCoord);
+        // cout << fromC.row << endl;
+        // cout << fromC.col << endl;
         // Only allowed to move chess on currentPlayer's side.
         if (b.getChessColor(fromC) != currentPlayer) {
+            
             cout << "Invalid command. Please choose your own chess to move." << endl;
             continue;
         }
         // Input is a valid format move coord1 coord2
+
         if (b.moveChess(fromC, toC)) {
             // a promtion is needed.
             if (b.canPromote(fromC, toC)) {
@@ -136,6 +151,10 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
             b.simpleMove(fromC, toC);
             break;
         } // move valid check
+        if (cin.fail()) {
+            cin.clear();   // reset fail bit
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
     } // while loop
 }
 
@@ -194,23 +213,28 @@ int main () {
     vector<string> players = {"human", "computer[1]", "computer[2]",
          "computer[3]", "computer[4]"};
 
-    cout << "Welcome to the Chess Game!" << endl;
-    Board board;
+    
+    
 
     // outmost loop,allows for multiple gameplays
     while(true) {
+        Board board;
+        bool isQuit = false;
+        cout << "Welcome to the Chess Game!" << endl;
+        cout << "Choose game mode:\n"
+                << "  setup - manual setup mode\n"
+                << "  default - standard starting position\n"
+                << "  quit - exit program " << endl;  
+        
+        cout << board;
         // Mode selection stage
         while(true) {
             // Step one: initilizing a empty board
-            
-            cout << "Choose game mode:\n"
-                << "  setup - manual setup mode\n"
-                << "  game [player_white] [player_black] - standard starting position\n"
-                << "  quit - exit program " << endl;
-            
-
-            cin >> command;
-            if (cin.fail()) break;
+            if (!(cin >> command)) break;
+            if (command == "quit"){
+                isQuit = true;
+                break;
+            }
             if (command == "setup") {
                 cout << "place a chess:  + [Chesstype] [coordinate]\n"
                         << "remove a chess:  - [coordinate]\n"
@@ -284,6 +308,8 @@ int main () {
                             if (!board.isValidSetup()) {
                                 cout << "Current setup is invalid!"
                                 << " Cannot exit until the setup become valid." << end;
+                                cin >> command;
+                                continue;
                             } else {
                                 cout << "Setup mode exited." << endl;
                                 break;
@@ -299,48 +325,61 @@ int main () {
                 // initialize the 8*8 grid and attach all observers to squares
                 // under default chess layout
                 board.initChessesWithDefaultArrange();
+                //-----------------------------------------------------test 
+                cout << board;
                 break;
-
-            } else if (command == "quit") {
-                cout << "You quit the game. Game terminates." << endl;
-                return 0;
-            }else{
+            } else{
                 cout << "Invalid command, enter command again." << endl;
                 continue;
             }
         }// while
 
-        
-        // determine if the palyers on both sides computers? humans? a mix?
+        if (isQuit) {
+            cout << "Game is terminated." << endl;
+            break;
+        }
+        //-----------------------------------------------------------------------------------
+        // Second while loop determine if the palyers on both sides computers? humans? a mix?
         //   what level is the computer?
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         while (true) {
-            
-            getline(cin, playerMode);
-            istringstream iss2(playerMode);
             cout << "Enter:\ngame [white-player] [black-player], "
                 << "players are either \"human\" or \"computer[1-4]\"." << endl;
-            if (iss2 >> command) {
-                // the command is correct
-                if (command == "game") {
-                    // success in reading first arg
-                    if(iss2 >> whitePlayer) {
-                        // arg1 in range
-                        if (contains(players, whitePlayer)){
-                            // read of second arg successful
-                            if (iss2 >> blackPlayer) {
-                                // arg2 in range
-                                if (contains(players, blackPlayer)) {
-                                    break;
-                                }
-                            }// if arg2
-                        } // if contain
-                    }// if arg1
-                }// if game
-                cout << "Invalid command." << endl;
+            string playerType;
+            if (!getline(cin, playerType)) {
+                cout << "fail to read" << endl;
                 continue;
             }
-            cout << "Read from input is unsuccessful." << endl;
+            istringstream iss2(playerType);
+            if (iss2 >> command) {
+                if (command == "game" &&
+                    iss2 >> whitePlayer &&
+                    contains(players, whitePlayer) &&
+                    iss2 >> blackPlayer &&
+                    contains(players, blackPlayer) &&
+                    iss2.eof())                    // nothing extra on the line
+                {
+                    break;                        // success
+                }
+                if (command == "quit") {
+                    isQuit = true;
+                    break;
+                }
+            }
+
+            cout << "Invalid command. Try again.\n";
+
+            /*  ---------- CLEAR ONLY IF NEEDED ------------- */
+            if (cin.fail()) {
+                cin.clear();   // reset fail bit
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
         }// while
+        
+        if (isQuit) {
+            cout << "Game is terminated." << endl;
+            break;
+        }
 
         // create bots, if exists
         if (whitePlayer != "human") {
@@ -358,7 +397,7 @@ int main () {
             } else {
                 opponent = Color::BLACK;
             }
-
+            board.isCheck(opponent);
             // Check draw at beginning of each turn:
             //   not checked but has no valid moves.
             //   Terminate current game immediately
@@ -440,8 +479,12 @@ int main () {
                 }
             } else { // current turn is a human player
                 // take input from user and make the move
+                
                 cin_move(board, resigned, from, end, promotedTo,
-                     currentPlayer, validPromote);
+                     currentPlayer, validPromote, isQuit);
+                if (isQuit) {
+                    break;
+                }
                 if (resigned) {
                     if (currentPlayer == Color::BLACK) {
                         cout << "Black resigned! White wins!" << endl;
@@ -469,6 +512,9 @@ int main () {
             //   beginning of the turn.
             switchPlayer(currentPlayer);
         }// while loop for each game
+        if (isQuit) {
+            break;
+        }
         endGameMessage(blackScore, whiteScore);
     } // outmost while
     cout << "Final Score:\n"

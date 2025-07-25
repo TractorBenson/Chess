@@ -1,12 +1,5 @@
-build/bot/bot.o: src/bot/bot.cc \
- /u8/b42xiao/cs246/project/include/bot/bot.h \
- /u8/b42xiao/cs246/project/include/enum/color.h \
- /u8/b42xiao/cs246/project/include/struct/coordinate.h \
- /u8/b42xiao/cs246/project/include/third_party/PRNG.h \
- /u8/b42xiao/cs246/project/include/chess/king.h \
- /u8/b42xiao/cs246/project/include/chess/chess.h \
- /u8/b42xiao/cs246/project/include/enum/chesstype.h \
- /u8/b42xiao/cs246/project/include/square/square.h \
- /u8/b42xiao/cs246/project/include/observer/observer.h \
- /u8/b42xiao/cs246/project/include/board/board.h \
- /u8/b42xiao/cs246/project/include/struct/moveBackup.h
+build/bot/bot.o: src/bot/bot.cc include/bot/bot.h include/enum/color.h \
+ include/struct/coordinate.h include/third_party/PRNG.h \
+ include/chess/king.h include/chess/chess.h include/enum/chesstype.h \
+ include/square/square.h include/observer/observer.h \
+ include/board/board.h include/struct/moveBackup.h

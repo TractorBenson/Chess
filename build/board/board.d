@@ -1,18 +1,8 @@
-build/board/board.o: src/board/board.cc \
- /u8/b42xiao/cs246/project/include/board/board.h \
- /u8/b42xiao/cs246/project/include/chess/chess.h \
- /u8/b42xiao/cs246/project/include/enum/color.h \
- /u8/b42xiao/cs246/project/include/enum/chesstype.h \
- /u8/b42xiao/cs246/project/include/struct/coordinate.h \
- /u8/b42xiao/cs246/project/include/square/square.h \
- /u8/b42xiao/cs246/project/include/observer/observer.h \
- /u8/b42xiao/cs246/project/include/struct/moveBackup.h \
- /u8/b42xiao/cs246/project/include/chess/king.h \
- /u8/b42xiao/cs246/project/include/chess/pawn.h \
- /u8/b42xiao/cs246/project/include/chess/bishop.h \
- /u8/b42xiao/cs246/project/include/chess/knight.h \
- /u8/b42xiao/cs246/project/include/chess/queen.h \
- /u8/b42xiao/cs246/project/include/chess/rook.h \
- /u8/b42xiao/cs246/project/include/observer/textDisplay.h \
- /u8/b42xiao/cs246/project/include/observer/graphDisplay.h \
- /u8/b42xiao/cs246/project/include/observer/window.h
+build/board/board.o: src/board/board.cc include/board/board.h \
+ include/chess/chess.h include/enum/color.h include/enum/chesstype.h \
+ include/struct/coordinate.h include/square/square.h \
+ include/observer/observer.h include/struct/moveBackup.h \
+ include/chess/pawn.h include/chess/king.h include/chess/bishop.h \
+ include/chess/knight.h include/chess/queen.h include/chess/rook.h \
+ include/observer/textDisplay.h include/observer/graphDisplay.h \
+ include/observer/window.h

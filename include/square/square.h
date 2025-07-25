@@ -22,7 +22,6 @@ class Square {
     // Constructor. User has to call setChess to place a chess on Square
     Square(Coordinate coordinate, Color color);
 
-    Square(const Square& newSquare);
     void attachObserver(vector<unique_ptr<Observer>>& newObs);
     // Notify text and graph displayers of the square's current state
     void notifyDisplayer();
