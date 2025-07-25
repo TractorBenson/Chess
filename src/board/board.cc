@@ -18,7 +18,7 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+    //obs.emplace_back(make_unique<GraphDisplay>(sideLength));
 
     // Attach observer to all squares.
     for (auto& row : grid) {
@@ -339,7 +339,7 @@ bool Board::isValidSetup() {
                 grid[row][col].getChess()->getType() == ChessType::Pawn) {
                     cout << "Invalid Setup! A pawn is at the " <<
                         "first or last row." << endl;
-                    return false;
+                return false;
             }
         }
     }

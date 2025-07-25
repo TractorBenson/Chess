@@ -120,6 +120,7 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
         // Input is a valid format move coord1 coord2
 
         if (b.moveChess(fromC, toC)) {
+           
             // a promtion is needed.
             if (b.canPromote(fromC, toC)) {
                 // read char successful
@@ -127,8 +128,10 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                     if (contains(validPromote, promotedTo)) {
                     
                         if (currentPlayer == Color::WHITE) {
+                            cout << " promoted to a : " << promotedTo << endl;
                             // only allowed to promote chess to own color
                             if(islower(static_cast<unsigned char>(promotedTo))) {
+                                cout << "line 132" << endl;
                                 b.removeChess(toC); // remove destination chess, if any
                                 b.removeChess(fromC); // remove the pawn
                                 b.placeChess(toC, promotedTo); // add the new promoted chess
@@ -136,6 +139,7 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                             }
                         } else {
                             if(isupper(static_cast<unsigned char>(promotedTo))) {
+                                cout << "line 140" << endl;
                                 b.removeChess(toC); // remove destination chess, if any
                                 b.removeChess(fromC); // remove the pawn
                                 b.placeChess(toC, promotedTo); // add the new promoted chess
@@ -150,8 +154,11 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
                 continue;
             } // check promotion
             // ordinary move for chess other than pawn
-            b.removeChess(toC);
+            
+            b.removeChess(toC);   
             b.simpleMove(fromC, toC);
+            
+            cout << "line 163" << endl;
             break;
         } // move valid check
         if (cin.fail()) {
@@ -165,7 +172,6 @@ unique_ptr<Bot> createWhiteBot(Board* board, string& kind) {
     if (kind == "computer[1]") return make_unique<Bot>(board, Color::WHITE, 1);
     else if (kind == "computer[2]") return make_unique<Bot>(board, Color::WHITE, 2);
     else if (kind == "computer[3]") return make_unique<Bot>(board, Color::WHITE, 3);
-    else if (kind == "computer[4]") return make_unique<Bot>(board, Color::WHITE, 4);
 
     return nullptr;
 }
@@ -174,7 +180,6 @@ unique_ptr<Bot> createBlackBot(Board* board, string kind) {
     if (kind == "computer[1]") return make_unique<Bot>(board, Color::BLACK, 1);
     else if (kind == "computer[2]") return make_unique<Bot>(board, Color::BLACK, 2);
     else if (kind == "computer[3]") return make_unique<Bot>(board, Color::BLACK, 3);
-    else if (kind == "computer[4]") return make_unique<Bot>(board, Color::BLACK, 4);
 
     return nullptr;
 }
@@ -214,7 +219,7 @@ int main () {
     vector<char> validPromote ={ 'R', 'Q', 'B', 'N', 'r',
          'q', 'b', 'n'};
     vector<string> players = {"human", "computer[1]", "computer[2]",
-         "computer[3]", "computer[4]"};
+         "computer[3]"};
 
     
     
@@ -232,11 +237,14 @@ int main () {
             cout << "Choose game mode:\n"
                 << "  setup - manual setup mode\n"
                 << "  default - standard starting position\n"
-                << "  quit - exit program " << endl;  
+                << "  quit - exit program " << endl; 
             // Step one: initilizing a empty board
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
             if (!(cin >> command)) break;
-            cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            
             if (command == "quit"){
                 isQuit = true;
                 break;
@@ -313,7 +321,9 @@ int main () {
                         } else if (command == "done") {
                             // exit setup mode
                             // check if the setup is valid?
+                            cout << "line 317" << endl;
                             if (!board.isValidSetup()) {
+                                cout << "line 319" << endl;
                                 cin >> command;
                                 continue;
                             } else {
@@ -532,6 +542,7 @@ int main () {
 
             // examine checkmate situation at start of each turn
             //   (currentPlayer checkmates the opponent)
+            cout << "main 545" << endl;
             if (board.isCheckmate(currentPlayer)) {
                 // Add one score on currentPlayer
                 if (currentPlayer == Color::WHITE) {
@@ -542,7 +553,7 @@ int main () {
                 // terminate current game immediately
                 break;
             } // check condition is determined together with draw at the
-            //   beginning of the turn.
+            cout << "line 556" << endl;
             switchPlayer(currentPlayer);
         }// while loop for each game
         if (isQuit) {
