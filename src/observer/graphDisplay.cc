@@ -236,16 +236,21 @@ void GraphDisplay::notify(const Square& square) {
 
     const Chess *theChess = square.getChess();
 
-    // // draw chess by char
-    // if (theChess) {
-    //     std::string stringChess = convertChess(theChess);
-    // }
+#ifdef NOICON
+    // draw chess by char
+    if (theChess) {
+        char charC = convertChess(theChess);
+        std::string stringChess{charC};
+        drawStringByIndex(rowIndex, colIndex, stringChess, theChess->getColor());
+    }
 
-    // drawStringByIndex(rowIndex, colIndex, stringChess, theChess->getColor());
-
+#else
     // draw chess by pics
-    drawPicByIndex(rowIndex, colIndex, convertChess(theChess));
-    
+    if (theChess) {
+        drawPicByIndex(rowIndex, colIndex, convertChess(theChess));
+    }
+#endif
+
 
     // draw small number/letter indicate position
     if (co.row == 0) {

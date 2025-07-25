@@ -74,6 +74,7 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
 
   XSynchronize(d,True);
 
+#ifndef NOICON
   // load all images
   loadPixmap("BlackBishop", "assets/BlackBishop.png");
   loadPixmap("BlackKing", "assets/BlackKing.png");
@@ -87,6 +88,7 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   loadPixmap("WhitePawn", "assets/WhitePawn.png");
   loadPixmap("WhiteQueen", "assets/WhiteQueen.png");
   loadPixmap("WhiteRook", "assets/WhiteRook.png");
+#endif
 
   usleep(1000);
 }
