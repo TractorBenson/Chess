@@ -7,13 +7,19 @@ CXXFLAGS = -std=c++20 -MMD -Wall -g -Iinclude
 
 SRCDIR = src
 BUILDDIR = build/main
-TARGET = Chess.out
+TARGET = chess
 
 noIcon ?= 0
 ifeq ($(noIcon),1)
 	CXXFLAGS += -DNOICON
-	TARGET = Chess-noIcon.out
+	TARGET = chess-noIcon
 	BUILDDIR = build/noIcon
+endif
+
+nogd ?= 0
+ifeq ($(nogd),1)
+	CXXFLAGS += -DNOGD
+	BUILDDIR = build/nogd
 endif
 
 SRCS = $(shell find $(SRCDIR) -name '*.cc')
@@ -35,3 +41,5 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cc
 
 clean:
 	rm ${OBJS} ${TARGET} ${DEPS}
+
+

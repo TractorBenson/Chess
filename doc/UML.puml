@@ -12,6 +12,14 @@ struct Coordinate {
     + int col
 }
 
+struct MoveBackup {
+    + Square* from;
+    + Square* to;
+    + Chess* movedC;
+    + Chess* capturedC;
+    + King* movedKing;
+}
+
 enum ChessType {
     Pawn, Knight, Bishop, Rook, Queen, King
 }
@@ -21,7 +29,8 @@ class Square {
     - Color color
     - Chess *chess
     - vector<Observer*>
-    - notifyDisplayer() 
+    + attachObserver(vector<unique_ptr<Observer>>)
+    + notifyDisplayer() 
     + setChess(unique_ptr<Chess>)
     + removeChess()
 }
@@ -31,22 +40,23 @@ Square *-- "0...1" Chess : chess
 
 
 abstract class Chess {
+    - bool isMoved
     - Color color
     - ChessType type
     - Square *theSquare
     + virtual bool isValidMove(const vector<vector<Square>>& grid, const vector<unique_ptr<Chess>>& white, const vector<unique_ptr<Chess>>& black) = 0
     + virtual vector<Coordinate> validMoves(const Board &theBoard) const = 0
+    + void updateMoves()
+    + void update()
+    + bool checkCanBeEnPassant()
 }
 
 class Pawn {
-    - bool isMoved
     - bool canBeEnPassant
-    + void update()
 }
 Pawn --|> Chess
 
 class Rook {
-    - bool isMoved
 }
 Rook --|> Chess
 
@@ -63,26 +73,34 @@ class Queen {
 Queen --|> Chess
 
 class King {
-    - bool isMoved
-    + bool isChecked(const Board &theBoard)
-    + bool isCheckmated(const Board &theBoard)
 }
 King --|> Chess
 
 
 class Board {
     - vector<vector<Square>> grid
-    - vector<unique_ptr<Chess>> blackChesses;
-    - vector<unique_ptr<Chess>> whiteChesses;
+    - vector<unique_ptr<Chess>> blackChesses
+    - vector<unique_ptr<Chess>> whiteChesses
     - vector<unique_ptr<Observer>>
-    - bool checkDraw() const
-    - void updateChess(Color color)
-    + void initSquares()
+    - King *blackKing
+    - King *blackKing
+    - optional<moveBackup> lastTry
+
+    + bool squareIsEmpty(Coordinate)
+    + int numOfChesses(ChessType type, Color checkColor) const
+    + bool noValidMoves(Color currentPlayer)
+    + void updateChess(Color CurrentPlayer)
     + void placeChess(Coordinate, char, Color)
     + void removeChess(Coordinate)
+    + void initBoard()
     + void initChessesWithDefaultArrange()
     + bool isValidSetup()
+    + bool canPromote(Coordinate begin, Coordinate end)
     + bool moveChess(Coordinate begin, Coordinate end)
+    + void resetLT()
+    + void testMove(Coordinate begin, Coordinate end, Color currentPlayer)
+    + void simpleMove(Coordinate begin, Coordinate end)
+    + void redoLastStep()
     + bool isCheck() const
     + bool isCheckmate() const
 }
@@ -90,6 +108,28 @@ Board *-- "8*8" Square : grid
 Board *-- TextDisplay : td
 Board *-- GraphDisplay : gd
 
+class Xwindow {
+    - Display *d
+    - Window w 
+    - int s
+    - int width
+    - int height
+    - GC gc 
+    - unordered_map<string, PixmapPair> cache;
+    - void loadPixmap(string key, string path);
+    + void fillRectangle(int x, int y, int width, int height, int colour)
+    + void drawString(int x, int y, string msg, int colour)
+    + void drawPic(string key, int x, int y)
+}
+GraphDisplay *-- Xwindow 
+
+struct PixmapPair {
+    + Pixmap color
+    + Pixmap mask 
+    + int width
+    + int height 
+}
+Xwindow *-- PixmapPair
 
 class Observer {
     + virtual void notify(Square&) = 0
@@ -97,41 +137,29 @@ class Observer {
 
 class TextDisplay {
     - vector<vector<char>> charGrid
-    + ostream printBoard(ostream os)
+    + ostream &printBoard(ostream &os)
+    + void notify(const Square&)
 }
 TextDisplay --|> Observer
 
 class GraphDisplay {
     - const size_t WINDOW_SIZE
     - void drawSquare(Square&)
+    + void notify(const Square&)
 }
 GraphDisplay --|> Observer
 
 abstract class Bot {
     - Board* theBoard
     - Color color
-    + virtual vector<Coordinate> move() const = 0
+    - int level
+    - string randomMove()
+    - string captureFirstMove()
+    - string surviveFirstMove()
+    + string move()
 }
 Bot --> Board : theBoard
 
-class BotLevel1 {
-
-}
-BotLevel1 --|> Bot
-
-class BotLevel2 {
-
-}
-BotLevel2 --|> Bot
-
-class BotLevel3 {
-
-}
-BotLevel3 --|> Bot
-
-class BotLevel4 {
-
-}
-BotLevel4 --|> Bot
-
 @enduml
+
+
