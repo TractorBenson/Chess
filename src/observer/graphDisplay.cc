@@ -76,7 +76,11 @@ void GraphDisplay::drawCharAtCorner(size_t row, size_t col, char c, Color color,
 void GraphDisplay::notify(const Square& square) {
     // get coordinate and color of the Square
     Coordinate co = square.getCoordinate();
-    size_t rowIndex = 7 - co.row;
+
+    // co.row is actual index - bottomleft is 0,0
+    // rowIndex is index for window - topleft is 0,0
+
+    size_t rowIndex = (numSquare - 1 - co.row);
     size_t colIndex = co.col;
     Color squareColor = square.getColor();
 
@@ -118,10 +122,10 @@ void GraphDisplay::notify(const Square& square) {
     }
     
     // draw small number/letter indicate position
-    if (rowIndex == 1) {
-        drawCharAtCorner(rowIndex, colIndex, static_cast<char>('a' + colIndex), switchColor(squareColor), 1);
+    if (co.row == 0) {
+        drawCharAtCorner(rowIndex, colIndex, static_cast<char>('a' + co.col), switchColor(squareColor), 1);
     }
-    if (colIndex == 1) {
-        drawCharAtCorner(rowIndex, colIndex, static_cast<char>(1 + rowIndex), switchColor(squareColor), 0);
+    if (co.col == 0) {
+        drawCharAtCorner(rowIndex, colIndex, static_cast<char>('1' + co.row), switchColor(squareColor), 0);
     }
 }
