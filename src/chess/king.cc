@@ -333,7 +333,7 @@ int King::isChecked (const Board &theBoard) const {
                 if (mock_king_posi.col < 0 || 
                     mock_king_posi.col >= theBoard.getSideLength() ||
                     mock_king_posi.row < 0 || 
-                    mock_king_posi.col >= theBoard.getSideLength()) {
+                    mock_king_posi.row >= theBoard.getSideLength()) {
                         continue;
                 }
                 Chess *mock_king = tmp_grid[mock_king_posi.row]

@@ -443,7 +443,13 @@ int main () {
                     cin >> command;
 
                     if (command == "move") {
+
+                        // cout << "11111" << endl;
+
                         command = whiteBot->move();
+
+                        // cout << "2222" << endl;
+
                         istringstream iss4(command);
                         iss4 >> from;
                         cout << "before bot move: " << from;
