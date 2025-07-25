@@ -18,12 +18,17 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+    //obs.emplace_back(make_unique<GraphDisplay>(sideLength));
 
     // Attach observer to all squares.
     for (auto& row : grid) {
         for (auto& sq : row) {
                 sq.attachObserver(obs);     // raw Observer*
+        }
+    }
+    for (auto& row : grid) {
+        for (auto& sq : row) {
+                sq.notifyDisplayer();     // raw Observer*
         }
     }
 }
@@ -296,6 +301,11 @@ void Board::initChessesWithDefaultArrange() {
             } else {
                 currentColor = Color::BLACK;
             }
+        }
+        if (currentColor == Color::BLACK) {
+            currentColor = Color::WHITE;
+        } else {
+            currentColor = Color::BLACK;
         }
     }
 }

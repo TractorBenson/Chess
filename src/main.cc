@@ -36,8 +36,8 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
-    size_t irow = row - '1';
-    size_t icol = col - 'a';
+    int irow = row - '1';
+    int icol = col - 'a';
     return Coordinate{irow, icol};
 }
 
@@ -304,6 +304,7 @@ int main () {
                 // initialize the 8*8 grid and attach all observers to squares
                 // under default chess layout
                 board.initChessesWithDefaultArrange();
+                cout << board;
                 
                 break;
             } else{
