@@ -36,9 +36,6 @@ Coordinate Square::getCoordinate() const {
 // return the pointer to the chess on current board. 
 //   If current Square has no chess on it, return nullptr
 Chess* Square::getChess() const{
-    if (!chess) {
-        cout << "hello" << endl;
-    }
     return chess;
 }
 

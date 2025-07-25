@@ -36,8 +36,10 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
+    cout << "col is: " << col << endl;
     int irow = row - '1';
     int icol = col - 'a';
+    cout << "icol is: " << icol << endl;
     return Coordinate{irow, icol};
 }
 
@@ -95,8 +97,11 @@ void cin_move(Board &b, bool &resigned, string &fromCoord,
         }
         fromC = convertCoord(fromCoord);
         toC = convertCoord(toCoord);
+        cout << "Now fromC is: " << fromC.row << ", " << fromC.row << endl;
         // Only allowed to move chess on currentPlayer's side.
         if (b.getChessColor(fromC) != currentPlayer) {
+            cout << "the chess has color" << b.getChessColor(fromC) << endl;
+            cout << "Current Player is: " << currentPlayer << endl;
             cout << "Invalid command. Please choose your own chess to move." << endl;
             continue;
         }

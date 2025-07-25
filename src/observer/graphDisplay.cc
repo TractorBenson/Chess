@@ -38,7 +38,7 @@ void GraphDisplay::drawSquareByIndex(size_t row, size_t col, Color color) {
 
 void GraphDisplay::drawStringByIndex(size_t row, size_t col, std::string str, Color color) {
     int resultX = col * size + edgeSize + (size * 7 / 16);
-    int resultY = row * size + edgeSize - (size * 7 / 16);
+    int resultY = row * size + edgeSize + (size * 9 / 16);
 
     int numColor;
     if (color == Color::WHITE) numColor = 1;

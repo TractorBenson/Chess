@@ -47,7 +47,7 @@ Xwindow::Xwindow(int width, int height) : width{width}, height{height} {
   Colormap cmap;
   RGB color_vals[4] = {
     {"Black", 0,0,0},
-    {"White", 255,255,255},
+    {"Yellow", 254,164,67},
     {"ChessWhite", 235,236,208},
     {"ChessGreen", 115,149,82}
   };

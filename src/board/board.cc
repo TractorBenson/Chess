@@ -18,7 +18,7 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    //obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
 
     // Attach observer to all squares.
     for (auto& row : grid) {
@@ -48,7 +48,13 @@ size_t Board::getSideLength() const {
     return sideLength;
 }
 Color Board::getChessColor(Coordinate coord) const {
-    return grid[coord.row][coord.col].getChess()->getColor();
+    cout << "This function is called onec" << endl;
+    Chess *theChess =  grid[coord.row][coord.col].getChess();
+    Coordinate cc = (theChess->getSquare())->getCoordinate();
+    cout << "The chess is at: " << cc.row << ',' << cc.col << endl;
+    cout << "The color is: " << theChess->getColor() << endl;
+    if (theChess) return theChess->getColor();
+    return Color::NOTHING;
 }
 const vector<unique_ptr<Chess>>& Board::getWhiteChesses() const {
     return whiteChesses;
@@ -184,7 +190,8 @@ void Board::placeChess(Coordinate loc, char type) {
     default:
         throw std::invalid_argument{"unknown chess type"};
     }
-
+    
+    sq.setChess(newChess.get());
     // Add the newly added chess to the corresponding chess vector,
     //   if the chess is a King, update the King pointers, too.
     if (type == 'k') {
@@ -195,7 +202,6 @@ void Board::placeChess(Coordinate loc, char type) {
         whiteKing = static_cast<King*>(newChess.get());
         whiteChesses.emplace_back(std::move(newChess));
     }
-    sq.setChess(newChess.get());
     sq.notifyDisplayer();
 }
 
@@ -266,7 +272,7 @@ void Board::initChessesWithDefaultArrange() {
         for (size_t col = 0; col < sideLength; ++col) {
             // set fields of all squares
             Coordinate coord = Coordinate{row, col};
-            
+            Coordinate co{0,0};
             // place white chesses to their default position
             if (row == 0 && (col == 0 || col == sideLength - 1)) {
                 placeChess(coord, 'R');
@@ -296,19 +302,6 @@ void Board::initChessesWithDefaultArrange() {
             } else if (row == 6) {
                 placeChess(coord, 'p');
             }
-            grid[row][col].notifyDisplayer();
-            if (currentColor == Color::BLACK) {
-                currentColor = Color::WHITE;
-            } else {
-                currentColor = Color::BLACK;
-            }
-
-            cout << "3333333333333" << endl;
-        }
-        if (currentColor == Color::BLACK) {
-            currentColor = Color::WHITE;
-        } else {
-            currentColor = Color::BLACK;
         }
     }
 }
