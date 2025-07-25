@@ -18,7 +18,7 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
 
     obs.reserve(2);
     obs.emplace_back(make_unique<TextDisplay>(sideLength));
-    obs.emplace_back(make_unique<GraphDisplay>(sideLength));
+    //obs.emplace_back(make_unique<GraphDisplay>(sideLength));
 
     // Attach observer to all squares.
     for (auto& row : grid) {
@@ -27,13 +27,18 @@ Board::Board() : grid(sideLength, vector<Square>(sideLength)) {
                 sq.notifyDisplayer();
         }
     }
+    for (auto& row : grid) {
+        for (auto& sq : row) {
+                sq.notifyDisplayer();     // raw Observer*
+        }
+    }
 }
 
 // const Square& Board::getSquare(Coordinate coord) const {
 //     return grid[coord.row][coord.col];
 // }
 bool Board::squareIsEmpty(Coordinate coord) const {
-    return (grid[coord.row][coord.col].getChess() != nullptr);
+    return grid[coord.row][coord.col].getChess() == nullptr;
 }
 
 const vector<vector<Square>>& Board::getGrid() const {
@@ -303,6 +308,11 @@ void Board::initChessesWithDefaultArrange() {
             }
 
             cout << "3333333333333" << endl;
+        }
+        if (currentColor == Color::BLACK) {
+            currentColor = Color::WHITE;
+        } else {
+            currentColor = Color::BLACK;
         }
     }
 }

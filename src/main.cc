@@ -36,8 +36,8 @@ bool contains(const vector<T>& range, T value){
 Coordinate convertCoord(string str) {
     char row = str[1];
     char col = str[0];
-    size_t irow = row - '1';
-    size_t icol = col - 'a';
+    int irow = row - '1';
+    int icol = col - 'a';
     return Coordinate{irow, icol};
 }
 
@@ -321,10 +321,10 @@ int main () {
         //   what level is the computer?
         while (true) {
             
-            getline(cin, playerMode);
-            istringstream iss2(playerMode);
             cout << "Enter:\ngame [white-player] [black-player], "
                 << "players are either \"human\" or \"computer[1-4]\"." << endl;
+            getline(cin, playerMode);
+            istringstream iss2(playerMode);
             if (iss2 >> command) {
                 // the command is correct
                 if (command == "game") {
@@ -347,6 +347,7 @@ int main () {
             }
             cout << "Read from input is unsuccessful." << endl;
         }// while
+        cout << "DDDDDDDDDDDDDDDDDDDDD" << endl;
 
         // create bots, if exists
         if (whitePlayer != "human") {
@@ -364,7 +365,7 @@ int main () {
             } else {
                 opponent = Color::BLACK;
             }
-
+            cout << "kkkkkkkkkkkk" << endl;
             // Check draw at beginning of each turn:
             //   not checked but has no valid moves.
             //   Terminate current game immediately
@@ -375,6 +376,7 @@ int main () {
                 whiteScore += 0.5;
                 break;
             }
+            cout << "BBBBBBBBBBBB" << endl;
             
             // move directly if white player is a bot
             if (currentPlayer == Color::WHITE && whitePlayer != "human") {
