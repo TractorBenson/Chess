@@ -460,8 +460,8 @@ void Board::simpleMove(Coordinate begin, Coordinate end){
         // The en passant situation
         if (abs(diff_x) == 1 && abs(diff_y) == 1 && to.getChess() == nullptr)
         {   
-            Square *pawnBeEaten = &(grid[begin.row][end.col]);
-            pawnBeEaten->setChess(nullptr);
+            Coordinate removeCoord{begin.row, end.col};
+            removeChess(removeCoord);
         }
     }
 
