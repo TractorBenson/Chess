@@ -55,10 +55,15 @@ string Bot::convertCoordinate(Coordinate begin, Coordinate end) {
     endC = static_cast<char>(end.col + 'a');
 
     string result = "";
-    result += beginC + beginR + ' ' + endC + endR;
+    result += beginC;
+    result += beginR;
+    result += ' ';
+    result += endC;
+    result += endR;
 
     if ((end.row == 0 || end.row == 7) && theBoard->getGrid().at(begin.row).at(begin.col).getChess()->getType() == ChessType::Pawn) {
-        result += ' ' + 'Q';
+        result += ' ';
+        result += 'Q';
     }
 
     return result;
