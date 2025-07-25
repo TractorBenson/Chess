@@ -55,6 +55,8 @@ class Board {
 
         // Remove existing chess on loc, do nothing if there's no chess on loc
         void removeChess(Coordinate loc);
+
+        void initBoard();
         // place all chesses with default layout before gamestart
         void initChessesWithDefaultArrange();
         // Checks if there are two kings, each in different colors
